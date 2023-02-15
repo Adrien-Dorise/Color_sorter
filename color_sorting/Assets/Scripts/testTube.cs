@@ -52,12 +52,9 @@ public class testTube : MonoBehaviour
         tubeComplete = isComplete();
     }
 
-    public void click()
+    public void onClick()
     {
-        if(!tubeComplete)
-        {
-            managerScript.onTubeClick(this.gameObject);
-        }
+        managerScript.gameState(gameManager.actions.clickedTube, this.gameObject);
     }
 
     private bool isComplete()
@@ -100,9 +97,5 @@ public class testTube : MonoBehaviour
         this.GetComponent<Image>().raycastTarget = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        colorCount = colorList.Count;
-    }
+
 }
