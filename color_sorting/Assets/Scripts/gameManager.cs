@@ -15,6 +15,13 @@ public class gameManager : MonoBehaviour
     [SerializeField] private float scalingSpeed = 0.025f;
     [SerializeField] private float endScale = 1.3f;
 
+    //Pooring animation
+    [SerializeField] private float pooringTime = 0.8f;
+    [SerializeField] private float xOffset = 0.5f;
+    [SerializeField] private float yOffset = 0.5f;
+
+
+
     private void Awake()
     {
         colors = new Color[] { Random.ColorHSV(), Random.ColorHSV(), Random.ColorHSV() };
@@ -66,14 +73,15 @@ public class gameManager : MonoBehaviour
             if (areSameColor(clickedTube, memoryTube) && stillNotMax) //Ok to switch colors
             {
                 //Debug.Log("Same color");
+                StartCoroutine(pooring(memoryTube, clickedTube));
                 while(areSameColor(clickedTube,memoryTube) && stillNotMax && notEmpty)
                 {
+                    //Switch colors
                     clickedTube.GetComponent<testTube>().addColorLayer(memoryTube.GetComponent<testTube>().colorList.Peek());
                     memoryTube.GetComponent<testTube>().removeColorLayer();
                     stillNotMax = clickedTube.GetComponent<testTube>().colorList.Count < clickedTube.GetComponent<testTube>().maxLiquid;
                     notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
                 }
-                StartCoroutine(tubeAnimation(memoryTube.transform, false));
                 memoryTube = null;
             }
             else //Not OK to switch color
@@ -101,7 +109,7 @@ public class gameManager : MonoBehaviour
 
 
 
-    IEnumerator  tubeAnimation(Transform objectTransf, bool scalingUp)
+    private IEnumerator tubeAnimation(Transform objectTransf, bool scalingUp)
     {
         if(scalingUp)
         {
@@ -123,8 +131,33 @@ public class gameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator pooring(GameObject tube1, GameObject tube2)
+    {
+        int xDir = 1;
+        float rotation = 30f;
+        Vector3 initialPosition = tube1.transform.position;
+        Quaternion initialRotation = tube1.transform.rotation;
+        if(tube1.transform.localPosition.x < tube2.transform.localPosition.x) //pooring tube is at right
+        {
+            xDir = -1;
+            rotation *= -1;
+        }
+
+        //Animate
+        tube1.transform.localPosition = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
+        tube1.transform.Rotate(new Vector3(0, 0, rotation));
+        
+        yield return new WaitForSeconds(pooringTime);
+
+        //Return to initial position
+        Debug.Log("Retur");
+        tube1.transform.position = initialPosition;
+        tube1.transform.rotation = initialRotation;
+        StartCoroutine(tubeAnimation(tube1.transform, false));
+    }
+
     // Update is called once per frame
-    void pUpdate()
+    void Update()
     {
         
     }
