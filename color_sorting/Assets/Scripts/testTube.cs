@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,9 +13,15 @@ public class testTube : MonoBehaviour
     [SerializeField] int colorCount;
     public bool tubeComplete;
 
+    //Layer
     private float yOffset = 0.475f;
 
     private gameManager managerScript;
+
+    //Tube animation
+    [SerializeField] private float scalingTempo = 0.005f;
+    [SerializeField] private float scalingSpeed = 0.025f;
+    [SerializeField] private float endScale = 1.3f;
 
 
     // Start is called before the first frame update
@@ -27,7 +34,7 @@ public class testTube : MonoBehaviour
         tubeComplete = false;
         for(int i = 0; i < initialLiquid; i++)
         {
-            addColorLayer(managerScript.colors[UnityEngine.Random.Range(0,managerScript.colors.Count())]);
+            addColorLayer(gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())]);
         }
 
     }
@@ -49,7 +56,29 @@ public class testTube : MonoBehaviour
     {
         Destroy(this.transform.GetChild(colorList.Count-1).gameObject);
         colorList.Pop();
-        tubeComplete = isComplete();
+    }
+
+
+    public IEnumerator tubeAnimation(bool scalingUp)
+    {
+        if (scalingUp)
+        {
+            while (this.transform.localScale.x < endScale)
+            {
+                this.transform.localScale = new Vector3(this.transform.localScale.x + scalingSpeed, this.transform.localScale.y + scalingSpeed, 1);
+                yield return new WaitForSeconds(scalingTempo);
+            }
+
+        }
+        else
+        {
+            while (this.transform.localScale.x > 1)
+            {
+                this.transform.localScale = new Vector3(this.transform.localScale.x - scalingSpeed, this.transform.localScale.y - scalingSpeed, 1);
+                yield return new WaitForSeconds(scalingTempo);
+            }
+
+        }
     }
 
     public void onClick()
@@ -82,20 +111,10 @@ public class testTube : MonoBehaviour
         {
             isCmplt = false;
         }
-
-        if (isCmplt)
-        {
-            completed();
-        }
         return isCmplt;
-
     }
 
-    private void completed()
-    {
-        Debug.Log("Tube complete !!!");
-        this.GetComponent<Image>().raycastTarget = false;
-    }
+
 
 
 }

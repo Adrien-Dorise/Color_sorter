@@ -12,15 +12,12 @@ public class gameManager : MonoBehaviour
     public enum states { idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel }
     public enum actions { clickedTube, clickedRobot, clickedBackround }
     static public states currentState { get; private set; }
-    public Color[] colors;
-    [SerializeField] private GameObject memoryTube;
+    static public Color[] colors;
+    [SerializeField] public GameObject memoryTube { get; private set; }
     private robot robotScript;
 
 
-    //Tube animation
-    [SerializeField] private float scalingTempo = 0.005f;
-    [SerializeField] private float scalingSpeed = 0.025f;
-    [SerializeField] private float endScale = 1.3f;
+
 
     //Pooring animation
     [SerializeField] private float pooringTime = 0.8f;
@@ -32,7 +29,7 @@ public class gameManager : MonoBehaviour
 
     private void Awake()
     {
-        currentState = states.idleNoTube;
+        currentState = states.idleFirstAction;
         colors = new Color[6] { new Color(0.071f, 0.125f, 1.000f, 1), new Color(1.000f, 0.133f, 0.121f, 1), new Color(0.019f, 1.000f, 0.329f, 1), new Color(0.604f, 0.150f, 1.000f, 1), new Color(1f, 0.966f, 0.251f, 1), new Color(0.349f, 1f, 0.925f, 1) };
     }
 
@@ -59,27 +56,7 @@ public class gameManager : MonoBehaviour
 
 
 
-    private IEnumerator tubeAnimation(Transform objectTransf, bool scalingUp)
-    {
-        if(scalingUp)
-        {
-            while(objectTransf.localScale.x < endScale)
-            {
-                objectTransf.localScale = new Vector3(objectTransf.localScale.x + scalingSpeed, objectTransf.localScale.y + scalingSpeed, 1);
-                yield return new WaitForSeconds(scalingTempo);
-            }
-
-        }
-        else
-        {
-            while(objectTransf.localScale.x > 1)
-            {
-                objectTransf.localScale = new Vector3(objectTransf.localScale.x - scalingSpeed, objectTransf.localScale.y - scalingSpeed, 1);
-                yield return new WaitForSeconds(scalingTempo);
-            }
-
-        }
-    }
+    
 
     private void pooring(GameObject obj)
     {
@@ -102,7 +79,6 @@ public class gameManager : MonoBehaviour
             stillNotMax = obj.GetComponent<testTube>().colorList.Count < obj.GetComponent<testTube>().maxLiquid;
             notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
         }
-        currentState = states.idleNoTube;
         memoryTube = null;
     }
 
@@ -127,7 +103,7 @@ public class gameManager : MonoBehaviour
         //Return to initial position
         tube1.transform.position = initialPosition;
         tube1.transform.rotation = initialRotation;
-        StartCoroutine(tubeAnimation(tube1.transform, false));
+        StartCoroutine(tube1.GetComponent<testTube>().tubeAnimation(false));
     }
 
     public void gameState(actions act, GameObject obj = null)
@@ -139,7 +115,7 @@ public class gameManager : MonoBehaviour
                 {
                     try
                     {
-                        obj.GetComponent<robot>().animateSwitch();
+                        StartCoroutine(obj.GetComponent<robot>().robotSelected(true));
                         currentState = states.idleRobot;
                     }
                     catch(Exception ex)
@@ -154,22 +130,56 @@ public class gameManager : MonoBehaviour
             case states.idleRobot:
                 try
                 {
-                    testTube tubeScript = obj.GetComponent<testTube>();
-                    if(act == actions.clickedTube && robotScript.eyeColor != tubeScript.colorList.Peek()) //If clicked tube's upper color is different from the robot's color
+                    if(act == actions.clickedTube) 
                     {
-                        robotScript.animateSwitch();
-                        tubeScript.removeColorLayer();
-                        tubeScript.addColorLayer(robotScript.eyeColor);
-                        currentState = states.idleNoTube;
+                        testTube tubeScript = obj.GetComponent<testTube>();
+                        if (robotScript.eyeColor != tubeScript.colorList.Peek()) //If clicked tube's upper color is different from the robot's color
+                        {
+                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
+                            bool notEmpty = tubeScript.colorList.Count != 0;
+                            int safeGuard = 0, layerRemoved = 0;
+                            Color previousColor = tubeScript.colorList.Peek();
+                            while (notEmpty)
+                            {
+                                if (safeGuard > 10)
+                                {
+                                    Debug.LogWarning("Safeguard reached while pooring!");
+                                    break;
+                                }
+                                safeGuard++;
+
+                                if (tubeScript.colorList.Peek() != previousColor)
+                                {
+                                    break;
+                                }
+                                previousColor = tubeScript.colorList.Peek();  
+
+                                //Switch colors
+                                tubeScript.removeColorLayer();
+                                notEmpty = tubeScript.colorList.Count != 0;
+                                layerRemoved++;
+                            }
+                            for (int i = 0; i < layerRemoved; i++)
+                            {
+                                tubeScript.addColorLayer(robotScript.eyeColor);
+                            }
+                            currentState = states.idleNoTube;
+                        }
+                        else
+                        {
+                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
+                            currentState = states.idleFirstAction;
+                        }
                     }
                     else
                     {
-                        robotScript.animateSwitch();
+                        StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
                         currentState = states.idleFirstAction;
                     }
                 }
                 catch(Exception ex)
                 {
+                    StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
                     currentState = states.idleFirstAction;
                     Debug.Log(ex);
                 }
@@ -184,7 +194,7 @@ public class gameManager : MonoBehaviour
                         if (!obj.GetComponent<testTube>().tubeComplete && notEmpty)
                         {
                             //Debug.Log("tube clicked");
-                            StartCoroutine(tubeAnimation(obj.transform, true));
+                            StartCoroutine(obj.GetComponent<testTube>().tubeAnimation(true));
                             memoryTube = obj;
                             currentState = states.idleTube;
                         }
@@ -205,14 +215,20 @@ public class gameManager : MonoBehaviour
                         bool notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
                         if(obj == memoryTube) //Same tube selected
                         {
-                            StartCoroutine(tubeAnimation(memoryTube.transform, false));
+                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
+                            memoryTube = null;
+                            currentState = states.idleNoTube;
+                        }
+                        else if (obj.GetComponent<testTube>().tubeComplete) //completed tube selected
+                        {
+                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
                             memoryTube = null;
                             currentState = states.idleNoTube;
                         }
                         else if(!areSameColor(obj, memoryTube)) //New tube selected but different colors
                         {
-                            StartCoroutine(tubeAnimation(memoryTube.transform, false));
-                            StartCoroutine(tubeAnimation(obj.transform, true));
+                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
+                            StartCoroutine(obj.GetComponent<testTube>().tubeAnimation(true));
                             memoryTube = obj;
                         }
                         else if (areSameColor(memoryTube, obj) && stillNotMax) //New tube is ok to poor additional color
@@ -223,7 +239,7 @@ public class gameManager : MonoBehaviour
                     }
                     if(act == actions.clickedRobot || act == actions.clickedBackround)
                     {
-                        StartCoroutine(tubeAnimation(memoryTube.transform, false));
+                        StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
                         memoryTube = null;
                         currentState = states.idleNoTube;
                     }
@@ -231,7 +247,7 @@ public class gameManager : MonoBehaviour
                 catch (Exception ex)
                 {
                     Debug.Log(ex);
-                    StartCoroutine(tubeAnimation(memoryTube.transform, false));
+                    StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
                     memoryTube = null;
                     currentState = states.idleNoTube;
                 }
