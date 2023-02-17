@@ -36,10 +36,15 @@ public class robot : MonoBehaviour
         scalingSpeed = 0.05f;
         endScale = 10f;
 
+        
+    }
+
+    public void initialise(Color color)
+    {
         areEyesTracked = false;
-        eyeColor = gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
-        eyesObject.GetComponent<SpriteRenderer>().color = eyeColor;
-        bodyObject.GetComponent<SpriteRenderer>().color = eyeColor;
+        eyeColor = color;
+        eyesObject.GetComponent<SpriteRenderer>().color = color;
+        bodyObject.GetComponent<SpriteRenderer>().color = color;
     }
 
 
