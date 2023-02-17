@@ -27,16 +27,29 @@ public class testTube : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        initialLiquid = 2;
-        maxLiquid = 3;
+        
 
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
         tubeComplete = false;
-        for(int i = 0; i < initialLiquid; i++)
+        
+
+    }
+
+
+    public void initialise(int max, int initLiquid, List<Color> colors)
+    {
+        initialLiquid = initLiquid;
+        maxLiquid = max;
+
+        while (colorList.Count > 0)
         {
-            addColorLayer(gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())]);
+            removeColorLayer();
         }
 
+        foreach(Color color in colors)
+        {
+            addColorLayer(color);
+        }
     }
 
 
@@ -54,8 +67,12 @@ public class testTube : MonoBehaviour
 
     public void removeColorLayer()
     {
-        Destroy(this.transform.GetChild(colorList.Count-1).gameObject);
-        colorList.Pop();
+        try
+        {
+            Destroy(this.transform.GetChild(colorList.Count-1).gameObject);
+            colorList.Pop();
+        }
+        catch(Exception e) { Debug.LogException(e); }
     }
 
 
