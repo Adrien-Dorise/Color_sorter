@@ -76,7 +76,7 @@ public class testTube : MonoBehaviour
     }
 
 
-    public IEnumerator tubeAnimation(bool scalingUp)
+    public IEnumerator tubeScaling(bool scalingUp)
     {
         if (scalingUp)
         {

@@ -18,9 +18,14 @@ public class robot : MonoBehaviour
     [SerializeField] private float xBoost, yBoost;
 
     //Robot scaling
-    [SerializeField] private float scalingTempo = 0.005f;
-    [SerializeField] private float scalingSpeed = 0.025f;
-    [SerializeField] private float endScale = 9.5f;
+    bool isIdling;
+    [SerializeField] private float scalingTempo;
+    [SerializeField] private float scalingSpeed;
+    [SerializeField] private float endScale;
+    [SerializeField] private float startScale;
+    [SerializeField] private float idleSpeed;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -32,9 +37,14 @@ public class robot : MonoBehaviour
         yOffsetMax = 0.015f;
         xOffsetMax = 0.028f;
 
+        idleSpeed = 0.0075f;
         scalingTempo = 0.005f;
         scalingSpeed = 0.05f;
         endScale = 10f;
+        startScale = 9f;
+
+        isIdling = false;
+
 
         
     }
@@ -47,6 +57,30 @@ public class robot : MonoBehaviour
         bodyObject.GetComponent<SpriteRenderer>().color = color;
     }
 
+
+    public IEnumerator robotIdle()
+    {
+        isIdling = true;
+        if (this.transform.localScale.x <= endScale)
+        {
+            while (this.transform.localScale.x < endScale && gameManager.currentState == gameManager.states.idleFirstAction)
+            {
+                this.transform.localScale = new Vector3(this.transform.localScale.x + idleSpeed, this.transform.localScale.y + idleSpeed, 1);
+                yield return new WaitForSeconds(scalingTempo);
+            }
+
+        }
+        else
+        {
+            while (this.transform.localScale.x > startScale && gameManager.currentState == gameManager.states.idleFirstAction)
+            {
+                this.transform.localScale = new Vector3(this.transform.localScale.x - idleSpeed, this.transform.localScale.y - idleSpeed, 1);
+                yield return new WaitForSeconds(scalingTempo);
+            }
+
+        }
+        isIdling = false;
+    }
 
     public IEnumerator robotSelected(bool scalingUp)
     {
@@ -61,7 +95,8 @@ public class robot : MonoBehaviour
         }
         else
         {
-            while (this.transform.localScale.x > 9)
+        startScale = 9f;
+            while (this.transform.localScale.x > startScale)
             {
                 this.transform.localScale = new Vector3(this.transform.localScale.x - scalingSpeed, this.transform.localScale.y - scalingSpeed, 1);
                 yield return new WaitForSeconds(scalingTempo);
@@ -100,6 +135,11 @@ public class robot : MonoBehaviour
         {
             areEyesTracked = false;
             eyeIdle();
+        }
+
+        if(gameManager.currentState == gameManager.states.idleFirstAction && !isIdling)
+        {
+            StartCoroutine(robotIdle());
         }
     }
 
