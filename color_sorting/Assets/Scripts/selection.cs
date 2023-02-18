@@ -66,14 +66,25 @@ public class selection : MonoBehaviour
         setupObject.GetComponent<setup>().displayLevelButton(currentMaxLevel);
     }
 
-    public void onQuit()
+    public void onQuitApp()
     {
         Application.Quit();
+    }
+
+    public void onQuitToMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void onReplay()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void levelSelection()
     {
         SceneManager.LoadScene("Level" + textLevel);
+        gameManager.currentScene = "Level" + textLevel;
     }
 
 

@@ -5,16 +5,22 @@ using System.Linq;
 using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class gameManager : MonoBehaviour
 {
 
-    public enum states { idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel }
-    public enum actions { clickedTube, clickedRobot, clickedBackround }
+    public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, mainMenu }
+    public enum actions { clickedTube, clickedRobot, clickedBackround, pooring }
     static public states currentState { get; private set; }
     static public Color[] colors;
-    [SerializeField] public GameObject memoryTube { get; private set; }
+    public GameObject memoryTube { get; private set; }
+    private GameObject selectedTubeObject;
+    private GameObject tubesGroupObject;
+    [SerializeField] GameObject pooredLiquidPrefab;
     private robot robotScript;
+
+    private audio audioManager;
 
 
 
@@ -22,16 +28,25 @@ public class gameManager : MonoBehaviour
     //Pooring animation
     [SerializeField] private float pooringTime = 0.8f;
     [SerializeField] private float translationTime = 1f;
-    [SerializeField] private float xOffset = 0.5f;
-    [SerializeField] private float yOffset = 0.5f;
+    private float xOffset = 0.75f;
+    private float yOffset = 0.5f;
 
 
     static public int availableLevels { get; private set; }
+    static public string currentScene { get; set; }
 
 
     private void Awake()
     {
-        currentState = states.idleFirstAction;
+        currentScene = "MainMenu";
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
+        {
+            currentState = states.mainMenu;
+        }
+        else
+        {
+            currentState = states.idleFirstAction;
+        }
         colors = new Color[6] { new Color(0.071f, 0.125f, 1.000f, 1), new Color(1.000f, 0.133f, 0.121f, 1), new Color(0.019f, 1.000f, 0.329f, 1), new Color(0.604f, 0.150f, 1.000f, 1), new Color(1f, 0.966f, 0.251f, 1), new Color(0.349f, 1f, 0.925f, 1) };
         availableLevels = 20;
     }
@@ -39,7 +54,10 @@ public class gameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        selectedTubeObject = GameObject.Find("Selected Tube");
+        tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
+        audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         memoryTube = null;
     }
 
@@ -82,7 +100,7 @@ public class gameManager : MonoBehaviour
             stillNotMax = obj.GetComponent<testTube>().colorList.Count < obj.GetComponent<testTube>().maxLiquid;
             notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
         }
-        memoryTube = null;
+        
     }
 
     private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2)
@@ -97,22 +115,70 @@ public class gameManager : MonoBehaviour
             rotation *= -1;
         }
 
+        //Sorting order update
+        tube1.transform.SetParent(selectedTubeObject.transform.GetChild(0)); //We change the parent canvas to display the moving tube up front
+        for (int i = 0; i < tube1.transform.childCount; i++)
+        {
+            tube1.transform.GetChild(i).GetComponent<SpriteRenderer>().sortingOrder += 10;
+        }
+
         //Animate
         tube1.transform.localPosition = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
         tube1.transform.Rotate(new Vector3(0, 0, rotation));
-        
+
+        //Add poored liquid
+        GameObject tempLiquid = GameObject.Instantiate(pooredLiquidPrefab,tube1.transform.position, new Quaternion(0,0,0,0));
+        tempLiquid.transform.localScale = new Vector3(-xDir, 1, 1);
+        foreach(SpriteRenderer sprite in tempLiquid.GetComponentsInChildren<SpriteRenderer>())
+        {
+            try
+            {
+                sprite.color = tube1.GetComponent<testTube>().colorList.Peek();
+            }
+            catch(Exception ex)
+            {
+                Debug.LogWarning(ex);
+            }
+        }
+
+        audioManager.pooringSound();        
         yield return new WaitForSeconds(pooringTime);
 
         //Return to initial position
+        Destroy(tempLiquid);
         tube1.transform.position = initialPosition;
         tube1.transform.rotation = initialRotation;
-        StartCoroutine(tube1.GetComponent<testTube>().tubeAnimation(false));
+
+        
+        tube1.transform.SetParent(tubesGroupObject.transform);
+        for (int i = 0; i < tube1.transform.childCount; i++)
+        {
+            tube1.transform.GetChild(i).GetComponent<SpriteRenderer>().sortingOrder -= 10;
+        }
+        StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
+    }
+
+    private IEnumerator waitState(float time, states newState)
+    {
+        yield return new WaitForSeconds(time);
+        currentState = newState;
+        if(newState == states.idleNoTube)
+        {
+            memoryTube = null;
+        }
     }
 
     public void gameState(actions act, GameObject obj = null)
     {
         switch(currentState)
         {
+            case states.wait:
+                if(act == actions.pooring)
+                {
+                    StartCoroutine(waitState(pooringTime, states.idleNoTube));
+                }
+                break;
+
             case states.idleFirstAction:
                 if(act == actions.clickedRobot)
                 {
@@ -197,7 +263,7 @@ public class gameManager : MonoBehaviour
                         if (!obj.GetComponent<testTube>().tubeComplete && notEmpty)
                         {
                             //Debug.Log("tube clicked");
-                            StartCoroutine(obj.GetComponent<testTube>().tubeAnimation(true));
+                            StartCoroutine(obj.GetComponent<testTube>().tubeScaling(true));
                             memoryTube = obj;
                             currentState = states.idleTube;
                         }
@@ -218,31 +284,38 @@ public class gameManager : MonoBehaviour
                         bool notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
                         if(obj == memoryTube) //Same tube selected
                         {
-                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
+                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
                             memoryTube = null;
                             currentState = states.idleNoTube;
                         }
                         else if (obj.GetComponent<testTube>().tubeComplete) //completed tube selected
                         {
-                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
+                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
                             memoryTube = null;
                             currentState = states.idleNoTube;
                         }
                         else if(!areSameColor(obj, memoryTube)) //New tube selected but different colors
                         {
-                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
-                            StartCoroutine(obj.GetComponent<testTube>().tubeAnimation(true));
+                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
+                            StartCoroutine(obj.GetComponent<testTube>().tubeScaling(true));
                             memoryTube = obj;
                         }
                         else if (areSameColor(memoryTube, obj) && stillNotMax) //New tube is ok to poor additional color
                         {
                             pooring(obj);
-                            currentState = states.idleNoTube;
+                            currentState = states.wait;
+                            gameState(actions.pooring);
+                        }
+                        else if (areSameColor(memoryTube, obj) && !stillNotMax) //New tube is too full to be poored
+                        {
+                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
+                            StartCoroutine(obj.GetComponent<testTube>().tubeScaling(true));
+                            memoryTube = obj;
                         }
                     }
                     if(act == actions.clickedRobot || act == actions.clickedBackround)
                     {
-                        StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
+                        StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
                         memoryTube = null;
                         currentState = states.idleNoTube;
                     }
@@ -250,7 +323,7 @@ public class gameManager : MonoBehaviour
                 catch (Exception ex)
                 {
                     Debug.Log(ex);
-                    StartCoroutine(memoryTube.GetComponent<testTube>().tubeAnimation(false));
+                    StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
                     memoryTube = null;
                     currentState = states.idleNoTube;
                 }

@@ -20,8 +20,8 @@ public class setup : MonoBehaviour
     [SerializeField] private int maxColors = 3;
 
     //Tube positions
-    [SerializeField] private float yTop, yBottom;
-    [SerializeField] private float xLeft, xRight;
+    private List<Vector3> posTubes = new List<Vector3>();
+
 
     //Color
     private Color colorArrow, colorButtons;
@@ -29,7 +29,17 @@ public class setup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
+        //Tube positions
+        posTubes.Add(new Vector3 ( -0.45f, 1.1f, 0f ));
+        posTubes.Add(new Vector3 ( 0.45f, 1.1f, 0f ));
+        posTubes.Add(new Vector3 ( -0.45f, -0.5f, 0f ));
+        posTubes.Add(new Vector3 ( 0.45f, -0.5f, 0f ));
+        posTubes.Add(new Vector3 ( -1.35f, 1.1f, 0f ));
+        posTubes.Add(new Vector3 ( 1.35f, 1.1f, 0f ));
+        posTubes.Add(new Vector3 ( -1.35f, -0.5f, 0f ));
+        posTubes.Add(new Vector3 ( 1.35f, -0.5f, 0f ));
+
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
         {
             initMainMenu();
         }
@@ -50,7 +60,7 @@ public class setup : MonoBehaviour
         for (int i = 0; i < numberOfTube; i++)
         {
             GameObject tube = Instantiate(tubePrefab, tubeParent.transform);
-            tube.transform.localPosition = new Vector3(-1 + i * 1, 0, 0);
+            tube.transform.localPosition = posTubes[i];
             tube.GetComponent<testTube>().initialise(numberOfMaxLayers, numberOfInitLayers, randomCol);
         }
 
