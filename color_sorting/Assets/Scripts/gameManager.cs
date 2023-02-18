@@ -26,11 +26,14 @@ public class gameManager : MonoBehaviour
     [SerializeField] private float yOffset = 0.5f;
 
 
+    static public int availableLevels { get; private set; }
+
 
     private void Awake()
     {
         currentState = states.idleFirstAction;
         colors = new Color[6] { new Color(0.071f, 0.125f, 1.000f, 1), new Color(1.000f, 0.133f, 0.121f, 1), new Color(0.019f, 1.000f, 0.329f, 1), new Color(0.604f, 0.150f, 1.000f, 1), new Color(1f, 0.966f, 0.251f, 1), new Color(0.349f, 1f, 0.925f, 1) };
+        availableLevels = 20;
     }
 
     // Start is called before the first frame update

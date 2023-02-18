@@ -779,9 +779,10 @@ MonoBehaviour:
   tubeParent: {fileID: 1845188092}
   tubePrefab: {fileID: 3314082627624055801, guid: 17f18e771fe071c4c98379c9264758b5, type: 3}
   robot: {fileID: 2015467390}
-  numberOfTube: 3
-  numberOfInitLayers: 10
-  numberOfMaxLayers: 14
+  numberOfTube: 6
+  numberOfInitLayers: 3
+  numberOfMaxLayers: 5
+  maxColors: 3
   yTop: 0
   yBottom: 0
   xLeft: 0
