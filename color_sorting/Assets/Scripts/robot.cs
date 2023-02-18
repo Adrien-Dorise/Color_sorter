@@ -57,6 +57,13 @@ public class robot : MonoBehaviour
         bodyObject.GetComponent<SpriteRenderer>().color = color;
     }
 
+    public void switchEyeColor(Color color)
+    {
+        eyeColor = color;
+        eyesObject.GetComponent<SpriteRenderer>().color = color;
+        bodyObject.GetComponent<SpriteRenderer>().color = color;
+    }
+
 
     public IEnumerator robotIdle()
     {

@@ -48,7 +48,17 @@ public class gameManager : MonoBehaviour
             currentState = states.idleFirstAction;
         }
         colors = new Color[6] { new Color(0.071f, 0.125f, 1.000f, 1), new Color(1.000f, 0.133f, 0.121f, 1), new Color(0.019f, 1.000f, 0.329f, 1), new Color(0.604f, 0.150f, 1.000f, 1), new Color(1f, 0.966f, 0.251f, 1), new Color(0.349f, 1f, 0.925f, 1) };
-        availableLevels = 20;
+
+
+        if (!PlayerPrefs.HasKey("Available Levels")) //First play ! 
+        {
+            int colorInt = UnityEngine.Random.Range(0, 2);
+            PlayerPrefs.SetInt("Available Levels", 1);
+            PlayerPrefs.SetInt("Robot color Level0", colorInt);
+            PlayerPrefs.SetInt("Robot color Level1", colorInt);
+        }
+        availableLevels = PlayerPrefs.GetInt("Available Levels");
+
     }
 
     // Start is called before the first frame update
@@ -84,6 +94,7 @@ public class gameManager : MonoBehaviour
         bool stillNotMax = obj.GetComponent<testTube>().colorList.Count < obj.GetComponent<testTube>().maxLiquid;
         bool notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
         int safeGuard = 0;
+        robotScript.switchEyeColor(memoryTube.GetComponent<testTube>().colorList.Peek());
         StartCoroutine(pooringAnimation(memoryTube, obj));
         while (areSameColor(obj, memoryTube) && stillNotMax && notEmpty)
         {
@@ -202,12 +213,20 @@ public class gameManager : MonoBehaviour
                     if(act == actions.clickedTube) 
                     {
                         testTube tubeScript = obj.GetComponent<testTube>();
-                        if (robotScript.eyeColor != tubeScript.colorList.Peek()) //If clicked tube's upper color is different from the robot's color
+                        if(tubeScript.colorList.Count <= 0) //Chose empty tube
+                        {
+                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
+                            currentState = states.idleFirstAction;
+                        }
+                        else if (robotScript.eyeColor != tubeScript.colorList.Peek()) //If clicked tube's upper color is different from the robot's color
                         {
                             StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
                             bool notEmpty = tubeScript.colorList.Count != 0;
                             int safeGuard = 0, layerRemoved = 0;
                             Color previousColor = tubeScript.colorList.Peek();
+                            /*
+                            This can change all similar layer color to upper layer.
+                            Don' know how to integrate it in the game right now
                             while (notEmpty)
                             {
                                 if (safeGuard > 10)
@@ -232,6 +251,12 @@ public class gameManager : MonoBehaviour
                             {
                                 tubeScript.addColorLayer(robotScript.eyeColor);
                             }
+                            */
+
+                            //One layer change method
+                            tubeScript.removeColorLayer();
+                            tubeScript.addColorLayer(robotScript.eyeColor);
+
                             currentState = states.idleNoTube;
                         }
                         else
