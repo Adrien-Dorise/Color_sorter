@@ -36,9 +36,9 @@ public class testTube : MonoBehaviour
     }
 
 
-    public void initialise(int max, int initLiquid, List<Color> colors)
+    public void initialise(int max, List<Color> colors)
     {
-        initialLiquid = initLiquid;
+        initialLiquid = colors.Count;
         maxLiquid = max;
 
         while (colorList.Count > 0)

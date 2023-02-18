@@ -85,6 +85,7 @@ public class selection : MonoBehaviour
     {
         SceneManager.LoadScene("Level" + textLevel);
         gameManager.currentScene = "Level" + textLevel;
+        PlayerPrefs.SetInt("Current Level", int.Parse(textLevel));
     }
 
 

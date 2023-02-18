@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,9 @@ public class setup : MonoBehaviour
 
     //Scene parameters
     [SerializeField] private int numberOfTube = 3;
-    [SerializeField] private int numberOfInitLayers = 2;
+    [SerializeField] private int numberOfEmptyTube = 1;
     [SerializeField] private int numberOfMaxLayers = 4;
+    [SerializeField] private int numberOfInitLayers = 2;
     [SerializeField] private int maxColors = 3;
 
     //Tube positions
@@ -29,15 +31,7 @@ public class setup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Tube positions
-        posTubes.Add(new Vector3 ( -0.45f, 1.1f, 0f ));
-        posTubes.Add(new Vector3 ( 0.45f, 1.1f, 0f ));
-        posTubes.Add(new Vector3 ( -0.45f, -0.5f, 0f ));
-        posTubes.Add(new Vector3 ( 0.45f, -0.5f, 0f ));
-        posTubes.Add(new Vector3 ( -1.35f, 1.1f, 0f ));
-        posTubes.Add(new Vector3 ( 1.35f, 1.1f, 0f ));
-        posTubes.Add(new Vector3 ( -1.35f, -0.5f, 0f ));
-        posTubes.Add(new Vector3 ( 1.35f, -0.5f, 0f ));
+        
 
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
         {
@@ -45,6 +39,15 @@ public class setup : MonoBehaviour
         }
         else
         {
+            //Tube positions
+            posTubes.Add(new Vector3(-0.45f, 1.1f, 0f));
+            posTubes.Add(new Vector3(0.45f, 1.1f, 0f));
+            posTubes.Add(new Vector3(-0.45f, -0.5f, 0f));
+            posTubes.Add(new Vector3(0.45f, -0.5f, 0f));
+            posTubes.Add(new Vector3(-1.35f, 1.1f, 0f));
+            posTubes.Add(new Vector3(1.35f, 1.1f, 0f));
+            posTubes.Add(new Vector3(-1.35f, -0.5f, 0f));
+            posTubes.Add(new Vector3(1.35f, -0.5f, 0f));
             initLevel();
         }
     }
@@ -57,14 +60,74 @@ public class setup : MonoBehaviour
             randomCol.Add(gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())]);
         }
 
+        Color colorRob = gameManager.colors[PlayerPrefs.GetInt("Robot Color" + SceneManager.GetActiveScene().name)];
+        robot.GetComponent<robot>().initialise(colorRob);
+
+
+        //We verify that we can change a color with the robot !
+        bool isColorRobotChanged = false;
+        foreach (List<Color> col in levels.getLevelColors()) 
+        {
+            try
+            {
+                if (col[-1] == colorRob)
+                {
+                    isColorRobotChanged = true;
+                    break;
+                }
+            }
+            catch (Exception e) { Debug.Log(e); }
+        }
+        if(!isColorRobotChanged) 
+        {
+            Color switchColor = levels.getLevelColors()[0].LastOrDefault();
+            for (int i = 0; i < levels.getLevelColors().Count; i++)
+            {
+                for(int j = 0; j < levels.getLevelColors()[i].Count; j++)
+                {
+                    try
+                    {
+                        if (levels.getLevelColors()[i][j] == switchColor)
+                        {
+                            levels.getLevelColors()[i][j] = colorRob;
+                        }
+                    }
+                    catch (Exception e) { Debug.Log(e); }
+
+                }
+            }
+        }
+
         for (int i = 0; i < numberOfTube; i++)
         {
             GameObject tube = Instantiate(tubePrefab, tubeParent.transform);
             tube.transform.localPosition = posTubes[i];
-            tube.GetComponent<testTube>().initialise(numberOfMaxLayers, numberOfInitLayers, randomCol);
-        }
+            if(i < numberOfTube - numberOfEmptyTube)
+            {
+                tube.GetComponent<testTube>().initialise(numberOfMaxLayers, levels.getLevelColors()[i]);
 
-        robot.GetComponent<robot>().initialise(randomCol[0]);
+                //Change color according to robot
+                try
+                {
+                    if(tube.GetComponent<testTube>().colorList.Peek() == colorRob)
+                    {
+                        tube.GetComponent<testTube>().removeColorLayer();
+                        tube.GetComponent<testTube>().addColorLayer(colorRob);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Debug.Log(ex);
+                }
+            }
+            else
+            {
+                tube.GetComponent<testTube>().initialise(numberOfMaxLayers, new List<Color>());
+            }
+
+
+        }
+        
         //gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
     }
 
@@ -90,10 +153,8 @@ public class setup : MonoBehaviour
         {
             selectScript.gameObject.transform.GetChild(1).gameObject.SetActive(false);
         }
-        if(gameManager.availableLevels >= 10)
-        {
-            selectScript.gameObject.transform.GetChild(0).gameObject.SetActive(false);
-        }
+        selectScript.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+
 
     }
 
@@ -111,7 +172,7 @@ public class setup : MonoBehaviour
         }
         foreach (Image childImage in levelsButton.GetComponentsInChildren<Image>(true))
         {
-            childImage.color = colorButtons;
+            
             childImage.GetComponentInChildren<Text>(true).text = currentLevel.ToString();
             if (gameManager.availableLevels < currentLevel)
             {
@@ -120,6 +181,10 @@ public class setup : MonoBehaviour
             else
             {
                 childImage.gameObject.SetActive(true);
+                if(currentLevel < maxLevel)
+                {
+                    childImage.color = colorButtons;
+                }
             }
             currentLevel++;
         }
