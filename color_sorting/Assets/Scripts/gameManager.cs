@@ -47,7 +47,7 @@ public class gameManager : MonoBehaviour
         {
             currentState = states.idleFirstAction;
         }
-        colors = new Color[6] { new Color(0.071f, 0.125f, 1.000f, 1), new Color(1.000f, 0.133f, 0.121f, 1), new Color(0.019f, 1.000f, 0.329f, 1), new Color(0.604f, 0.150f, 1.000f, 1), new Color(1f, 0.966f, 0.251f, 1), new Color(0.349f, 1f, 0.925f, 1) };
+        colors = new Color[7] { new Color(0.071f, 0.125f, 1.000f, 1), new Color(1.000f, 0.133f, 0.121f, 1), new Color(0.019f, 1.000f, 0.329f, 1), new Color(0.604f, 0.150f, 1.000f, 1), new Color(1f, 0.966f, 0.251f, 1), new Color(0.349f, 1f, 0.925f, 1), new Color(255f,0.212f,0.776f, 1) };
 
 
         if (!PlayerPrefs.HasKey("Available Levels")) //First play ! 

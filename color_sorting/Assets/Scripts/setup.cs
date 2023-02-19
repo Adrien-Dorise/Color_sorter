@@ -20,6 +20,7 @@ public class setup : MonoBehaviour
     [SerializeField] private int numberOfMaxLayers = 4;
     [SerializeField] private int numberOfInitLayers = 2;
     [SerializeField] private int maxColors = 3;
+    [SerializeField] private int completeTubeToWin = 2;
 
     //Tube positions
     private List<Vector3> posTubes = new List<Vector3>();
@@ -27,14 +28,16 @@ public class setup : MonoBehaviour
 
     //Color
     private Color colorArrow, colorButtons;
+    private GameObject musicManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        
 
+        musicManager = GameObject.Find("Music Manager");
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
         {
+            PlayerPrefs.SetInt("Music Timestamp", 0);
             initMainMenu();
         }
         else
@@ -48,12 +51,14 @@ public class setup : MonoBehaviour
             posTubes.Add(new Vector3(1.35f, 1.1f, 0f));
             posTubes.Add(new Vector3(-1.35f, -0.5f, 0f));
             posTubes.Add(new Vector3(1.35f, -0.5f, 0f));
+            musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt("Music Timestamp");
             initLevel();
         }
     }
 
     private void initLevel()
     {
+
         List<Color> randomCol = new List<Color>();
         for(int i = 0; i < Mathf.Min(numberOfInitLayers,maxColors); i++)
         {
@@ -70,7 +75,7 @@ public class setup : MonoBehaviour
         {
             try
             {
-                if (col[-1] == colorRob)
+                if (col.LastOrDefault() == colorRob)
                 {
                     isColorRobotChanged = true;
                     break;
@@ -78,6 +83,8 @@ public class setup : MonoBehaviour
             }
             catch (Exception e) { Debug.Log(e); }
         }
+
+        //We switch all layers of one color if impossible to find a colors corresponding to robot
         if(!isColorRobotChanged) 
         {
             Color switchColor = levels.getLevelColors()[0].LastOrDefault();
@@ -87,7 +94,11 @@ public class setup : MonoBehaviour
                 {
                     try
                     {
-                        if (levels.getLevelColors()[i][j] == switchColor)
+                        if (levels.getLevelColors()[i][j] == colorRob)
+                        {
+                            levels.getLevelColors()[i][j] = gameManager.colors.LastOrDefault();
+                        }
+                        else if (levels.getLevelColors()[i][j] == switchColor)
                         {
                             levels.getLevelColors()[i][j] = colorRob;
                         }
@@ -98,6 +109,8 @@ public class setup : MonoBehaviour
             }
         }
 
+        //Initialise tubes
+        bool isTubeChangedByRobot = false;
         for (int i = 0; i < numberOfTube; i++)
         {
             GameObject tube = Instantiate(tubePrefab, tubeParent.transform);
@@ -109,10 +122,30 @@ public class setup : MonoBehaviour
                 //Change color according to robot
                 try
                 {
-                    if(tube.GetComponent<testTube>().colorList.Peek() == colorRob)
+                    if(tube.GetComponent<testTube>().colorList.Peek() == colorRob && !isTubeChangedByRobot)
                     {
                         tube.GetComponent<testTube>().removeColorLayer();
-                        tube.GetComponent<testTube>().addColorLayer(colorRob);
+                        /*
+                         * Strategy with randomize switched color
+                        Color newColor = gameManager.colors[UnityEngine.Random.Range(0, maxColors)];
+                        while(newColor == colorRob)
+                        {
+                            newColor = gameManager.colors[UnityEngine.Random.Range(0, maxColors)];
+                        }
+                        */
+                        Color newColor = gameManager.colors[0];
+                        for(int iCol = 0; iCol < maxColors; iCol++)
+                        {
+                            newColor = gameManager.colors[iCol]; 
+                            if(newColor != colorRob)
+                            {
+                                break;
+                            }
+                        }
+
+
+                        tube.GetComponent<testTube>().addColorLayer(newColor);
+                        isTubeChangedByRobot = true;
                     }
                 }
                 catch(Exception ex)

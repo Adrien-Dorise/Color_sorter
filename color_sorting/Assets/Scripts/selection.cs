@@ -10,6 +10,7 @@ public class selection : MonoBehaviour
     [SerializeField] GameObject levelIconPrefab;
     [SerializeField] private GameObject rightArrow, leftArrow;
     [SerializeField] private GameObject setupObject;
+    [SerializeField] private GameObject musicManager;
 
 
     private Color arrowsColor;
@@ -22,6 +23,7 @@ public class selection : MonoBehaviour
     void Start()
     {
         levelPerScreen = 9;
+        musicManager = GameObject.Find("Music Manager");
     }
 
     public void initialise(Color color)
@@ -29,6 +31,7 @@ public class selection : MonoBehaviour
         arrowsColor = color;
         rightArrow.GetComponent<Image>().color = arrowsColor;
         leftArrow.GetComponent<Image>().color = arrowsColor;
+        
     }
 
     public void rightScroll()
@@ -78,6 +81,7 @@ public class selection : MonoBehaviour
 
     public void onReplay()
     {
+        PlayerPrefs.SetInt("Music Timestamp", musicManager.GetComponent<AudioSource>().timeSamples);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
