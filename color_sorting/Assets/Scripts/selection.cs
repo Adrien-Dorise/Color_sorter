@@ -31,7 +31,6 @@ public class selection : MonoBehaviour
         arrowsColor = color;
         rightArrow.GetComponent<Image>().color = arrowsColor;
         leftArrow.GetComponent<Image>().color = arrowsColor;
-        
     }
 
     public void rightScroll()
@@ -90,6 +89,12 @@ public class selection : MonoBehaviour
         SceneManager.LoadScene("Level" + textLevel);
         gameManager.currentScene = "Level" + textLevel;
         PlayerPrefs.SetInt("Current Level", int.Parse(textLevel));
+    }
+
+    public void Reset()
+    {
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene("MainMenu");
     }
 
 

@@ -20,7 +20,7 @@ public class setup : MonoBehaviour
     [SerializeField] private int numberOfMaxLayers = 4;
     [SerializeField] private int numberOfInitLayers = 2;
     [SerializeField] private int maxColors = 3;
-    [SerializeField] private int completeTubeToWin = 2;
+    [SerializeField] public int completeTubeToWin = 2;
 
     //Tube positions
     private List<Vector3> posTubes = new List<Vector3>();
@@ -34,6 +34,15 @@ public class setup : MonoBehaviour
     void Start()
     {
 
+        levels.robotColorPerLevel.Clear();
+        levels.robotColorPerLevel.Add(gameManager.colors[0]);
+        int a = 1;
+        while (PlayerPrefs.HasKey("Robot Color Level" + a))
+        {
+            levels.robotColorPerLevel.Add(gameManager.colors[PlayerPrefs.GetInt("Robot Color Level" + a)]);
+            a++;
+        }
+
         musicManager = GameObject.Find("Music Manager");
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
         {
@@ -45,12 +54,14 @@ public class setup : MonoBehaviour
             //Tube positions
             posTubes.Add(new Vector3(-0.45f, 1.1f, 0f));
             posTubes.Add(new Vector3(0.45f, 1.1f, 0f));
-            posTubes.Add(new Vector3(-0.45f, -0.5f, 0f));
-            posTubes.Add(new Vector3(0.45f, -0.5f, 0f));
+            posTubes.Add(new Vector3(-0.45f, -0.2f, 0f));
+            posTubes.Add(new Vector3(0.45f, -0.2f, 0f));
             posTubes.Add(new Vector3(-1.35f, 1.1f, 0f));
             posTubes.Add(new Vector3(1.35f, 1.1f, 0f));
-            posTubes.Add(new Vector3(-1.35f, -0.5f, 0f));
-            posTubes.Add(new Vector3(1.35f, -0.5f, 0f));
+            posTubes.Add(new Vector3(-1.35f, -0.2f, 0f));
+            posTubes.Add(new Vector3(1.35f, -0.2f, 0f));
+            posTubes.Add(new Vector3(-0.9f, -1.4f, 0f));
+            posTubes.Add(new Vector3(0.9f, -1.4f, 0f));
             musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt("Music Timestamp");
             initLevel();
         }
@@ -65,7 +76,7 @@ public class setup : MonoBehaviour
             randomCol.Add(gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())]);
         }
 
-        Color colorRob = gameManager.colors[PlayerPrefs.GetInt("Robot Color" + SceneManager.GetActiveScene().name)];
+        Color colorRob = levels.robotColorPerLevel[PlayerPrefs.GetInt("Current Level")-1];
         robot.GetComponent<robot>().initialise(colorRob);
 
 
@@ -94,11 +105,11 @@ public class setup : MonoBehaviour
                 {
                     try
                     {
-                        if (levels.getLevelColors()[i][j] == colorRob)
+                        if (levels.getLevelColors()[i][j] == colorRob) //Switch colors similar to robot by the switch color
                         {
-                            levels.getLevelColors()[i][j] = gameManager.colors.LastOrDefault();
+                            levels.getLevelColors()[i][j] = switchColor;
                         }
-                        else if (levels.getLevelColors()[i][j] == switchColor)
+                        else if (levels.getLevelColors()[i][j] == switchColor) 
                         {
                             levels.getLevelColors()[i][j] = colorRob;
                         }
@@ -175,7 +186,7 @@ public class setup : MonoBehaviour
         GameObject quitButton = GameObject.Find("Quit");
 
         //Initialise
-        robot.GetComponent<robot>().initialise(colorArrow);
+        robot.GetComponent<robot>().initialise(levels.robotColorPerLevel.LastOrDefault());
         selectScript.initialise(colorArrow);
         quitButton.GetComponent<Image>().color = colorArrow;
         displayLevelButton(gameManager.availableLevels);
@@ -207,17 +218,18 @@ public class setup : MonoBehaviour
         {
             
             childImage.GetComponentInChildren<Text>(true).text = currentLevel.ToString();
-            if (gameManager.availableLevels < currentLevel)
+            if (gameManager.availableLevels < currentLevel || currentLevel > PlayerPrefs.GetInt("MAXMAX"))
             {
                 childImage.gameObject.SetActive(false);
             }
             else
             {
                 childImage.gameObject.SetActive(true);
-                if(currentLevel < maxLevel)
+                if(currentLevel < PlayerPrefs.GetInt("Available Levels"))
                 {
-                    childImage.color = colorButtons;
+                    childImage.color = levels.robotColorPerLevel[currentLevel];
                 }
+
             }
             currentLevel++;
         }

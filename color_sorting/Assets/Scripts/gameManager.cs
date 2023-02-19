@@ -17,12 +17,13 @@ public class gameManager : MonoBehaviour
     public GameObject memoryTube { get; private set; }
     private GameObject selectedTubeObject;
     private GameObject tubesGroupObject;
+    private SpriteRenderer victorySprite;
     [SerializeField] GameObject pooredLiquidPrefab;
     private robot robotScript;
-
     private audio audioManager;
 
-
+    private setup setupScript;
+    private int completedTube;
 
 
     //Pooring animation
@@ -39,6 +40,7 @@ public class gameManager : MonoBehaviour
     private void Awake()
     {
         currentScene = "MainMenu";
+        completedTube = 0;
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
         {
             currentState = states.mainMenu;
@@ -47,15 +49,23 @@ public class gameManager : MonoBehaviour
         {
             currentState = states.idleFirstAction;
         }
-        colors = new Color[7] { new Color(0.071f, 0.125f, 1.000f, 1), new Color(1.000f, 0.133f, 0.121f, 1), new Color(0.019f, 1.000f, 0.329f, 1), new Color(0.604f, 0.150f, 1.000f, 1), new Color(1f, 0.966f, 0.251f, 1), new Color(0.349f, 1f, 0.925f, 1), new Color(255f,0.212f,0.776f, 1) };
+        colors = new Color[8] { 
+            new Color(0.071f, 0.125f, 1.000f, 1), //Blue
+            new Color(255f,0.212f,0.776f, 1), //Pink
+            new Color(0.019f, 1.000f, 0.329f, 1), //Green
+            new Color(0.604f, 0.150f, 1.000f, 1), //Purple
+            new Color(1f, 0.966f, 0.251f, 1), //Cyan
+            new Color(0.349f, 1f, 0.925f, 1), //Yellow
+            new Color(1.000f, 0.133f, 0.121f, 1), //Red
+            new Color(1.000f, 0.216f, 0.0f, 1) //Red
+        };
 
 
         if (!PlayerPrefs.HasKey("Available Levels")) //First play ! 
         {
-            int colorInt = UnityEngine.Random.Range(0, 2);
             PlayerPrefs.SetInt("Available Levels", 1);
-            PlayerPrefs.SetInt("Robot color Level0", colorInt);
-            PlayerPrefs.SetInt("Robot color Level1", colorInt);
+            PlayerPrefs.SetInt("Robot Color Level0", 0);
+            PlayerPrefs.SetInt("MAXMAX", 6);
         }
         availableLevels = PlayerPrefs.GetInt("Available Levels");
 
@@ -68,6 +78,11 @@ public class gameManager : MonoBehaviour
         tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
+        setupScript = GameObject.Find("Setup").GetComponent<setup>();
+        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("MainMenu"))
+        {
+            victorySprite = GameObject.Find("Victory").GetComponent<SpriteRenderer>();
+        }
         memoryTube = null;
     }
 
@@ -362,9 +377,50 @@ public class gameManager : MonoBehaviour
                 break;
         }
     }
+    
+    
+    public void newTubeComplete()
+    {
+        completedTube++;
+        audioManager.GetComponent<audio>().tubeCompleteSound();
+        StartCoroutine(robotScript.happyEyes());
+    }
+
+    private IEnumerator victory()
+    {
+        audioManager.GetComponent<audio>().victorySound();
+        StartCoroutine(robotScript.heartEyes());
+        victorySprite.enabled = true;
+
+        if(PlayerPrefs.GetInt("Current Level") >= PlayerPrefs.GetInt("Available Levels")) //Player unlock a new level!
+        {
+            int level = PlayerPrefs.GetInt("Current Level") + 1;
+            PlayerPrefs.SetInt("Available Levels", level);
+        }
+
+        int savedColor = 0;
+        foreach(Color color in gameManager.colors)
+        {
+            if(robotScript.eyeColor == color)
+            {
+                break;
+            }
+            savedColor++;
+        }
+        PlayerPrefs.SetInt("Robot Color Level" + PlayerPrefs.GetInt("Current Level"), savedColor);
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("MainMenu");
+
+    }
+
 
     private void Update()
     {
-        Debug.Log(currentState);
+        //Debug.Log(levels.robotColorPerLevel.Count + " " + levels.robotColorPerLevel.LastOrDefault());
+        //Debug.Log(currentState);
+        if(completedTube >= setupScript.completeTubeToWin)
+        {
+            StartCoroutine(victory());
+        }
     }
 }

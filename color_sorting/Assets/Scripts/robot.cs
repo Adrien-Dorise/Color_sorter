@@ -125,6 +125,19 @@ public class robot : MonoBehaviour
         eyesObject.transform.localPosition = Vector3.zero;
     }
 
+    public IEnumerator happyEyes()
+    {
+        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
+        yield return new WaitForSeconds(2f);
+        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+    }
+
+    public IEnumerator heartEyes()
+    {
+        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHeart;
+        yield return new WaitForSeconds(2f);
+        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+    }
 
     public void onClick()
     {

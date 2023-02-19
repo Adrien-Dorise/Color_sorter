@@ -128,6 +128,11 @@ public class testTube : MonoBehaviour
         {
             isCmplt = false;
         }
+
+        if(isCmplt)
+        {
+            managerScript.newTubeComplete();
+        }
         return isCmplt;
     }
 
