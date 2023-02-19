@@ -8,11 +8,18 @@ public class levels : MonoBehaviour
 {
     static public List<Color> robotColorPerLevel = new List<Color>();
 
+    static public List<List<Color>> testLevel = new List<List<Color>>()
+    {
+        new List<Color>{ gameManager.colors[2], gameManager.colors[1], gameManager.colors[1] },
+        new List<Color>{gameManager.colors[1], gameManager.colors[1],},
+    };
+    
     static public List<List<Color>> Level1 = new List<List<Color>>()
     {
-        new List<Color>{ gameManager.colors[0], gameManager.colors[1], gameManager.colors[3] },
-        new List<Color>{gameManager.colors[3], gameManager.colors[2],},
-
+        new List<Color>{ gameManager.colors[0], gameManager.colors[1], gameManager.colors[3], gameManager.colors[1] },
+        new List<Color>{gameManager.colors[1], gameManager.colors[0], gameManager.colors[2], gameManager.colors[3]},
+        new List<Color>{gameManager.colors[0], gameManager.colors[1], gameManager.colors[3], gameManager.colors[2]},
+        new List<Color>{gameManager.colors[2], gameManager.colors[0], gameManager.colors[2], gameManager.colors[3]},
     };
 
     static List<List<Color>> Level2 = new List<List<Color>>()
@@ -27,7 +34,7 @@ public class levels : MonoBehaviour
         switch (SceneManager.GetActiveScene().name) 
         {
             case "testScene":
-                return Level1;
+                return testLevel;
                 break;
             case "Level1":
                 return Level1;
