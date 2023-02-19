@@ -69,7 +69,15 @@ public class levels : MonoBehaviour
         new List<Color>{gameManager.colors[3], gameManager.colors[1], gameManager.colors[7], gameManager.colors[6]},
         new List<Color>{gameManager.colors[5], gameManager.colors[0], gameManager.colors[6], gameManager.colors[3]},
     };
-    
+
+    static public List<List<Color>> Level6 = new List<List<Color>>()
+    {
+        new List<Color>{gameManager.colors[0], gameManager.colors[1], gameManager.colors[3], gameManager.colors[1] },
+        new List<Color>{gameManager.colors[1], gameManager.colors[0], gameManager.colors[2], gameManager.colors[3]},
+        new List<Color>{gameManager.colors[0], gameManager.colors[1], gameManager.colors[3], gameManager.colors[2]},
+        new List<Color>{gameManager.colors[2], gameManager.colors[0], gameManager.colors[2], gameManager.colors[3]},
+    };
+
 
     static public List<List<Color>> getLevelColors()
     {
@@ -94,10 +102,11 @@ public class levels : MonoBehaviour
             case "Level5":
                 return Level5;
                 break;
-            /*
+            
             case "Level6":
                 return Level6;
                 break;
+            /*
             case "Level7":
                 return Level7;
                 break;
