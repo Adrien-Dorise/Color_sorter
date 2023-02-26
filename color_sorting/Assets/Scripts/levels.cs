@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class levels : MonoBehaviour
 {
+    static public bool Debug = true;
     static public List<Color> robotColorPerLevel = new List<Color>();
 
 
@@ -60,13 +61,13 @@ public class levels : MonoBehaviour
     
     static public List<List<Color>> Level5 = new List<List<Color>>()
     {
-        new List<Color>{gameManager.colors[7], gameManager.colors[3], gameManager.colors[5], gameManager.colors[2] },
-        new List<Color>{gameManager.colors[5], gameManager.colors[1], gameManager.colors[5], gameManager.colors[3]},
+        new List<Color>{gameManager.colors[7], gameManager.colors[0], gameManager.colors[5], gameManager.colors[2]},
+        new List<Color>{gameManager.colors[5], gameManager.colors[1], gameManager.colors[4], gameManager.colors[3]},
         new List<Color>{gameManager.colors[3], gameManager.colors[2], gameManager.colors[3], gameManager.colors[5]},
         new List<Color>{gameManager.colors[1], gameManager.colors[1], gameManager.colors[2], gameManager.colors[7]},
         new List<Color>{gameManager.colors[6], gameManager.colors[2], gameManager.colors[0], gameManager.colors[6]},
         new List<Color>{gameManager.colors[4], gameManager.colors[0], gameManager.colors[7], gameManager.colors[4]},
-        new List<Color>{gameManager.colors[3], gameManager.colors[1], gameManager.colors[7], gameManager.colors[6]},
+        new List<Color>{gameManager.colors[4], gameManager.colors[1], gameManager.colors[7], gameManager.colors[6]},
         new List<Color>{gameManager.colors[5], gameManager.colors[0], gameManager.colors[6], gameManager.colors[3]},
     };
 

@@ -76,7 +76,15 @@ public class setup : MonoBehaviour
             randomCol.Add(gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())]);
         }
 
-        Color colorRob = levels.robotColorPerLevel[PlayerPrefs.GetInt("Current Level")-1];
+        Color colorRob;
+        if (levels.Debug)
+        {
+            colorRob = gameManager.colors[0]; 
+        }
+        else
+        {
+            colorRob = levels.robotColorPerLevel[PlayerPrefs.GetInt("Current Level")-1];
+        }
         robot.GetComponent<robot>().initialise(colorRob);
 
 
@@ -227,7 +235,14 @@ public class setup : MonoBehaviour
                 childImage.gameObject.SetActive(true);
                 if(currentLevel < PlayerPrefs.GetInt("Available Levels"))
                 {
-                    childImage.color = levels.robotColorPerLevel[currentLevel];
+                    if(levels.Debug)
+                    {
+                        childImage.color = gameManager.colors[0];
+                    }
+                    else
+                    {
+                        childImage.color = levels.robotColorPerLevel[currentLevel];
+                    }
                 }
 
             }

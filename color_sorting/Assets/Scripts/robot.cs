@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class robot : MonoBehaviour
 {
@@ -13,9 +16,14 @@ public class robot : MonoBehaviour
     public Color eyeColor;
 
     //Eye tracking
-    private bool areEyesTracked;
-    private float yOffsetMax = 0.015f, xOffsetMax = 0.028f;
-    [SerializeField] private float xBoost, yBoost;
+    private bool areEyesTracked, areEyesIdling;
+    private float yOffsetMax, xOffsetMax;
+    [SerializeField] private float xBoost, yBoost, eyesSpeed;
+    private List<float> eyesIdleTempos;
+    private List<Vector3> eyesPositions;
+    [SerializeField] private float eyeTempo;
+    [SerializeField] private Vector3 eyePos;
+    
 
     //Robot scaling
     bool isIdling;
@@ -36,6 +44,17 @@ public class robot : MonoBehaviour
         yBoost = 2f;
         yOffsetMax = 0.015f;
         xOffsetMax = 0.028f;
+        eyesSpeed = 0.2f;
+        eyesIdleTempos = new List<float> { 3.5f, 1.5f, 0.5f, 1f };
+        eyesPositions = new List<Vector3> { Vector3.zero,
+                                            new Vector3(xOffsetMax, yOffsetMax,0),
+                                            new Vector3(-xOffsetMax, -yOffsetMax,0),
+                                            new Vector3(-xOffsetMax, yOffsetMax,0),
+                                            new Vector3(xOffsetMax, -yOffsetMax,0),
+                                            new Vector3(xOffsetMax, 0,0),
+                                            new Vector3(0, yOffsetMax,0),
+                                            new Vector3(xOffsetMax, yOffsetMax,0),
+                                            new Vector3(xOffsetMax, yOffsetMax,0)};
 
         idleSpeed = 0.0075f;
         scalingTempo = 0.005f;
@@ -44,6 +63,7 @@ public class robot : MonoBehaviour
         startScale = 9f;
 
         isIdling = false;
+        areEyesIdling = false;
 
 
         
@@ -122,7 +142,23 @@ public class robot : MonoBehaviour
 
     private void eyeIdle()
     {
-        eyesObject.transform.localPosition = Vector3.zero;
+        if(!areEyesIdling)
+        {
+            areEyesIdling = true;
+            eyeTempo = eyesIdleTempos[UnityEngine.Random.Range(0, eyesIdleTempos.Count)];
+            eyePos = eyesPositions[UnityEngine.Random.Range(0, eyesPositions.Count)];
+            StartCoroutine(eyeTempoFunc());            
+        }
+        if(Mathf.Abs((eyePos - eyesObject.transform.localPosition).magnitude) >= 0.01f)
+        {
+            eyesObject.transform.Translate((eyePos - eyesObject.transform.localPosition).normalized * eyesSpeed * Time.fixedDeltaTime);
+        }
+    }
+
+    private IEnumerator eyeTempoFunc()
+    {
+            yield return new WaitForSeconds(eyeTempo);
+            areEyesIdling = false;
     }
 
     public IEnumerator happyEyes()
@@ -144,11 +180,14 @@ public class robot : MonoBehaviour
         managerScript.gameState(gameManager.actions.clickedRobot, this.gameObject);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if(managerScript.memoryTube != null)
         {
             areEyesTracked = true;
+            areEyesIdling = false;
+            //try { StopCoroutine("eyeTempoFunc"); }
+            //catch (Exception e) { Debug.Log(e); }
             eyeTracking(managerScript.memoryTube.transform);
         }
         else
@@ -162,5 +201,7 @@ public class robot : MonoBehaviour
             StartCoroutine(robotIdle());
         }
     }
+
+
 
 }

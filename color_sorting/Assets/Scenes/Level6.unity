@@ -138,6 +138,14 @@ PrefabInstance:
       propertyPath: numberOfEmptyTube
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 970054555433825741, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: numberOfMaxLayers
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054555433825741, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: numberOfInitLayers
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 970054557359416072, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
       propertyPath: m_RootOrder
       value: 0
