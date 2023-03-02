@@ -15,7 +15,7 @@ public class robot : MonoBehaviour
     public bool isIdle;
     public Color eyeColor;
 
-    //Eye tracking
+    //Eye animation
     private bool areEyesTracked, areEyesIdling;
     private float yOffsetMax, xOffsetMax;
     [SerializeField] private float xBoost, yBoost, eyesSpeed;
@@ -23,6 +23,8 @@ public class robot : MonoBehaviour
     private List<Vector3> eyesPositions;
     [SerializeField] private float eyeTempo;
     [SerializeField] private Vector3 eyePos;
+    private IEnumerator eyeRoutine;
+    
     
 
     //Robot scaling
@@ -50,7 +52,7 @@ public class robot : MonoBehaviour
                                             new Vector3(xOffsetMax, yOffsetMax,0),
                                             new Vector3(-xOffsetMax, -yOffsetMax,0),
                                             new Vector3(-xOffsetMax, yOffsetMax,0),
-                                            new Vector3(xOffsetMax, -yOffsetMax,0),
+                                            //new Vector3(xOffsetMax, -yOffsetMax,0),
                                             new Vector3(xOffsetMax, 0,0),
                                             new Vector3(0, yOffsetMax,0),
                                             new Vector3(xOffsetMax, yOffsetMax,0),
@@ -135,20 +137,23 @@ public class robot : MonoBehaviour
     private void eyeTracking(Transform transf)
     {
         Vector3 deltaPos = new Vector3(transf.position.x * xBoost, transf.position.y * yBoost, 0f) - eyesObject.transform.position;
-        
-        Debug.DrawRay(eyesObject.transform.localPosition, deltaPos.normalized, Color.red);
-        eyesObject.transform.localPosition = Vector3.zero + (deltaPos.normalized);
+        deltaPos = new Vector3(deltaPos.normalized.x, deltaPos.normalized.y, 0f); //Removed z component
+        Debug.DrawRay(eyesObject.transform.localPosition, deltaPos, Color.red);
+        eyesObject.transform.localPosition = Vector3.zero + deltaPos;
     }
 
     private void eyeIdle()
     {
+
         if(!areEyesIdling)
         {
             areEyesIdling = true;
             eyeTempo = eyesIdleTempos[UnityEngine.Random.Range(0, eyesIdleTempos.Count)];
             eyePos = eyesPositions[UnityEngine.Random.Range(0, eyesPositions.Count)];
-            StartCoroutine(eyeTempoFunc());            
+            eyeRoutine = eyeTempoFunc();
+            StartCoroutine(eyeRoutine);            
         }
+
         if(Mathf.Abs((eyePos - eyesObject.transform.localPosition).magnitude) >= 0.01f)
         {
             eyesObject.transform.Translate((eyePos - eyesObject.transform.localPosition).normalized * eyesSpeed * Time.fixedDeltaTime);
@@ -184,10 +189,13 @@ public class robot : MonoBehaviour
     {
         if(managerScript.memoryTube != null)
         {
+            if(areEyesIdling)
+            {
+                try { StopCoroutine(eyeRoutine); }
+                catch (Exception e) { Debug.Log(e); }
+            }
             areEyesTracked = true;
             areEyesIdling = false;
-            //try { StopCoroutine("eyeTempoFunc"); }
-            //catch (Exception e) { Debug.Log(e); }
             eyeTracking(managerScript.memoryTube.transform);
         }
         else
