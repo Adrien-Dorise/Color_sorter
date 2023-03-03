@@ -16,7 +16,7 @@ public class robot : MonoBehaviour
     public Color eyeColor;
 
     //Eye animation
-    private bool areEyesTracked, areEyesIdling;
+    private bool areEyesTracked, areEyesIdling, areEyesAnimated;
     private float yOffsetMax, xOffsetMax;
     [SerializeField] private float xBoost, yBoost, eyesSpeed;
     private List<float> eyesIdleTempos;
@@ -24,7 +24,8 @@ public class robot : MonoBehaviour
     [SerializeField] private float eyeTempo;
     [SerializeField] private Vector3 eyePos;
     private IEnumerator eyeRoutine;
-    
+    private int eyesIdleLoopMax, eyesIdleLoopCurrent;
+    private int[] eyesIdleLoopRange;
     
 
     //Robot scaling
@@ -47,7 +48,7 @@ public class robot : MonoBehaviour
         yOffsetMax = 0.015f;
         xOffsetMax = 0.028f;
         eyesSpeed = 0.2f;
-        eyesIdleTempos = new List<float> { 3.5f, 1.5f, 0.5f, 1f };
+        eyesIdleTempos = new List<float> { 3.5f , 3.5f, 3f, 2.5f, 2.5f, 2f, 1.5f, 1f, 0.5f };
         eyesPositions = new List<Vector3> { Vector3.zero,
                                             new Vector3(xOffsetMax, yOffsetMax,0),
                                             new Vector3(-xOffsetMax, -yOffsetMax,0),
@@ -63,10 +64,14 @@ public class robot : MonoBehaviour
         scalingSpeed = 0.05f;
         endScale = 10f;
         startScale = 9f;
+        eyesIdleLoopRange = new int[2] {5,15};
 
         isIdling = false;
         areEyesIdling = false;
-
+        areEyesAnimated = false;
+        areEyesTracked = false;
+        eyesIdleLoopMax = 0;
+        eyesIdleLoopCurrent = 0;
 
         
     }
@@ -144,27 +149,82 @@ public class robot : MonoBehaviour
 
     private void eyeIdle()
     {
-
-        if(!areEyesIdling)
+        if(!areEyesIdling && !areEyesAnimated)
         {
             areEyesIdling = true;
+            eyesIdleLoopCurrent += 1;
             eyeTempo = eyesIdleTempos[UnityEngine.Random.Range(0, eyesIdleTempos.Count)];
             eyePos = eyesPositions[UnityEngine.Random.Range(0, eyesPositions.Count)];
-            eyeRoutine = eyeTempoFunc();
+            eyeRoutine = eyeIdleTempoFunc(eyeTempo);
             StartCoroutine(eyeRoutine);            
+        }
+        
+        if(!areEyesAnimated && eyesIdleLoopCurrent >= eyesIdleLoopMax)
+        {
+            StopCoroutine(eyeRoutine);
+            areEyesIdling = false;
+            areEyesAnimated = true;
+            eyesIdleLoopCurrent = 0;
+            eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);
+            switch(UnityEngine.Random.Range(0,2))
+            {
+                case 0:
+                    dubiousEyeAnimation();
+                    break;
+
+                case 1:
+                    sarcasticEyeAnimation();
+                    break;
+            }
+
         }
 
         if(Mathf.Abs((eyePos - eyesObject.transform.localPosition).magnitude) >= 0.01f)
         {
             eyesObject.transform.Translate((eyePos - eyesObject.transform.localPosition).normalized * eyesSpeed * Time.fixedDeltaTime);
         }
+
     }
 
-    private IEnumerator eyeTempoFunc()
+    private IEnumerator eyeIdleTempoFunc(float tempo)
     {
-            yield return new WaitForSeconds(eyeTempo);
+            yield return new WaitForSeconds(tempo);
             areEyesIdling = false;
     }
+    
+
+    private void dubiousEyeAnimation()
+    {
+        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesDubious;
+        eyePos = Vector3.zero;
+        eyeRoutine = eyeDubiousTempo(2f);
+        StartCoroutine(eyeRoutine);
+    }
+
+    private IEnumerator eyeDubiousTempo(float tempo)
+    {
+            yield return new WaitForSeconds(tempo);
+            areEyesAnimated = false;
+            eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+    }
+
+
+    private void sarcasticEyeAnimation()
+    {
+        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
+        eyePos = Vector3.zero;
+        eyeRoutine = eyeSarcasticTempo(2f);
+        StartCoroutine(eyeRoutine);
+    }
+
+    
+    private IEnumerator eyeSarcasticTempo(float tempo)
+    {
+            yield return new WaitForSeconds(tempo);
+            areEyesAnimated = false;
+            eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+    }
+
 
     public IEnumerator happyEyes()
     {
@@ -200,7 +260,12 @@ public class robot : MonoBehaviour
         }
         else
         {
-            areEyesTracked = false;
+            if(areEyesTracked) //Case where we just finished to track a test tube
+            {
+                eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]); 
+                areEyesTracked = false;
+                areEyesAnimated = false;
+            }
             eyeIdle();
         }
 
