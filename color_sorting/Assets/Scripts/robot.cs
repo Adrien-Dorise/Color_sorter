@@ -64,13 +64,13 @@ public class robot : MonoBehaviour
         scalingSpeed = 0.05f;
         endScale = 10f;
         startScale = 9f;
-        eyesIdleLoopRange = new int[2] {5,15};
+        eyesIdleLoopRange = new int[2] {7,15};
 
         isIdling = false;
         areEyesIdling = false;
         areEyesAnimated = false;
         areEyesTracked = false;
-        eyesIdleLoopMax = 0;
+        eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);;
         eyesIdleLoopCurrent = 0;
 
         
@@ -149,7 +149,7 @@ public class robot : MonoBehaviour
 
     private void eyeIdle()
     {
-        if(!areEyesIdling && !areEyesAnimated)
+        if(!areEyesIdling && !areEyesAnimated) //Starting new Idle position (after deselecting tube or last idle animation terminated)
         {
             areEyesIdling = true;
             eyesIdleLoopCurrent += 1;
@@ -159,7 +159,7 @@ public class robot : MonoBehaviour
             StartCoroutine(eyeRoutine);            
         }
         
-        if(!areEyesAnimated && eyesIdleLoopCurrent >= eyesIdleLoopMax)
+        if(!areEyesAnimated && eyesIdleLoopCurrent >= eyesIdleLoopMax) //Starting specific eye animation (ex: dubious, sarcastic...)
         {
             StopCoroutine(eyeRoutine);
             areEyesIdling = false;
@@ -179,7 +179,8 @@ public class robot : MonoBehaviour
 
         }
 
-        if(Mathf.Abs((eyePos - eyesObject.transform.localPosition).magnitude) >= 0.01f)
+        //Debug.Log( eyesObject.transform.localPosition + " move to: " + eyePos);
+        if(Mathf.Abs((eyePos - eyesObject.transform.localPosition).magnitude) >= 0.005f) //Moving eyes accordingly to eyePos variable
         {
             eyesObject.transform.Translate((eyePos - eyesObject.transform.localPosition).normalized * eyesSpeed * Time.fixedDeltaTime);
         }
@@ -213,18 +214,42 @@ public class robot : MonoBehaviour
     {
         eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
         eyePos = Vector3.zero;
-        eyeRoutine = eyeSarcasticTempo(2f);
-        StartCoroutine(eyeRoutine);
+        //eyeRoutine = eyeSarcasticTempo(2f);
+        StartCoroutine(eyeSarcasticTempo(0.1f, 0, 1));
     }
 
+    //Animation function for fast moving eyes.
+    //Tempo is teh time the eys stay in fixed position
+    //State is the number of time this animation has been playing
+    //Direction is the next direction of moving eyes (1 or -1)
+    private IEnumerator eyeSarcasticTempo(float tempo, int state, int direction)
+    {
+        if(areEyesAnimated == true) //We verify that we did not enter another state while doing this animation
+        {
+            if(state <= 11)
+            {
+                yield return new WaitForSeconds(tempo);
+                eyePos = new Vector3(0f, direction * (yOffsetMax/3),0f);
+                state += 1;
+                StartCoroutine(eyeSarcasticTempo(tempo, state,direction*=-1));
+            }
+            else
+            {
+                eyePos = Vector3.zero;
+                areEyesAnimated = false;
+                eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+            }
+        }
+    }
     
+    /*
     private IEnumerator eyeSarcasticTempo(float tempo)
     {
             yield return new WaitForSeconds(tempo);
             areEyesAnimated = false;
             eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
     }
-
+*/
 
     public IEnumerator happyEyes()
     {
@@ -256,6 +281,7 @@ public class robot : MonoBehaviour
             }
             areEyesTracked = true;
             areEyesIdling = false;
+            areEyesAnimated = false;
             eyeTracking(managerScript.memoryTube.transform);
         }
         else
