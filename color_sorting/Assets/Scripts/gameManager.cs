@@ -7,6 +7,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Class <c>gameManager</c> is to attach to the game manager gameObject of each scenes.
+/// This class manages the state machine of the game (more details in the state machine file).
+/// It is this class that is used to update the game after each player's interaction with the game
+/// </summary>
 public class gameManager : MonoBehaviour
 {
 
@@ -87,7 +92,13 @@ public class gameManager : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Method <c>areSameolor</c> checks if two tubes's top layers are identical
+    /// It is used to verify is it is possible to poor one tube into the other. 
+    /// </summary>
+    /// <param name="tube1"> First tube to check </param>
+    /// <param name="tube2"> Second tube to check </param>
+    /// <returns> True if same color or at least one tube empty, false otherwise </returns>
     private bool areSameColor(GameObject tube1, GameObject tube2)
     {
         if(tube1.GetComponent<testTube>().colorList.Count == 0 || tube2.GetComponent<testTube>().colorList.Count == 0)
@@ -102,8 +113,12 @@ public class gameManager : MonoBehaviour
 
 
 
-    
-
+    /// <summary>
+    /// Method <c>pooring</c> tries to poor the saved tube into a selected tube
+    /// To poor a tube into another one, we check: select tube not empty + tubes top color different + poored tube not empty.
+    /// The animation is handled by pooringAnimation() IEnumerator
+    /// </summary>
+    /// <param name="obj"> Tube that receive the color layer </param>
     private void pooring(GameObject obj)
     {
         bool stillNotMax = obj.GetComponent<testTube>().colorList.Count < obj.GetComponent<testTube>().maxLiquid;
@@ -183,6 +198,10 @@ public class gameManager : MonoBehaviour
         }
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
     }
+
+
+    //!!! State machine !!! 
+    // See diagram for state info
 
     private IEnumerator waitState(float time, states newState)
     {

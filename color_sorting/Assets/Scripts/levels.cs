@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+/// <summary>
+/// Class <c>levels</c> manages each level design
+/// The design are stored in a color array that has to be manually filled.
+/// The setup variables has to be adjusted with the size of the array.
+/// </summary>
 public class levels : MonoBehaviour
 {
     static public bool Debug = true;

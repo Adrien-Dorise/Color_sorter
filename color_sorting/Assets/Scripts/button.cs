@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class <c>button</c> 
+/// </summary>
 public class button : MonoBehaviour
 {
 

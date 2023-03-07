@@ -7,6 +7,14 @@ using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
+
+/// <summary>
+/// Class <c>setup</c> to attach to setup gameObject of each scene.
+/// This class set the whole scene depending on what is stored in PlayerPrefs.
+/// For main menu, it sets the necessary buttons depending on unlocked levels.
+/// For level, it sets the correct number of tubes, with appropriate color layers.
+/// </summary>
 public class setup : MonoBehaviour
 {
     //Init objects
@@ -15,6 +23,7 @@ public class setup : MonoBehaviour
     [SerializeField] private GameObject robot;
 
     //Scene parameters
+    //This is to be set in editor according to the level disposition.
     [SerializeField] private int numberOfTube = 3;
     [SerializeField] private int numberOfEmptyTube = 1;
     [SerializeField] private int numberOfMaxLayers = 4;
@@ -23,7 +32,7 @@ public class setup : MonoBehaviour
     [SerializeField] public int completeTubeToWin = 2;
 
     //Tube positions
-    private List<Vector3> posTubes = new List<Vector3>();
+    private List<Vector3> posTubes = new List<Vector3>(); //To set in start func: Possible position for each tube on the scene.
 
 
     //Color
@@ -33,7 +42,6 @@ public class setup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         levels.robotColorPerLevel.Clear();
         levels.robotColorPerLevel.Add(gameManager.colors[0]);
         int a = 1;
@@ -44,12 +52,13 @@ public class setup : MonoBehaviour
         }
 
         musicManager = GameObject.Find("Music Manager");
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
+
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu")) //If we are in the main menu screen.
         {
             PlayerPrefs.SetInt("Music Timestamp", 0);
             initMainMenu();
         }
-        else
+        else //If we are in a level scene
         {
             //Tube positions
             posTubes.Add(new Vector3(-0.45f, 1.1f, 0f));
@@ -67,6 +76,14 @@ public class setup : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Method <c>initLevel</c> Initialise a level screen after loading
+    /// First, the robot color is loaded according to saved in "Current Level" PlayerPrefs 
+    /// Next, the tube are spawned and set in the right position.
+    /// Next, the tubes are filled according to the setup written in levels script.
+    /// Also, for now, one of the top color of the tube is modified accordingly to the robot color. If no change is possible, we switch all colors value to fit the robot: The level stays the same, but the colors are different.
+    /// </summary>
     private void initLevel()
     {
 
@@ -183,6 +200,12 @@ public class setup : MonoBehaviour
         //gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
     }
 
+
+    /// <summary>
+    /// Method <c>initMainMeny</c> Initialise the main screen after loading.
+    /// Set all level + quit + arrows buttons and colors.
+    /// The menu start at the last available level. In this setup, only left arrow is available if number of availabe levels > 9
+    /// </summary>
     private void initMainMenu()
     {
         //Find components
@@ -210,44 +233,5 @@ public class setup : MonoBehaviour
 
     }
 
-    public void displayLevelButton(int maxLevel)
-    {
-        GameObject levelsButton = GameObject.Find("Level Buttons");
-        int currentLevel = maxLevel;
-        if(currentLevel >= 10)
-        {
-            currentLevel = currentLevel - (currentLevel % 9) + 1;
-        }
-        else
-        {
-            currentLevel = 1;
-        }
-        foreach (Image childImage in levelsButton.GetComponentsInChildren<Image>(true))
-        {
-            
-            childImage.GetComponentInChildren<Text>(true).text = currentLevel.ToString();
-            if (gameManager.availableLevels < currentLevel || currentLevel > PlayerPrefs.GetInt("MAXMAX"))
-            {
-                childImage.gameObject.SetActive(false);
-            }
-            else
-            {
-                childImage.gameObject.SetActive(true);
-                if(currentLevel < PlayerPrefs.GetInt("Available Levels"))
-                {
-                    if(levels.Debug)
-                    {
-                        childImage.color = gameManager.colors[0];
-                    }
-                    else
-                    {
-                        childImage.color = levels.robotColorPerLevel[currentLevel];
-                    }
-                }
 
-            }
-            currentLevel++;
-        }
-    }
-
-}
+    
