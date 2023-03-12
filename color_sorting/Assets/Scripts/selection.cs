@@ -17,7 +17,7 @@ public class selection : MonoBehaviour
 
     private Color arrowsColor;
 
-    public int currentMaxLevel;
+    public int maxDisplayedLevel; //Max level on the displayed icons in the selection screen
     public string textLevel = "1"; //"1" is for init, do not touch
     private int levelPerScreen;
 
@@ -46,18 +46,18 @@ public class selection : MonoBehaviour
     public void rightScroll()
     {
         leftArrow.SetActive(true);
-        if(currentMaxLevel + levelPerScreen*2 >= gameManager.availableLevels)
+        if(maxDisplayedLevel + levelPerScreen*2 >= PlayerPrefs.GetInt(save.availableLevels))
         {
-            currentMaxLevel = gameManager.availableLevels;
+            maxDisplayedLevel = PlayerPrefs.GetInt(save.availableLevels);
             rightArrow.SetActive(false);
         }
         else
         {
             rightArrow.SetActive(true); 
-            currentMaxLevel = currentMaxLevel + levelPerScreen;
+            maxDisplayedLevel = maxDisplayedLevel + levelPerScreen;
         }
 
-        displayLevelButton(currentMaxLevel);
+        displayLevelButton(maxDisplayedLevel);
 
     }
 
@@ -68,18 +68,18 @@ public class selection : MonoBehaviour
     public void leftScroll()
     {
         rightArrow.SetActive(true);
-        if (currentMaxLevel - levelPerScreen < 10)
+        if (maxDisplayedLevel - levelPerScreen < 10)
         {
-            currentMaxLevel = 1;
+            maxDisplayedLevel = 1;
             leftArrow.SetActive(false);
         }
         else
         {
-            currentMaxLevel = currentMaxLevel - levelPerScreen;
+            maxDisplayedLevel = maxDisplayedLevel - levelPerScreen;
             leftArrow.SetActive(true);
         }
 
-        displayLevelButton(currentMaxLevel);
+        displayLevelButton(maxDisplayedLevel);
     }
 
 
@@ -151,7 +151,7 @@ public class selection : MonoBehaviour
         {
             
             childImage.GetComponentInChildren<Text>(true).text = currentLevel.ToString();
-            if (gameManager.availableLevels < currentLevel || currentLevel > PlayerPrefs.GetInt("MAXMAX"))
+            if (PlayerPrefs.GetInt(save.availableLevels) < currentLevel || currentLevel > save.maxAvailableLevels)
             {
                 childImage.gameObject.SetActive(false);
             }
@@ -160,7 +160,7 @@ public class selection : MonoBehaviour
                 childImage.gameObject.SetActive(true);
                 if(currentLevel < PlayerPrefs.GetInt("Available Levels"))
                 {
-                    if(levels.Debug)
+                    if(save.debugDev)
                     {
                         childImage.color = gameManager.colors[0];
                     }
@@ -178,4 +178,3 @@ public class selection : MonoBehaviour
 }
 
 
-}

@@ -14,9 +14,9 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class gameManager : MonoBehaviour
 {
-
+    
     public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, mainMenu }
-    public enum actions { clickedTube, clickedRobot, clickedBackround, pooring }
+    public enum actions { clickedTube, clickedRobot, clickedBackround, pooring, finishWait }
     static public states currentState { get; private set; }
     static public Color[] colors;
     public GameObject memoryTube { get; private set; }
@@ -31,6 +31,7 @@ public class gameManager : MonoBehaviour
     private int completedTube;
 
 
+
     //Pooring animation
     [SerializeField] private float pooringTime = 0.8f;
     [SerializeField] private float translationTime = 1f;
@@ -38,8 +39,9 @@ public class gameManager : MonoBehaviour
     private float yOffset = 0.5f;
 
 
-    static public int availableLevels { get; private set; }
     static public string currentScene { get; set; }
+
+
 
 
     private void Awake()
@@ -66,13 +68,24 @@ public class gameManager : MonoBehaviour
         };
 
 
-        if (!PlayerPrefs.HasKey("Available Levels")) //First play ! 
+        if (!PlayerPrefs.HasKey(save.availableLevels)) //First play ! 
         {
-            PlayerPrefs.SetInt("Available Levels", 6);
-            PlayerPrefs.SetInt("Robot Color Level0", 0);
-            PlayerPrefs.SetInt("MAXMAX", 6);
+            if(save.debugDev)
+            {
+                string str = "";
+                PlayerPrefs.SetInt(save.availableLevels, save.maxAvailableLevels);
+                for(int i = 0; i < save.maxAvailableLevels - 1; i++)
+                {
+                    str += "0";
+                }
+                    PlayerPrefs.SetString(save.robotColor,str);
+            }
+            else
+            {
+                PlayerPrefs.SetInt(save.availableLevels, 1);
+                PlayerPrefs.SetString(save.robotColor, "0");
+            }
         }
-        availableLevels = PlayerPrefs.GetInt("Available Levels");
 
     }
 
@@ -199,30 +212,48 @@ public class gameManager : MonoBehaviour
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
     }
 
+    
+    /// <summary>
+    /// Method <c>saveRobotColorManagement</c> change the saved value in playerprefs of the robot color for the given level.
+    /// If the level was already cleared, the robot color is modified, otherwise, we add a new character to the save variable.
+    /// </summary>
+    /// <param name="levelNumber"> Level to change the save variable </param>
+    /// <param name="colorValue"> New value </param>
+    public void saveRobotColorManagement(int levelNumber, int colorValue)
+    {
+        Debug.Log(PlayerPrefs.GetString(save.robotColor).Split(' ').Count());
+        Debug.Log(levelNumber);
+        if(PlayerPrefs.GetString(save.robotColor).Split(' ').Count() <= levelNumber) //If first time this level is completed
+        {
+            PlayerPrefs.SetString(save.robotColor, PlayerPrefs.GetString(save.robotColor) + " " + colorValue);
+        }
+        else
+        {
+            string newSave = "";
+            string[] str = PlayerPrefs.GetString(save.robotColor).Split(' ');
+            str[levelNumber] = colorValue.ToString();
+            foreach(string val in str)
+            {
+                newSave += val + ' ';
+            }
+            newSave = newSave.Remove(newSave.Length - 1);
+            PlayerPrefs.SetString(save.robotColor, newSave);
+        }
+    }
 
     //!!! State machine !!! 
     // See diagram for state info
 
-    private IEnumerator waitState(float time, states newState)
+    private IEnumerator waitState(float time, actions act)
     {
         yield return new WaitForSeconds(time);
-        currentState = newState;
-        if(newState == states.idleNoTube)
-        {
-            memoryTube = null;
-        }
+        gameState(act);
     }
 
     public void gameState(actions act, GameObject obj = null)
     {
         switch(currentState)
         {
-            case states.wait:
-                if(act == actions.pooring)
-                {
-                    StartCoroutine(waitState(pooringTime, states.idleNoTube));
-                }
-                break;
 
             case states.idleFirstAction:
                 if(act == actions.clickedRobot)
@@ -235,7 +266,7 @@ public class gameManager : MonoBehaviour
                     catch(Exception ex)
                     {
                         //Can't find the robot script -> bad gameObject
-                        Debug.Log(ex);
+                        Debug.LogWarning(ex);
                     }
 
                 }
@@ -256,8 +287,8 @@ public class gameManager : MonoBehaviour
                         {
                             StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
                             bool notEmpty = tubeScript.colorList.Count != 0;
-                            int safeGuard = 0, layerRemoved = 0;
                             Color previousColor = tubeScript.colorList.Peek();
+                            
                             /*
                             This can change all similar layer color to upper layer.
                             Don' know how to integrate it in the game right now
@@ -309,7 +340,7 @@ public class gameManager : MonoBehaviour
                 {
                     StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
                     currentState = states.idleFirstAction;
-                    Debug.Log(ex);
+                    Debug.LogWarning(ex);
                 }
                 break;
 
@@ -330,7 +361,7 @@ public class gameManager : MonoBehaviour
                 }
                 catch(Exception ex)
                 {
-                    Debug.Log(ex);
+                    Debug.LogWarning(ex);
                 }
                 break;
             
@@ -362,7 +393,7 @@ public class gameManager : MonoBehaviour
                         else if (areSameColor(memoryTube, obj) && stillNotMax) //New tube is ok to poor additional color
                         {
                             pooring(obj);
-                            currentState = states.wait;
+                            currentState = states.poorColor;
                             gameState(actions.pooring);
                         }
                         else if (areSameColor(memoryTube, obj) && !stillNotMax) //New tube is too full to be poored
@@ -381,7 +412,7 @@ public class gameManager : MonoBehaviour
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log(ex);
+                    Debug.LogWarning(ex);
                     StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
                     memoryTube = null;
                     currentState = states.idleNoTube;
@@ -390,9 +421,26 @@ public class gameManager : MonoBehaviour
                                
                 
             case states.poorColor:
+                if(act == actions.pooring)
+                {
+                    if(completedTube >= setupScript.completeTubeToWin)
+                    {
+                        currentState = states.endLevel;
+                        StartCoroutine(victory());
+                    }
+                    else
+                    {
+                        StartCoroutine(waitState(pooringTime, actions.finishWait));
+                    }
+                }
+                if(act == actions.finishWait)
+                {
+                    currentState = states.idleNoTube;
+                }
                 break;
 
             case states.endLevel:
+                StartCoroutine(victory());
                 break;
         }
     }
@@ -411,14 +459,14 @@ public class gameManager : MonoBehaviour
         StartCoroutine(robotScript.heartEyes());
         victorySprite.enabled = true;
 
-        if(PlayerPrefs.GetInt("Current Level") >= PlayerPrefs.GetInt("Available Levels")) //Player unlock a new level!
+        if(PlayerPrefs.GetInt(save.currentLevel) >= PlayerPrefs.GetInt(save.availableLevels)) //Player unlock a new level!
         {
-            int level = PlayerPrefs.GetInt("Current Level") + 1;
-            PlayerPrefs.SetInt("Available Levels", level);
+            int level = PlayerPrefs.GetInt(save.currentLevel) + 1;
+            PlayerPrefs.SetInt(save.availableLevels, level);
         }
 
         int savedColor = 0;
-        foreach(Color color in gameManager.colors)
+        foreach(Color color in colors)
         {
             if(robotScript.eyeColor == color)
             {
@@ -426,20 +474,11 @@ public class gameManager : MonoBehaviour
             }
             savedColor++;
         }
-        PlayerPrefs.SetInt("Robot Color Level" + PlayerPrefs.GetInt("Current Level"), savedColor);
+        saveRobotColorManagement(PlayerPrefs.GetInt(save.currentLevel), savedColor);
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("MainMenu");
 
     }
 
 
-    private void Update()
-    {
-        //Debug.Log(levels.robotColorPerLevel.Count + " " + levels.robotColorPerLevel.LastOrDefault());
-        //Debug.Log(currentState);
-        if(completedTube >= setupScript.completeTubeToWin)
-        {
-            StartCoroutine(victory());
-        }
-    }
 }

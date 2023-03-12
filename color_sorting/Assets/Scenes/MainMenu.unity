@@ -1097,7 +1097,6 @@ MonoBehaviour:
   levelIconPrefab: {fileID: 0}
   rightArrow: {fileID: 1247829211}
   leftArrow: {fileID: 525568571}
-  setupObject: {fileID: 1203805570}
   musicManager: {fileID: 0}
   currentMaxLevel: 0
   textLevel: 
@@ -2909,6 +2908,9 @@ MonoBehaviour:
   eyeColor: {r: 0, g: 0, b: 0, a: 0}
   xBoost: 0
   yBoost: 0
+  eyesSpeed: 0
+  eyeTempo: 0
+  eyePos: {x: 0, y: 0, z: 0}
   scalingTempo: 0.005
   scalingSpeed: 0.025
   endScale: 9.5

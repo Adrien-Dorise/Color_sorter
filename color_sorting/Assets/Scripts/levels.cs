@@ -10,9 +10,9 @@ using UnityEngine.SceneManagement;
 /// The design are stored in a color array that has to be manually filled.
 /// The setup variables has to be adjusted with the size of the array.
 /// </summary>
-public class levels : MonoBehaviour
+public class levels
 {
-    static public bool Debug = true;
+    
     static public List<Color> robotColorPerLevel = new List<Color>();
 
 
@@ -23,7 +23,7 @@ public class levels : MonoBehaviour
     static public List<List<Color>> testLevel = new List<List<Color>>()
     {
         new List<Color>{ gameManager.colors[2], gameManager.colors[1], gameManager.colors[1] },
-        new List<Color>{gameManager.colors[1], gameManager.colors[1],},
+        new List<Color>{gameManager.colors[2], gameManager.colors[1],gameManager.colors[2]},
     };
     
     static public List<List<Color>> Level1 = new List<List<Color>>()
@@ -92,27 +92,25 @@ public class levels : MonoBehaviour
         {
             case "testScene":
                 return testLevel;
-                break;
+                
             case "Level1":
-                return Level1;
-                break;
+                return testLevel;
+
             case "Level2":
                 return Level2;
-                break;
                 
             case "Level3":
                 return Level3;
-                break;
+
             case "Level4":
                 return Level4;
-                break;
+
             case "Level5":
                 return Level5;
-                break;
             
             case "Level6":
                 return Level6;
-                break;
+
             /*
             case "Level7":
                 return Level7;

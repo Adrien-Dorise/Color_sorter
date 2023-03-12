@@ -43,19 +43,25 @@ public class setup : MonoBehaviour
     void Start()
     {
         levels.robotColorPerLevel.Clear();
-        levels.robotColorPerLevel.Add(gameManager.colors[0]);
-        int a = 1;
-        while (PlayerPrefs.HasKey("Robot Color Level" + a))
+        Debug.Log(PlayerPrefs.GetString(save.robotColor));
+        foreach(string colorVal in PlayerPrefs.GetString(save.robotColor).Split(' '))
         {
-            levels.robotColorPerLevel.Add(gameManager.colors[PlayerPrefs.GetInt("Robot Color Level" + a)]);
-            a++;
+            Debug.Log(colorVal);
+            try
+            {
+                levels.robotColorPerLevel.Add(gameManager.colors[int.Parse(colorVal)]);
+            }
+            catch(Exception e)
+            {
+                Debug.Log("String is: \'" + colorVal + "\'\n" + e);
+            }
         }
 
         musicManager = GameObject.Find("Music Manager");
 
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu")) //If we are in the main menu screen.
         {
-            PlayerPrefs.SetInt("Music Timestamp", 0);
+            PlayerPrefs.SetInt(save.musicTime, 0);
             initMainMenu();
         }
         else //If we are in a level scene
@@ -71,7 +77,7 @@ public class setup : MonoBehaviour
             posTubes.Add(new Vector3(1.35f, -0.2f, 0f));
             posTubes.Add(new Vector3(-0.9f, -1.4f, 0f));
             posTubes.Add(new Vector3(0.9f, -1.4f, 0f));
-            musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt("Music Timestamp");
+            musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt(save.musicTime);
             initLevel();
         }
     }
@@ -94,14 +100,7 @@ public class setup : MonoBehaviour
         }
 
         Color colorRob;
-        if (levels.Debug)
-        {
-            colorRob = gameManager.colors[0]; 
-        }
-        else
-        {
-            colorRob = levels.robotColorPerLevel[PlayerPrefs.GetInt("Current Level")-1];
-        }
+        colorRob = levels.robotColorPerLevel[PlayerPrefs.GetInt(save.currentLevel)-1];
         robot.GetComponent<robot>().initialise(colorRob);
 
 
@@ -220,11 +219,11 @@ public class setup : MonoBehaviour
         robot.GetComponent<robot>().initialise(levels.robotColorPerLevel.LastOrDefault());
         selectScript.initialise(colorArrow);
         quitButton.GetComponent<Image>().color = colorArrow;
-        displayLevelButton(gameManager.availableLevels);
-        selectScript.currentMaxLevel = gameManager.availableLevels; ;
+        selectScript.displayLevelButton(PlayerPrefs.GetInt(save.availableLevels));
+        selectScript.maxDisplayedLevel = PlayerPrefs.GetInt(save.availableLevels); ;
 
         //Arrows hiding
-        if(gameManager.availableLevels <= 9)
+        if(PlayerPrefs.GetInt(save.availableLevels) <= 9)
         {
             selectScript.gameObject.transform.GetChild(1).gameObject.SetActive(false);
         }
@@ -232,6 +231,7 @@ public class setup : MonoBehaviour
 
 
     }
+}
 
 
     
