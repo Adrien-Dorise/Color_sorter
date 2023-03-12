@@ -43,10 +43,8 @@ public class setup : MonoBehaviour
     void Start()
     {
         levels.robotColorPerLevel.Clear();
-        Debug.Log(PlayerPrefs.GetString(save.robotColor));
         foreach(string colorVal in PlayerPrefs.GetString(save.robotColor).Split(' '))
         {
-            Debug.Log(colorVal);
             try
             {
                 levels.robotColorPerLevel.Add(gameManager.colors[int.Parse(colorVal)]);

@@ -28,13 +28,14 @@ public class testTube : MonoBehaviour
     [SerializeField] private float scalingTempo = 0.005f; //Time taking to up or down scale a tube
     [SerializeField] private float scalingSpeed = 0.025f; //Speed at which a u=tube is up or down scaled
     [SerializeField] private float endScale = 1.3f; //Max scale threshold when animating
-
+    private bool isMoving; //Set true when the tube have to move from one position to another
 
     // Start is called before the first frame update
     void Start()
     {
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
         tubeComplete = false;
+        isMoving = false;
     }
 
 
@@ -121,6 +122,35 @@ public class testTube : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Method <c>moveTube<c> move the tube to a given destination while rotating it.
+    /// The displacement speed is contrained by time
+    /// <param name="destination">: destination location </param>
+    /// <param name="rotation">: total rotation to perform </param>
+    /// <param name="time">: time given to perform the animation </param>
+    public IEnumerator moveTube(Vector3 destination, float rotation, float time)
+    {
+        float translationOffset = 0.01f;
+        float rotationOffset = 0.01f;
+        float translationSpeed = (Mathf.Abs((destination - this.transform.localPosition).magnitude) / time);
+        float rotationSpeed = (Mathf.Abs(rotation - this.transform.localEulerAngles.z) / time);
+        double startTime = Time.realtimeSinceStartupAsDouble;
+
+        while(Mathf.Abs((destination - this.transform.localPosition).magnitude) >= translationOffset || Mathf.Abs(rotation - this.transform.localEulerAngles.z) >= rotationOffset)
+        {
+
+            this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, destination,translationSpeed * Time.fixedDeltaTime);
+            this.transform.localRotation = Quaternion.RotateTowards(this.transform.localRotation, Quaternion.Euler(0f,0f,rotation), rotationSpeed * Time.fixedDeltaTime);
+
+            if(Time.realtimeSinceStartupAsDouble - startTime >= time*1.1) //SafeGuard
+            {
+                Debug.LogWarning("moveTube animation taking too long: Force break");
+                break;
+            }
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
 
     /// <summary>
     /// Method <c>onClick</c> set the tube behaviour when clicked by player.
@@ -169,7 +199,13 @@ public class testTube : MonoBehaviour
         return isCmplt;
     }
 
+    private void FixedUpdate()
+    {
+        if(isMoving)
+        {
 
+        }
+    }
 
 
 }

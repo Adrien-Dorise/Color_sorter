@@ -33,10 +33,11 @@ public class gameManager : MonoBehaviour
 
 
     //Pooring animation
-    [SerializeField] private float pooringTime = 0.8f;
-    [SerializeField] private float translationTime = 1f;
-    private float xOffset = 0.75f;
-    private float yOffset = 0.5f;
+    //To set in Start function!
+    [SerializeField] private float pooringTime;
+    [SerializeField] private float translationTime;
+    private float xOffset;
+    private float yOffset;
 
 
     static public string currentScene { get; set; }
@@ -74,10 +75,11 @@ public class gameManager : MonoBehaviour
             {
                 string str = "";
                 PlayerPrefs.SetInt(save.availableLevels, save.maxAvailableLevels);
-                for(int i = 0; i < save.maxAvailableLevels - 1; i++)
+                for(int i = 0; i < save.maxAvailableLevels; i++)
                 {
-                    str += "0";
+                    str += "0 ";
                 }
+                str = str.Remove(str.Length - 1);
                     PlayerPrefs.SetString(save.robotColor,str);
             }
             else
@@ -92,6 +94,12 @@ public class gameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        
+        pooringTime = 0.5f;
+        translationTime = 0.3f;
+        xOffset = 0.75f;
+        yOffset = 0.5f;
+
         selectedTubeObject = GameObject.Find("Selected Tube");
         tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
@@ -141,7 +149,7 @@ public class gameManager : MonoBehaviour
         StartCoroutine(pooringAnimation(memoryTube, obj));
         while (areSameColor(obj, memoryTube) && stillNotMax && notEmpty)
         {
-            if (safeGuard > 10)
+            if (safeGuard > 100)
             {
                 Debug.LogWarning("Safeguard reached while pooring!");
                 break;
@@ -157,6 +165,12 @@ public class gameManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Method <c>pooringAnimation</c> manage the animation when a tube is porring a layer into another one.
+    /// The moved tube is both translated and rotated into position. Then a small tempo is set while pooring layer. Finally, the tube is set back into position.
+    /// </summary>
+    /// <param name="tube1"> Tube moved that poors the layer </param>
+    /// <param name="tube2"> Tube that receive the color layer </param>
     private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2)
     {
         int xDir = 1;
@@ -177,8 +191,13 @@ public class gameManager : MonoBehaviour
         }
 
         //Animate
-        tube1.transform.localPosition = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
-        tube1.transform.Rotate(new Vector3(0, 0, rotation));
+        //Move memory tube to selected tube
+        Vector3 newPos = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
+        float newRot = rotation;
+        yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(newPos,newRot,translationTime));
+        
+        //tube1.transform.localPosition = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
+        //tube1.transform.Rotate(new Vector3(0, 0, rotation));
 
         //Add poored liquid
         GameObject tempLiquid = GameObject.Instantiate(pooredLiquidPrefab,tube1.transform.position, new Quaternion(0,0,0,0));
