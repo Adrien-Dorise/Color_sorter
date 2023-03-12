@@ -136,7 +136,7 @@ public class testTube : MonoBehaviour
         float rotationSpeed = (Mathf.Abs(rotation - this.transform.localEulerAngles.z) / time);
         double startTime = Time.realtimeSinceStartupAsDouble;
 
-        while(Mathf.Abs((destination - this.transform.localPosition).magnitude) >= translationOffset || Mathf.Abs(rotation - this.transform.localEulerAngles.z) >= rotationOffset)
+        while(Mathf.Abs((destination - this.transform.localPosition).magnitude) >= translationOffset || (Mathf.Abs(rotation - this.transform.localEulerAngles.z) >= rotationOffset && Mathf.Abs(rotation - this.transform.localEulerAngles.z) <= 360.0f - rotationOffset))
         {
 
             this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, destination,translationSpeed * Time.fixedDeltaTime);

@@ -96,7 +96,7 @@ public class gameManager : MonoBehaviour
     {
         
         pooringTime = 0.5f;
-        translationTime = 0.3f;
+        translationTime = 0.2f;
         xOffset = 0.75f;
         yOffset = 0.5f;
 
@@ -142,28 +142,20 @@ public class gameManager : MonoBehaviour
     /// <param name="obj"> Tube that receive the color layer </param>
     private void pooring(GameObject obj)
     {
-        bool stillNotMax = obj.GetComponent<testTube>().colorList.Count < obj.GetComponent<testTube>().maxLiquid;
-        bool notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
-        int safeGuard = 0;
-        robotScript.switchEyeColor(memoryTube.GetComponent<testTube>().colorList.Peek());
-        StartCoroutine(pooringAnimation(memoryTube, obj));
-        while (areSameColor(obj, memoryTube) && stillNotMax && notEmpty)
+        Color pooredColor = Color.black;
+        try
         {
-            if (safeGuard > 100)
-            {
-                Debug.LogWarning("Safeguard reached while pooring!");
-                break;
-            }
-            safeGuard++;
-
-            //Switch colors
-            obj.GetComponent<testTube>().addColorLayer(memoryTube.GetComponent<testTube>().colorList.Peek());
-            memoryTube.GetComponent<testTube>().removeColorLayer();
-            stillNotMax = obj.GetComponent<testTube>().colorList.Count < obj.GetComponent<testTube>().maxLiquid;
-            notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
+            pooredColor = memoryTube.GetComponent<testTube>().colorList.Peek();
         }
-        
+        catch(Exception e)
+        {
+            Debug.Log(e);
+        }
+        robotScript.switchEyeColor(memoryTube.GetComponent<testTube>().colorList.Peek());
+        StartCoroutine(pooringAnimation(memoryTube, obj, pooredColor));
     }
+
+
 
     /// <summary>
     /// Method <c>pooringAnimation</c> manage the animation when a tube is porring a layer into another one.
@@ -171,12 +163,12 @@ public class gameManager : MonoBehaviour
     /// </summary>
     /// <param name="tube1"> Tube moved that poors the layer </param>
     /// <param name="tube2"> Tube that receive the color layer </param>
-    private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2)
+    private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2, Color pooredColor)
     {
         int xDir = 1;
         float rotation = 40f;
-        Vector3 initialPosition = tube1.transform.position;
-        Quaternion initialRotation = tube1.transform.rotation;
+        Vector3 initialPosition = tube1.transform.localPosition;
+        float initialRotation = tube1.transform.localRotation.eulerAngles.z;
         if(tube1.transform.localPosition.x < tube2.transform.localPosition.x) //pooring tube is at right
         {
             xDir = -1;
@@ -195,32 +187,47 @@ public class gameManager : MonoBehaviour
         Vector3 newPos = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
         float newRot = rotation;
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(newPos,newRot,translationTime));
-        
         //tube1.transform.localPosition = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
         //tube1.transform.Rotate(new Vector3(0, 0, rotation));
+
 
         //Add poored liquid
         GameObject tempLiquid = GameObject.Instantiate(pooredLiquidPrefab,tube1.transform.position, new Quaternion(0,0,0,0));
         tempLiquid.transform.localScale = new Vector3(-xDir, 1, 1);
         foreach(SpriteRenderer sprite in tempLiquid.GetComponentsInChildren<SpriteRenderer>())
         {
-            try
-            {
-                sprite.color = tube1.GetComponent<testTube>().colorList.Peek();
-            }
-            catch(Exception ex)
-            {
-                Debug.LogWarning(ex);
-            }
+            sprite.color = pooredColor;
         }
+        audioManager.pooringSound();   
+        //tube's liquid management
+        bool stillNotMax = tube2.GetComponent<testTube>().colorList.Count < tube2.GetComponent<testTube>().maxLiquid;
+        bool notEmpty = tube1.GetComponent<testTube>().colorList.Count != 0;
+        int safeGuard = 0;    
+         
+        while (areSameColor(tube2, tube1) && stillNotMax && notEmpty)
+        {
+            if (safeGuard > 100)
+            {
+                Debug.LogWarning("Safeguard reached while pooring!");
+                break;
+            }
+            safeGuard++;
 
-        audioManager.pooringSound();        
+            //Switch colors
+            tube2.GetComponent<testTube>().addColorLayer(tube1.GetComponent<testTube>().colorList.Peek());
+            tube1.GetComponent<testTube>().removeColorLayer();
+            stillNotMax = tube2.GetComponent<testTube>().colorList.Count < tube2.GetComponent<testTube>().maxLiquid;
+            notEmpty = tube1.GetComponent<testTube>().colorList.Count != 0;
+        }  
         yield return new WaitForSeconds(pooringTime);
+
+
 
         //Return to initial position
         Destroy(tempLiquid);
-        tube1.transform.position = initialPosition;
-        tube1.transform.rotation = initialRotation;
+        //tube1.transform.position = initialPosition;
+        //tube1.transform.rotation = initialRotation;
+        StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
 
         
         tube1.transform.SetParent(tubesGroupObject.transform);
@@ -240,8 +247,6 @@ public class gameManager : MonoBehaviour
     /// <param name="colorValue"> New value </param>
     public void saveRobotColorManagement(int levelNumber, int colorValue)
     {
-        Debug.Log(PlayerPrefs.GetString(save.robotColor).Split(' ').Count());
-        Debug.Log(levelNumber);
         if(PlayerPrefs.GetString(save.robotColor).Split(' ').Count() <= levelNumber) //If first time this level is completed
         {
             PlayerPrefs.SetString(save.robotColor, PlayerPrefs.GetString(save.robotColor) + " " + colorValue);
