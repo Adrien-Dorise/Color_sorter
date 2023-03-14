@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 /// Class <c>gameManager</c> is to attach to the game manager gameObject of each scenes.
@@ -16,7 +15,7 @@ public class gameManager : MonoBehaviour
 {
     
     public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, mainMenu }
-    public enum actions { clickedTube, clickedRobot, clickedBackround, pooring, finishWait }
+    public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
     static public states currentState { get; private set; }
     static public Color[] colors;
     public GameObject memoryTube { get; private set; }
@@ -29,6 +28,7 @@ public class gameManager : MonoBehaviour
 
     private setup setupScript;
     private int completedTube;
+    public bool isNewTubeCompleted;
 
 
 
@@ -135,35 +135,12 @@ public class gameManager : MonoBehaviour
 
 
     /// <summary>
-    /// Method <c>pooring</c> tries to poor the saved tube into a selected tube
-    /// To poor a tube into another one, we check: select tube not empty + tubes top color different + poored tube not empty.
-    /// The animation is handled by pooringAnimation() IEnumerator
-    /// </summary>
-    /// <param name="obj"> Tube that receive the color layer </param>
-    private void pooring(GameObject obj)
-    {
-        Color pooredColor = Color.black;
-        try
-        {
-            pooredColor = memoryTube.GetComponent<testTube>().colorList.Peek();
-        }
-        catch(Exception e)
-        {
-            Debug.Log(e);
-        }
-        robotScript.switchEyeColor(memoryTube.GetComponent<testTube>().colorList.Peek());
-        StartCoroutine(pooringAnimation(memoryTube, obj, pooredColor));
-    }
-
-
-
-    /// <summary>
     /// Method <c>pooringAnimation</c> manage the animation when a tube is porring a layer into another one.
     /// The moved tube is both translated and rotated into position. Then a small tempo is set while pooring layer. Finally, the tube is set back into position.
     /// </summary>
     /// <param name="tube1"> Tube moved that poors the layer </param>
     /// <param name="tube2"> Tube that receive the color layer </param>
-    private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2, Color pooredColor)
+    private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2)
     {
         int xDir = 1;
         float rotation = 40f;
@@ -173,6 +150,16 @@ public class gameManager : MonoBehaviour
         {
             xDir = -1;
             rotation *= -1;
+        }
+        robotScript.switchEyeColor(memoryTube.GetComponent<testTube>().colorList.Peek());
+        Color pooredColor = Color.black;
+        try
+        {
+            pooredColor = memoryTube.GetComponent<testTube>().colorList.Peek();
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e);
         }
 
         //Sorting order update
@@ -199,11 +186,11 @@ public class gameManager : MonoBehaviour
             sprite.color = pooredColor;
         }
         audioManager.pooringSound();   
+
         //tube's liquid management
         bool stillNotMax = tube2.GetComponent<testTube>().colorList.Count < tube2.GetComponent<testTube>().maxLiquid;
         bool notEmpty = tube1.GetComponent<testTube>().colorList.Count != 0;
         int safeGuard = 0;    
-         
         while (areSameColor(tube2, tube1) && stillNotMax && notEmpty)
         {
             if (safeGuard > 100)
@@ -219,6 +206,7 @@ public class gameManager : MonoBehaviour
             stillNotMax = tube2.GetComponent<testTube>().colorList.Count < tube2.GetComponent<testTube>().maxLiquid;
             notEmpty = tube1.GetComponent<testTube>().colorList.Count != 0;
         }  
+        gameState(actions.finishAction);
         yield return new WaitForSeconds(pooringTime);
 
 
@@ -227,15 +215,17 @@ public class gameManager : MonoBehaviour
         Destroy(tempLiquid);
         //tube1.transform.position = initialPosition;
         //tube1.transform.rotation = initialRotation;
-        StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
-
-        
         tube1.transform.SetParent(tubesGroupObject.transform);
         for (int i = 0; i < tube1.transform.childCount; i++)
         {
             tube1.transform.GetChild(i).GetComponent<SpriteRenderer>().sortingOrder -= 10;
         }
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
+        yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
+        if(memoryTube == tube1) //If when the tube is back in position the player hasn't selected another tube, we remove this one from memory
+        {
+            memoryTube = null;
+        }
     }
 
     
@@ -265,14 +255,38 @@ public class gameManager : MonoBehaviour
         }
     }
 
+
+
+    private IEnumerator victory()
+    {
+        audioManager.GetComponent<audio>().victorySound();
+        robotScript.eyesStateMachine(robot.eyesActions.animate, robot.avalaibleAnim.heart);
+        victorySprite.enabled = true;
+
+        if(PlayerPrefs.GetInt(save.currentLevel) >= PlayerPrefs.GetInt(save.availableLevels)) //Player unlock a new level!
+        {
+            int level = PlayerPrefs.GetInt(save.currentLevel) + 1;
+            PlayerPrefs.SetInt(save.availableLevels, level);
+        }
+
+        int savedColor = 0;
+        foreach(Color color in colors)
+        {
+            if(robotScript.eyeColor == color)
+            {
+                break;
+            }
+            savedColor++;
+        }
+        saveRobotColorManagement(PlayerPrefs.GetInt(save.currentLevel), savedColor);
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("MainMenu");
+
+    }
+
+
     //!!! State machine !!! 
     // See diagram for state info
-
-    private IEnumerator waitState(float time, actions act)
-    {
-        yield return new WaitForSeconds(time);
-        gameState(act);
-    }
 
     public void gameState(actions act, GameObject obj = null)
     {
@@ -416,9 +430,8 @@ public class gameManager : MonoBehaviour
                         }
                         else if (areSameColor(memoryTube, obj) && stillNotMax) //New tube is ok to poor additional color
                         {
-                            pooring(obj);
                             currentState = states.poorColor;
-                            gameState(actions.pooring);
+                            gameState(actions.pooring, obj);
                         }
                         else if (areSameColor(memoryTube, obj) && !stillNotMax) //New tube is too full to be poored
                         {
@@ -427,7 +440,7 @@ public class gameManager : MonoBehaviour
                             memoryTube = obj;
                         }
                     }
-                    if(act == actions.clickedRobot || act == actions.clickedBackround)
+                    else if(act == actions.clickedRobot || act == actions.clickedBackround)
                     {
                         StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
                         memoryTube = null;
@@ -447,62 +460,43 @@ public class gameManager : MonoBehaviour
             case states.poorColor:
                 if(act == actions.pooring)
                 {
-                    if(completedTube >= setupScript.completeTubeToWin)
-                    {
-                        currentState = states.endLevel;
-                        StartCoroutine(victory());
-                    }
-                    else
-                    {
-                        StartCoroutine(waitState(pooringTime, actions.finishWait));
-                    }
+                    StartCoroutine(pooringAnimation(memoryTube, obj));
                 }
-                if(act == actions.finishWait)
+
+                else if(act == actions.finishAction)
                 {
-                    currentState = states.idleNoTube;
+                    if(isNewTubeCompleted)
+                    {
+                        completedTube++;
+                        if(completedTube >= setupScript.completeTubeToWin) //Victory
+                        {
+                            completedTube++;
+                            currentState = states.endLevel;
+                            gameState(actions.noAction);
+                        }
+                        else //New tube complete
+                        {
+                            completedTube++;
+                            audioManager.GetComponent<audio>().tubeCompleteSound();
+                            robotScript.eyesStateMachine(robot.eyesActions.animate, robot.avalaibleAnim.happy);
+                            currentState = states.idleNoTube;
+                        }
+                    }
+                    else //Nothing new in this world
+                    {
+                        currentState = states.idleNoTube;
+                    }
                 }
                 break;
 
             case states.endLevel:
+                foreach(Button butt in tubesGroupObject.GetComponentsInChildren<Button>())
+                {
+                    butt.interactable = false;
+                }
                 StartCoroutine(victory());
                 break;
         }
     }
     
-    
-    public void newTubeComplete()
-    {
-        completedTube++;
-        audioManager.GetComponent<audio>().tubeCompleteSound();
-        StartCoroutine(robotScript.happyEyes());
-    }
-
-    private IEnumerator victory()
-    {
-        audioManager.GetComponent<audio>().victorySound();
-        StartCoroutine(robotScript.heartEyes());
-        victorySprite.enabled = true;
-
-        if(PlayerPrefs.GetInt(save.currentLevel) >= PlayerPrefs.GetInt(save.availableLevels)) //Player unlock a new level!
-        {
-            int level = PlayerPrefs.GetInt(save.currentLevel) + 1;
-            PlayerPrefs.SetInt(save.availableLevels, level);
-        }
-
-        int savedColor = 0;
-        foreach(Color color in colors)
-        {
-            if(robotScript.eyeColor == color)
-            {
-                break;
-            }
-            savedColor++;
-        }
-        saveRobotColorManagement(PlayerPrefs.GetInt(save.currentLevel), savedColor);
-        yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene("MainMenu");
-
-    }
-
-
 }

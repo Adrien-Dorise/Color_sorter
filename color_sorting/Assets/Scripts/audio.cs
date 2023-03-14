@@ -12,38 +12,39 @@ public class audio : MonoBehaviour
     [SerializeField] AudioClip pooring;
     [SerializeField] AudioClip tubeComplete;
     [SerializeField] AudioClip victory;
-    private AudioSource source;
+    private AudioSource pooringSource, completeSource;
 
     private void Start()
     {
-        source = GetComponent<AudioSource>();
+        pooringSource = transform.GetChild(0).GetComponent<AudioSource>();
+        completeSource = transform.GetChild(1).GetComponent<AudioSource>();
     }
 
     public void pooringSound()
     {
-        source.Stop();
-        source.volume = 0.450f;
-        source.clip = pooring;
-        source.loop = false;
-        source.Play();
+        pooringSource.Stop();
+        pooringSource.volume = 0.450f;
+        pooringSource.clip = pooring;
+        pooringSource.loop = false;
+        pooringSource.Play();
     }
     
     public void tubeCompleteSound()
     {
-        source.Stop();
-        source.volume = 1f;
-        source.clip = tubeComplete;
-        source.loop = false;
-        source.Play();
+        completeSource.Stop();
+        completeSource.volume = 1f;
+        completeSource.clip = tubeComplete;
+        completeSource.loop = false;
+        completeSource.Play();
     }
     
     public void victorySound()
     {
-        source.Stop();
-        source.volume = 1f;
-        source.clip = victory;
-        source.loop = false;
-        source.Play();
+        completeSource.Stop();
+        completeSource.volume = 1f;
+        completeSource.clip = victory;
+        completeSource.loop = false;
+        completeSource.Play();
     }
 
 }

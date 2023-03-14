@@ -22,7 +22,11 @@ public class robot : MonoBehaviour
     public Color eyeColor;
 
     //Eye animation (to set in Start())
-    private bool areEyesTracked, areEyesIdling, areEyesAnimated;
+    private enum eyesStates { idle, tracked, animated }
+    public enum eyesActions {newIdle, animate, endAnimate, nothing}
+    public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart}
+    private avalaibleAnim currentAnim;
+    private eyesStates currentState;
     private float yOffsetMax, xOffsetMax;
     [SerializeField] private float xBoost, yBoost, eyesSpeed;
     private List<float> eyesIdleTempos;
@@ -77,11 +81,11 @@ public class robot : MonoBehaviour
 
         //Initialisation
         isIdling = false;
-        areEyesIdling = false;
-        areEyesAnimated = false;
-        areEyesTracked = false;
+        currentState = eyesStates.idle;
+        currentAnim = avalaibleAnim.idle;
         eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);;
         eyesIdleLoopCurrent = 0;
+        eyesStateMachine(eyesActions.newIdle);
     }
 
     /// <summary>
@@ -90,7 +94,6 @@ public class robot : MonoBehaviour
     /// <param name="color"> color used to init the robot </param>
     public void initialise(Color color)
     {
-        areEyesTracked = false;
         eyeColor = color;
         eyesObject.GetComponent<SpriteRenderer>().color = color;
         bodyObject.GetComponent<SpriteRenderer>().color = color;
@@ -175,131 +178,56 @@ public class robot : MonoBehaviour
         Vector3 deltaPos = new Vector3(transf.position.x * xBoost, transf.position.y * yBoost, 0f) - eyesObject.transform.position;
         deltaPos = new Vector3(deltaPos.normalized.x, deltaPos.normalized.y, 0f); //Removed z component
         Debug.DrawRay(eyesObject.transform.localPosition, deltaPos, Color.red);
-        eyesObject.transform.localPosition = Vector3.zero + deltaPos;
+        eyePos = Vector3.zero + deltaPos;
     }
 
 
     /// <summary>
-    /// Method <c>eyeIdle</c> manage the eyes' idle behaviour. 
-    /// Idle is when the eyes aren't tracking a specific object with eyeTracking() func.
-    /// It sets up random animation to lifen the robot. 
-    /// There are two possible state:
-    /// <list type="bullet">
-    /// <item>
-    /// <description>1. Random eyes positioning: The eyes look at specific location described in eyePos variable. 
-    /// The eyes stay at this position for a given amount of time before switching to another position.</description>
-    /// </item>
-    /// <item>
-    /// <description>2. Specific eye animation: At random intervals, the eys perform a few seconds animation (wink, laugh...)</description>
-    /// </item>
-    /// </list>
-    /// Regardless, the eyes translate is always perform to the target position when this function is called
-    /// </summary>
-    private void eyeIdle()
-    {
-        if(!areEyesIdling && !areEyesAnimated) //Starting new Idle position (after deselecting tube or last idle animation terminated)
-        {
-            areEyesIdling = true;
-            eyesIdleLoopCurrent += 1;
-            eyeTempo = eyesIdleTempos[UnityEngine.Random.Range(0, eyesIdleTempos.Count)];
-            eyePos = eyesPositions[UnityEngine.Random.Range(0, eyesPositions.Count)];
-            eyeRoutine = eyeIdleTempoFunc(eyeTempo);
-            StartCoroutine(eyeRoutine);            
-        }
-        
-        if(!areEyesAnimated && eyesIdleLoopCurrent >= eyesIdleLoopMax) //Starting specific eye animation (ex: dubious, sarcastic...)
-        {
-            StopCoroutine(eyeRoutine);
-            areEyesIdling = false;
-            areEyesAnimated = true;
-            eyesIdleLoopCurrent = 0;
-            eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);
-            switch(UnityEngine.Random.Range(0,2))
-            {
-                case 0:
-                    dubiousEyeAnimation();
-                    break;
-
-                case 1:
-                    sarcasticEyeAnimation();
-                    break;
-            }
-
-        }
-
-        //Debug.Log( eyesObject.transform.localPosition + " move to: " + eyePos);
-        if(Mathf.Abs((eyePos - eyesObject.transform.localPosition).magnitude) >= 0.005f) //Moving eyes accordingly to eyePos variable
-        {
-            eyesObject.transform.Translate((eyePos - eyesObject.transform.localPosition).normalized * eyesSpeed * Time.fixedDeltaTime);
-        }
-
-    }
-
-    /// <summary>
-    /// Method <c>eyeIdleTempoFunc</c> is the tempo used before switching for a new position.
+    /// Method <c>eyesIdleFunc</c> is the tempo used before switching for a new position.
     /// The switching flag is symbolised to areEyesIdling bool
     /// </summary>
     /// <param name="tempo"> time before switching eyeidle bool to false </param>
-    private IEnumerator eyeIdleTempoFunc(float tempo)
+    private IEnumerator eyesIdleFunc(float tempo)
     {
-            yield return new WaitForSeconds(tempo);
-            areEyesIdling = false;
+        //Starting new Idle position (after deselecting tube or last idle animation terminated)
+        eyesIdleLoopCurrent += 1;
+        eyeTempo = eyesIdleTempos[UnityEngine.Random.Range(0, eyesIdleTempos.Count)];
+        eyePos = eyesPositions[UnityEngine.Random.Range(0, eyesPositions.Count)];
+        yield return new WaitForSeconds(tempo);
+        eyesStateMachine(eyesActions.newIdle);
     }
     
 
     /// <summary>
     /// Method <c>dubiousEyeAnimation</c> manage the perplex robot animation.
-    /// It is linked to the eyeDubiousTempo IEnumerator to manage its tempo.
     /// </summary>
-    private void dubiousEyeAnimation()
+    private IEnumerator eyeDubious(float tempo)
     {
-        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesDubious;
-        eyePos = Vector3.zero;
-        eyeRoutine = eyeDubiousTempo(2f);
-        StartCoroutine(eyeRoutine);
-    }
-
-    private IEnumerator eyeDubiousTempo(float tempo)
-    {
+            eyesObject.GetComponent<SpriteRenderer>().sprite = eyesDubious;
             yield return new WaitForSeconds(tempo);
-            areEyesAnimated = false;
-            eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+            eyesStateMachine(eyesActions.endAnimate);
     }
 
-
-    /// <summary>
-    /// Method <c>sarcasticEyeAnimation</c> manage the laughing robot animation.
-    /// It is linked to the eyeSarcasticTempo IEnumerator to manage its tempo.
-    /// </summary>
-    private void sarcasticEyeAnimation()
-    {
-        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
-        eyePos = Vector3.zero;
-        //eyeRoutine = eyeSarcasticTempo(2f);
-        StartCoroutine(eyeSarcasticTempo(0.1f, 0, 1));
-    }
 
     //Animation function for fast moving eyes.
     //Tempo is teh time the eys stay in fixed position
     //State is the number of time this animation has been playing
     //Direction is the next direction of moving eyes (1 or -1)
-    private IEnumerator eyeSarcasticTempo(float tempo, int state, int direction)
+    private IEnumerator eyeSarcastic(float tempo, int state, int direction)
     {
-        if(areEyesAnimated == true) //We verify that we did not enter another state while doing this animation
+        
+        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
+        if(state <= 11)
         {
-            if(state <= 11)
-            {
-                yield return new WaitForSeconds(tempo);
-                eyePos = new Vector3(0f, direction * (yOffsetMax/3),0f);
-                state += 1;
-                StartCoroutine(eyeSarcasticTempo(tempo, state,direction*=-1));
-            }
-            else
-            {
-                eyePos = Vector3.zero;
-                areEyesAnimated = false;
-                eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
-            }
+            yield return new WaitForSeconds(tempo);
+            eyePos = new Vector3(0f, direction * (yOffsetMax/3),0f);
+            state += 1;
+            eyeRoutine = eyeSarcastic(tempo, state,direction*=-1);
+            StartCoroutine(eyeRoutine);
+        }
+        else
+        {
+            eyesStateMachine(eyesActions.endAnimate);
         }
     }
     
@@ -308,22 +236,22 @@ public class robot : MonoBehaviour
     /// <summary>
     /// Method <c>happyEyes</c> switch idle sprite to happy sprite and reverse.
     /// </summary>
-    public IEnumerator happyEyes()
+    public IEnumerator happyEyes(float tempo)
     {
         eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
-        yield return new WaitForSeconds(2f);
-        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+        yield return new WaitForSeconds(tempo);
+        eyesStateMachine(eyesActions.endAnimate);
     }
 
 
     /// <summary>
     /// Method <c>heartEyes</c> switch idle sprite to heart sprite and reverse.
     /// </summary>
-    public IEnumerator heartEyes()
+    public IEnumerator heartEyes(float tempo)
     {
         eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHeart;
-        yield return new WaitForSeconds(2f);
-        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+        yield return new WaitForSeconds(tempo);
+        eyesStateMachine(eyesActions.endAnimate);
     }
 
 
@@ -336,35 +264,149 @@ public class robot : MonoBehaviour
         managerScript.gameState(gameManager.actions.clickedRobot, this.gameObject);
     }
 
+
+
+    public void eyesStateMachine(eyesActions action, avalaibleAnim anim = avalaibleAnim.idle)
+    {
+        switch(currentState)
+        {
+            case eyesStates.idle:
+                if(action == eyesActions.nothing) 
+                {
+                    if(managerScript.memoryTube != null)//We verify if an boject needs to be tracked
+                    {
+                        StopCoroutine(eyeRoutine);
+                        currentState = eyesStates.tracked;
+                        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                    }
+                }
+                else if(action == eyesActions.animate) //Start animation
+                {
+                    StopCoroutine(eyeRoutine);
+                    currentState = eyesStates.animated;
+                    eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                    eyesStateMachine(eyesActions.animate, anim);
+                }
+                else if(action == eyesActions.newIdle) // We finished the tempo for the current eyes state and need to start a new one
+                {
+                    if(eyesIdleLoopCurrent >= eyesIdleLoopMax) //Starting specific eye animation (ex: dubious, sarcastic...)
+                    {
+                        eyesIdleLoopCurrent = 0;
+                        eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);
+                        switch(UnityEngine.Random.Range(0,2))
+                        {
+                            case 0:
+                                eyesStateMachine(eyesActions.animate,avalaibleAnim.dubious);
+                                break;
+
+                            case 1:
+                                eyesStateMachine(eyesActions.animate,avalaibleAnim.sarcastic);
+                                break;
+                        }
+                    }
+                    else //New idle position
+                    {
+                        eyeRoutine = eyesIdleFunc(eyeTempo);
+                        StartCoroutine(eyeRoutine);
+                    }
+                }
+                break;
+
+            case eyesStates.tracked:
+                if(action == eyesActions.animate) //Switch to a new animation 
+                {
+                    currentState = eyesStates.animated;
+                    eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                    eyesStateMachine(eyesActions.animate, anim);
+                }
+                else if(action == eyesActions.nothing) //Continue to track 
+                {
+                    if(managerScript.memoryTube == null)
+                    {
+                        eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);
+                        currentState = eyesStates.idle;
+                        eyesStateMachine(eyesActions.newIdle);
+                    }
+                    else 
+                    {
+                        eyeTracking(managerScript.memoryTube.transform);
+                    }
+                }
+                break;
+
+            case eyesStates.animated:
+                if(action == eyesActions.endAnimate) //Animation finished
+                {
+                    currentAnim = avalaibleAnim.idle;
+                    StopCoroutine(eyeRoutine);
+                    eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                    if(managerScript.memoryTube != null)
+                    {
+                        currentState = eyesStates.tracked;
+                    }
+                    else
+                    {
+                        eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);
+                        currentState = eyesStates.idle;
+                        eyesStateMachine(eyesActions.newIdle);
+                    }
+                }
+                else if(action == eyesActions.nothing) 
+                {
+                    if(managerScript.memoryTube != null && (currentAnim == avalaibleAnim.sarcastic || currentAnim == avalaibleAnim.dubious)) //Tracking can be prioritary on specific animations
+                    {
+                        currentAnim = avalaibleAnim.idle;
+                        StopCoroutine(eyeRoutine);
+                        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                        currentState = eyesStates.tracked;
+                    }
+                }
+                else if(action == eyesActions.animate)
+                {
+                    eyePos = Vector3.zero;
+                    StopCoroutine(eyeRoutine);
+                    switch(anim)
+                    {
+                        case avalaibleAnim.happy:
+                            currentAnim = anim;
+                            eyeRoutine = happyEyes(1f);
+                            StartCoroutine(eyeRoutine);
+                            break;
+
+                        case avalaibleAnim.heart:
+                            currentAnim = anim;
+                            eyeRoutine = heartEyes(3f);
+                            StartCoroutine(eyeRoutine);
+                            break;
+
+                        case avalaibleAnim.dubious:
+                            currentAnim = anim;
+                            eyeRoutine = eyeDubious(2f);
+                            StartCoroutine(eyeRoutine);
+                            break;
+
+                        case avalaibleAnim.sarcastic:
+                            currentAnim = anim;
+                            eyeRoutine = eyeSarcastic(0.1f, 0, 1);
+                            StartCoroutine(eyeRoutine);
+                            break;
+                    }
+                }
+                break;
+
+        }
+    }
+
     private void FixedUpdate()
     {
-        if(managerScript.memoryTube != null)
-        {
-            if(areEyesIdling)
-            {
-                try { StopCoroutine(eyeRoutine); }
-                catch (Exception e) { Debug.Log(e); }
-            }
-            areEyesTracked = true;
-            areEyesIdling = false;
-            areEyesAnimated = false;
-            eyeTracking(managerScript.memoryTube.transform);
-        }
-        else
-        {
-            if(areEyesTracked) //Case where we just finished to track a test tube
-            {
-                eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]); 
-                areEyesTracked = false;
-                areEyesAnimated = false;
-            }
-            eyeIdle();
-        }
-
+        
         if(gameManager.currentState == gameManager.states.idleFirstAction && !isIdling)
         {
             StartCoroutine(robotIdle());
         }
+        eyesObject.transform.localPosition = Vector3.MoveTowards(eyesObject.transform.localPosition, eyePos,eyesSpeed * Time.fixedDeltaTime);
+
+        eyesStateMachine(eyesActions.nothing);
     }
 
 

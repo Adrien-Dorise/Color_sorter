@@ -194,7 +194,7 @@ public class testTube : MonoBehaviour
 
         if(isCmplt)
         {
-            managerScript.newTubeComplete();
+            managerScript.isNewTubeCompleted = true;
         }
         return isCmplt;
     }
