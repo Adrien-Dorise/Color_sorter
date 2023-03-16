@@ -198,6 +198,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 788402907498794211, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 970054555433825741, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
       propertyPath: maxColors
       value: 2
@@ -221,6 +225,34 @@ PrefabInstance:
     - target: {fileID: 970054555433825741, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
       propertyPath: numberOfInitLayers
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054555735160586, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054555735160586, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054556325052209, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054556325052209, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054556747099192, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054556988299657, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 970054557067376886, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 970054557359416072, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
       propertyPath: m_RootOrder
@@ -269,6 +301,10 @@ PrefabInstance:
     - target: {fileID: 970054557359416075, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
       propertyPath: m_Name
       value: Scene
+      objectReference: {fileID: 0}
+    - target: {fileID: 1459278088730649798, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e23ac2e85b254c440a23e4ae31cc5da5, type: 3}

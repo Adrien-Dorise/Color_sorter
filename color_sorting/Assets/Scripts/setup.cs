@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -65,16 +64,20 @@ public class setup : MonoBehaviour
         else //If we are in a level scene
         {
             //Tube positions
-            posTubes.Add(new Vector3(-0.45f, 1.1f, 0f));
-            posTubes.Add(new Vector3(0.45f, 1.1f, 0f));
-            posTubes.Add(new Vector3(-0.45f, -0.2f, 0f));
-            posTubes.Add(new Vector3(0.45f, -0.2f, 0f));
-            posTubes.Add(new Vector3(-1.35f, 1.1f, 0f));
-            posTubes.Add(new Vector3(1.35f, 1.1f, 0f));
-            posTubes.Add(new Vector3(-1.35f, -0.2f, 0f));
-            posTubes.Add(new Vector3(1.35f, -0.2f, 0f));
-            posTubes.Add(new Vector3(-0.9f, -1.4f, 0f));
-            posTubes.Add(new Vector3(0.9f, -1.4f, 0f));
+            int x1 = -1000, x2 = 1000, x3 = -2500, x4 = 2500;
+            int y1 = 1500, y2 = -1200, y3 = 3800; 
+            posTubes.Add(new Vector3(x1, y1, 0f));
+            posTubes.Add(new Vector3(x2, y1, 0f));
+            posTubes.Add(new Vector3(x1, y2, 0f));
+            posTubes.Add(new Vector3(x2, y2, 0f));
+            posTubes.Add(new Vector3(x1, y3, 0f));
+            posTubes.Add(new Vector3(x2, y3, 0f));
+            posTubes.Add(new Vector3(x3, y1, 0f));
+            posTubes.Add(new Vector3(x4, y1, 0f));
+            posTubes.Add(new Vector3(x3, y2, 0f));
+            posTubes.Add(new Vector3(x4, y2, 0f));
+            posTubes.Add(new Vector3(x3, y3, 0f));
+            posTubes.Add(new Vector3(x4, y3, 0f));
             musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt(save.musicTime);
             initLevel();
         }

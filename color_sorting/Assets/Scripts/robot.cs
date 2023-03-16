@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Class <c>robot</c> to attach to the robot gameObject of each scenes.
@@ -56,9 +54,9 @@ public class robot : MonoBehaviour
         //Eyes animation
         xBoost = 5.5f;
         yBoost = 2f;
-        yOffsetMax = 0.015f;
-        xOffsetMax = 0.028f;
-        eyesSpeed = 0.2f;
+        yOffsetMax = 1.2f;
+        xOffsetMax = 2.4f;
+        eyesSpeed = 17.5f;
         eyesIdleTempos = new List<float> { 3.5f , 3.5f, 3f, 2.5f, 2.5f, 2f, 1.5f, 1f, 0.5f };
         eyesPositions = new List<Vector3> { Vector3.zero,
                                             new Vector3(xOffsetMax, yOffsetMax,0),
@@ -72,12 +70,12 @@ public class robot : MonoBehaviour
 
 
         //Scaling animation
-        idleSpeed = 0.0075f;
+        idleSpeed = 0.00075f;
         scalingTempo = 0.005f;
         scalingSpeed = 0.05f;
-        endScale = 10f;
-        startScale = 9f;
         eyesIdleLoopRange = new int[2] {7,15};
+        startScale = this.transform.localScale.x;
+        endScale = startScale+0.10f;;
 
         //Initialisation
         isIdling = false;
@@ -95,8 +93,8 @@ public class robot : MonoBehaviour
     public void initialise(Color color)
     {
         eyeColor = color;
-        eyesObject.GetComponent<SpriteRenderer>().color = color;
-        bodyObject.GetComponent<SpriteRenderer>().color = color;
+        eyesObject.GetComponent<Image>().color = color;
+        bodyObject.GetComponent<Image>().color = color;
     }
 
     /// <summary>
@@ -106,8 +104,8 @@ public class robot : MonoBehaviour
     public void switchEyeColor(Color color)
     {
         eyeColor = color;
-        eyesObject.GetComponent<SpriteRenderer>().color = color;
-        bodyObject.GetComponent<SpriteRenderer>().color = color;
+        eyesObject.GetComponent<Image>().color = color;
+        bodyObject.GetComponent<Image>().color = color;
     }
 
     /// <summary>
@@ -158,7 +156,6 @@ public class robot : MonoBehaviour
         }
         else
         {
-        startScale = 9f;
             while (this.transform.localScale.x > startScale)
             {
                 this.transform.localScale = new Vector3(this.transform.localScale.x - scalingSpeed, this.transform.localScale.y - scalingSpeed, 1);
@@ -203,7 +200,7 @@ public class robot : MonoBehaviour
     /// </summary>
     private IEnumerator eyeDubious(float tempo)
     {
-            eyesObject.GetComponent<SpriteRenderer>().sprite = eyesDubious;
+            eyesObject.GetComponent<Image>().sprite = eyesDubious;
             yield return new WaitForSeconds(tempo);
             eyesStateMachine(eyesActions.endAnimate);
     }
@@ -216,7 +213,7 @@ public class robot : MonoBehaviour
     private IEnumerator eyeSarcastic(float tempo, int state, int direction)
     {
         
-        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
+        eyesObject.GetComponent<Image>().sprite = eyesHappy;
         if(state <= 11)
         {
             yield return new WaitForSeconds(tempo);
@@ -238,7 +235,7 @@ public class robot : MonoBehaviour
     /// </summary>
     public IEnumerator happyEyes(float tempo)
     {
-        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHappy;
+        eyesObject.GetComponent<Image>().sprite = eyesHappy;
         yield return new WaitForSeconds(tempo);
         eyesStateMachine(eyesActions.endAnimate);
     }
@@ -249,7 +246,7 @@ public class robot : MonoBehaviour
     /// </summary>
     public IEnumerator heartEyes(float tempo)
     {
-        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesHeart;
+        eyesObject.GetComponent<Image>().sprite = eyesHeart;
         yield return new WaitForSeconds(tempo);
         eyesStateMachine(eyesActions.endAnimate);
     }
@@ -277,14 +274,14 @@ public class robot : MonoBehaviour
                     {
                         StopCoroutine(eyeRoutine);
                         currentState = eyesStates.tracked;
-                        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                        eyesObject.GetComponent<Image>().sprite = eyesIdle;
                     }
                 }
                 else if(action == eyesActions.animate) //Start animation
                 {
                     StopCoroutine(eyeRoutine);
                     currentState = eyesStates.animated;
-                    eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                    eyesObject.GetComponent<Image>().sprite = eyesIdle;
                     eyesStateMachine(eyesActions.animate, anim);
                 }
                 else if(action == eyesActions.newIdle) // We finished the tempo for the current eyes state and need to start a new one
@@ -316,7 +313,7 @@ public class robot : MonoBehaviour
                 if(action == eyesActions.animate) //Switch to a new animation 
                 {
                     currentState = eyesStates.animated;
-                    eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                    eyesObject.GetComponent<Image>().sprite = eyesIdle;
                     eyesStateMachine(eyesActions.animate, anim);
                 }
                 else if(action == eyesActions.nothing) //Continue to track 
@@ -339,7 +336,7 @@ public class robot : MonoBehaviour
                 {
                     currentAnim = avalaibleAnim.idle;
                     StopCoroutine(eyeRoutine);
-                    eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                    eyesObject.GetComponent<Image>().sprite = eyesIdle;
                     if(managerScript.memoryTube != null)
                     {
                         currentState = eyesStates.tracked;
@@ -357,7 +354,7 @@ public class robot : MonoBehaviour
                     {
                         currentAnim = avalaibleAnim.idle;
                         StopCoroutine(eyeRoutine);
-                        eyesObject.GetComponent<SpriteRenderer>().sprite = eyesIdle;
+                        eyesObject.GetComponent<Image>().sprite = eyesIdle;
                         currentState = eyesStates.tracked;
                     }
                 }

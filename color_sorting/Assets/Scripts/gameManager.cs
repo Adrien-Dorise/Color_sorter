@@ -21,7 +21,7 @@ public class gameManager : MonoBehaviour
     public GameObject memoryTube { get; private set; }
     private GameObject selectedTubeObject;
     private GameObject tubesGroupObject;
-    private SpriteRenderer victorySprite;
+    private Image victorySprite;
     [SerializeField] GameObject pooredLiquidPrefab;
     private robot robotScript;
     private audio audioManager;
@@ -36,8 +36,8 @@ public class gameManager : MonoBehaviour
     //To set in Start function!
     [SerializeField] private float pooringTime;
     [SerializeField] private float translationTime;
-    private float xOffset;
-    private float yOffset;
+    [SerializeField] private float xOffset;
+    [SerializeField] private float yOffset;
 
 
     static public string currentScene { get; set; }
@@ -94,7 +94,7 @@ public class gameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        
+        //Pooring animation
         pooringTime = 0.5f;
         translationTime = 0.2f;
         xOffset = 0.75f;
@@ -107,7 +107,7 @@ public class gameManager : MonoBehaviour
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
         if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("MainMenu"))
         {
-            victorySprite = GameObject.Find("Victory").GetComponent<SpriteRenderer>();
+            victorySprite = GameObject.Find("Victory").GetComponent<Image>();
         }
         memoryTube = null;
     }
@@ -166,11 +166,12 @@ public class gameManager : MonoBehaviour
         tube1.transform.SetParent(selectedTubeObject.transform.GetChild(0)); //We change the parent canvas to display the moving tube up front
         for (int i = 0; i < tube1.transform.childCount; i++)
         {
-            tube1.transform.GetChild(i).GetComponent<SpriteRenderer>().sortingOrder += 10;
+            tube1.transform.GetChild(i).GetComponent<Canvas>().sortingOrder += 10;
         }
 
         //Animate
         //Move memory tube to selected tube
+        Debug.Log(tube1.transform.localPosition + " / " + tube1.transform.position);
         Vector3 newPos = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
         float newRot = rotation;
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(newPos,newRot,translationTime));
@@ -181,7 +182,7 @@ public class gameManager : MonoBehaviour
         //Add poored liquid
         GameObject tempLiquid = GameObject.Instantiate(pooredLiquidPrefab,tube1.transform.position, new Quaternion(0,0,0,0));
         tempLiquid.transform.localScale = new Vector3(-xDir, 1, 1);
-        foreach(SpriteRenderer sprite in tempLiquid.GetComponentsInChildren<SpriteRenderer>())
+        foreach(Image sprite in tempLiquid.GetComponentsInChildren<Image>())
         {
             sprite.color = pooredColor;
         }
@@ -218,7 +219,7 @@ public class gameManager : MonoBehaviour
         tube1.transform.SetParent(tubesGroupObject.transform);
         for (int i = 0; i < tube1.transform.childCount; i++)
         {
-            tube1.transform.GetChild(i).GetComponent<SpriteRenderer>().sortingOrder -= 10;
+            tube1.transform.GetChild(i).GetComponent<Canvas>().sortingOrder -= 10;
         }
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));

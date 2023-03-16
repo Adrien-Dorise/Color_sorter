@@ -21,21 +21,30 @@ public class testTube : MonoBehaviour
     public bool tubeComplete; //State if the tube is full and cannot be touched anymore
 
     //Layer
-    private float yOffset = 0.475f; //To set manually: Y offset between the middle and the bottom of a tube sprite
+    private float yOffset; //To set manually: Y offset between the middle and the bottom of a tube sprite
 
 
     //Tube animation
-    [SerializeField] private float scalingTempo = 0.005f; //Time taking to up or down scale a tube
-    [SerializeField] private float scalingSpeed = 0.025f; //Speed at which a u=tube is up or down scaled
-    [SerializeField] private float endScale = 1.3f; //Max scale threshold when animating
+    [SerializeField] private float scalingTempo; //Time taking to up or down scale a tube
+    [SerializeField] private float scalingSpeed; //Speed at which a u=tube is up or down scaled
+    [SerializeField] private float endScale; //Max scale threshold when animating
     private bool isMoving; //Set true when the tube have to move from one position to another
 
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        scalingTempo = 0.005f;
+        scalingSpeed = 0.025f;
+        endScale = 1.3f;
+        tubeComplete = false;
+        isMoving = false;
+
+        //Layer offset
+        yOffset = 1000;
+    }
     void Start()
     {
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
-        tubeComplete = false;
-        isMoving = false;
     }
 
 
@@ -74,7 +83,7 @@ public class testTube : MonoBehaviour
         child.transform.localScale = new Vector3(1f, 1f / maxLiquid, 1f);
         child.transform.localPosition = new Vector3(0f, -yOffset + (yOffset / maxLiquid) + (colorList.Count * 2 * yOffset / maxLiquid), 0f);
         colorList.Push(color);
-        child.transform.GetComponent<SpriteRenderer>().color = color;
+        child.transform.GetComponent<Image>().color = color;
         tubeComplete = isComplete();
 
     }
