@@ -19,10 +19,8 @@ public class gameManager : MonoBehaviour
     static public states currentState { get; private set; }
     static public Color[] colors;
     public GameObject memoryTube { get; private set; }
-    private GameObject selectedTubeObject;
     private GameObject tubesGroupObject;
     private Image victorySprite;
-    [SerializeField] GameObject pooredLiquidPrefab;
     private robot robotScript;
     private audio audioManager;
 
@@ -100,7 +98,6 @@ public class gameManager : MonoBehaviour
         xOffset = 1500f;
         yOffset = 1250f;
 
-        selectedTubeObject = GameObject.Find("Selected Tube");
         tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
@@ -133,6 +130,24 @@ public class gameManager : MonoBehaviour
     }
 
 
+    private void setSortOrder(GameObject tube1, GameObject tube2, int sortOrder)
+    {
+        tube1.GetComponent<Canvas>().sortingOrder = sortOrder+5; //Tube order
+        foreach(Canvas canv in tube1.transform.GetChild(0).GetComponentsInChildren<Canvas>()) //Pooring order
+        {
+            canv.sortingOrder = sortOrder;
+        }
+        foreach(Canvas canv in tube1.transform.GetChild(1).GetComponentsInChildren<Canvas>()) //Layer order
+        {
+            canv.sortingOrder = sortOrder+4;
+        }
+
+        tube2.GetComponent<Canvas>().sortingOrder = sortOrder +3;
+        foreach(Canvas canv in tube2.transform.GetChild(1).GetComponentsInChildren<Canvas>())
+        {
+            canv.sortingOrder = sortOrder + 2;
+        }
+    }
 
     /// <summary>
     /// Method <c>pooringAnimation</c> manage the animation when a tube is porring a layer into another one.
@@ -163,16 +178,10 @@ public class gameManager : MonoBehaviour
         }
 
         //Sorting order update
-        //tube1.transform.SetParent(selectedTubeObject.transform.GetChild(0)); //We change the parent canvas to display the moving tube up front
-        tube1.GetComponent<Canvas>().sortingOrder += 10;
-        foreach(Canvas canv in tube1.GetComponentsInChildren<Canvas>())
-        {
-            canv.sortingOrder += 10;
-        }
+        setSortOrder(tube1,tube2, 10);
 
         //Animate
         //Move memory tube to selected tube
-        Debug.Log(tube1.transform.localPosition + " / " + tube2.transform.localPosition);
         Vector3 newPos = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
         float newRot = rotation;
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(newPos,newRot,translationTime));
@@ -181,10 +190,10 @@ public class gameManager : MonoBehaviour
 
 
         //Add poored liquid
-        GameObject tempLiquid = GameObject.Instantiate(pooredLiquidPrefab,tube1.transform.position, new Quaternion(0,0,0,0));
-        tempLiquid.transform.localScale = new Vector3(-xDir, 1, 1);
-        foreach(Image sprite in tempLiquid.GetComponentsInChildren<Image>())
+        tube1.transform.GetChild(0).localScale = new Vector3(-xDir,1,1);
+        foreach(Image sprite in tube1.transform.GetChild(0).GetComponentsInChildren<Image>())
         {
+            sprite.enabled = true;
             sprite.color = pooredColor;
         }
         audioManager.pooringSound();   
@@ -214,16 +223,16 @@ public class gameManager : MonoBehaviour
 
 
         //Return to initial position
-        Destroy(tempLiquid);
+        foreach(Image sprite in tube1.transform.GetChild(0).GetComponentsInChildren<Image>())
+        {
+            sprite.enabled = false;
+        }
         //tube1.transform.position = initialPosition;
         //tube1.transform.rotation = initialRotation;
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
-        tube1.GetComponent<Canvas>().sortingOrder -= 10;
-        foreach(Canvas canv in tube1.GetComponentsInChildren<Canvas>())
-        {
-            canv.sortingOrder -= 10;
-        }
+        
+        setSortOrder(tube1,tube2, 0);
         if(memoryTube == tube1) //If when the tube is back in position the player hasn't selected another tube, we remove this one from memory
         {
             memoryTube = null;

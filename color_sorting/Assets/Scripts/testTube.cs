@@ -41,6 +41,11 @@ public class testTube : MonoBehaviour
 
         //Layer offset
         yOffset = 980f;
+
+        foreach(Image sprite in transform.GetChild(0).GetComponentsInChildren<Image>())
+        {
+            sprite.enabled = false;
+        }
     }
     void Start()
     {
@@ -79,7 +84,7 @@ public class testTube : MonoBehaviour
     /// <param name="color"> state the color of the new layer </param>
     public void addColorLayer(Color color)
     {
-        GameObject child = Instantiate(liquidPrefab, this.transform);
+        GameObject child = Instantiate(liquidPrefab, this.transform.GetChild(1));
         child.transform.localScale = new Vector3(1f, 1f / maxLiquid, 1f);
         child.transform.localPosition = new Vector3(0f, -yOffset + (yOffset / maxLiquid) + (colorList.Count * 2 * yOffset / maxLiquid), 0f);
         colorList.Push(color);
@@ -97,7 +102,7 @@ public class testTube : MonoBehaviour
     {
         try
         {
-            Destroy(this.transform.GetChild(colorList.Count-1).gameObject);
+            Destroy(this.transform.GetChild(1).GetChild(colorList.Count-1).gameObject);
             colorList.Pop();
         }
         catch(Exception e) { Debug.LogException(e); }
