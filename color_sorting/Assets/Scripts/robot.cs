@@ -72,7 +72,7 @@ public class robot : MonoBehaviour
         //Scaling animation
         idleSpeed = 0.00075f;
         scalingTempo = 0.005f;
-        scalingSpeed = 0.05f;
+        scalingSpeed = 0.005f;
         eyesIdleLoopRange = new int[2] {7,15};
         startScale = this.transform.localScale.x;
         endScale = startScale+0.10f;;

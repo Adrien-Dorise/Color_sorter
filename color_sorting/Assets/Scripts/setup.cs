@@ -64,7 +64,7 @@ public class setup : MonoBehaviour
         else //If we are in a level scene
         {
             //Tube positions
-            int x1 = -1000, x2 = 1000, x3 = -2500, x4 = 2500;
+            int x1 = -833, x2 = 833, x3 = -2500, x4 = 2500;
             int y1 = 1500, y2 = -1200, y3 = 3800; 
             posTubes.Add(new Vector3(x1, y1, 0f));
             posTubes.Add(new Vector3(x2, y1, 0f));

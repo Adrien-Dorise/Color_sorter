@@ -97,8 +97,8 @@ public class gameManager : MonoBehaviour
         //Pooring animation
         pooringTime = 0.5f;
         translationTime = 0.2f;
-        xOffset = 0.75f;
-        yOffset = 0.5f;
+        xOffset = 1500f;
+        yOffset = 1250f;
 
         selectedTubeObject = GameObject.Find("Selected Tube");
         tubesGroupObject = GameObject.Find("Tubes");
@@ -163,15 +163,16 @@ public class gameManager : MonoBehaviour
         }
 
         //Sorting order update
-        tube1.transform.SetParent(selectedTubeObject.transform.GetChild(0)); //We change the parent canvas to display the moving tube up front
-        for (int i = 0; i < tube1.transform.childCount; i++)
+        //tube1.transform.SetParent(selectedTubeObject.transform.GetChild(0)); //We change the parent canvas to display the moving tube up front
+        tube1.GetComponent<Canvas>().sortingOrder += 10;
+        foreach(Canvas canv in tube1.GetComponentsInChildren<Canvas>())
         {
-            tube1.transform.GetChild(i).GetComponent<Canvas>().sortingOrder += 10;
+            canv.sortingOrder += 10;
         }
 
         //Animate
         //Move memory tube to selected tube
-        Debug.Log(tube1.transform.localPosition + " / " + tube1.transform.position);
+        Debug.Log(tube1.transform.localPosition + " / " + tube2.transform.localPosition);
         Vector3 newPos = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
         float newRot = rotation;
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(newPos,newRot,translationTime));
@@ -216,13 +217,13 @@ public class gameManager : MonoBehaviour
         Destroy(tempLiquid);
         //tube1.transform.position = initialPosition;
         //tube1.transform.rotation = initialRotation;
-        tube1.transform.SetParent(tubesGroupObject.transform);
-        for (int i = 0; i < tube1.transform.childCount; i++)
-        {
-            tube1.transform.GetChild(i).GetComponent<Canvas>().sortingOrder -= 10;
-        }
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
+        tube1.GetComponent<Canvas>().sortingOrder -= 10;
+        foreach(Canvas canv in tube1.GetComponentsInChildren<Canvas>())
+        {
+            canv.sortingOrder -= 10;
+        }
         if(memoryTube == tube1) //If when the tube is back in position the player hasn't selected another tube, we remove this one from memory
         {
             memoryTube = null;

@@ -40,7 +40,7 @@ public class testTube : MonoBehaviour
         isMoving = false;
 
         //Layer offset
-        yOffset = 1000;
+        yOffset = 980f;
     }
     void Start()
     {
