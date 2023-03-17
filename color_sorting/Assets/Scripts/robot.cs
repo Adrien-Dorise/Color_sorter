@@ -25,7 +25,7 @@ public class robot : MonoBehaviour
     public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart}
     private avalaibleAnim currentAnim;
     private eyesStates currentState;
-    private float yOffsetMax, xOffsetMax;
+    [SerializeField] private float yOffsetMax, xOffsetMax;
     [SerializeField] private float xBoost, yBoost, eyesSpeed;
     private List<float> eyesIdleTempos;
     private List<Vector3> eyesPositions;
@@ -52,11 +52,11 @@ public class robot : MonoBehaviour
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();    
         
         //Eyes animation
-        xBoost = 5.5f;
-        yBoost = 2f;
-        yOffsetMax = 1.2f;
-        xOffsetMax = 2.4f;
-        eyesSpeed = 17.5f;
+        xBoost = 60f;
+        yBoost = 60f;
+        yOffsetMax = 25f;
+        xOffsetMax = 50f;
+        eyesSpeed = 325f;
         eyesIdleTempos = new List<float> { 3.5f , 3.5f, 3f, 2.5f, 2.5f, 2f, 1.5f, 1f, 0.5f };
         eyesPositions = new List<Vector3> { Vector3.zero,
                                             new Vector3(xOffsetMax, yOffsetMax,0),
@@ -172,10 +172,9 @@ public class robot : MonoBehaviour
     /// <param name="transf"> transform component containing the position information of the object to look </param>
     private void eyeTracking(Transform transf)
     {
-        Vector3 deltaPos = new Vector3(transf.position.x * xBoost, transf.position.y * yBoost, 0f) - eyesObject.transform.position;
-        deltaPos = new Vector3(deltaPos.normalized.x, deltaPos.normalized.y, 0f); //Removed z component
-        Debug.DrawRay(eyesObject.transform.localPosition, deltaPos, Color.red);
-        eyePos = Vector3.zero + deltaPos;
+        Vector3 deltaPos = new Vector3(transf.position.x, transf.position.y, 0f) - eyesObject.transform.position;
+        eyePos = new Vector3(deltaPos.normalized.x * xBoost, deltaPos.normalized.y * yBoost, 0f); //Removed z component
+        Debug.DrawRay(eyesObject.transform.position, deltaPos*3, Color.red);
     }
 
 
