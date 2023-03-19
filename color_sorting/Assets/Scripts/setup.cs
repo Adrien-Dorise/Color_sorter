@@ -58,7 +58,7 @@ public class setup : MonoBehaviour
 
         musicManager = GameObject.Find("Music Manager");
 
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu")) //If we are in the main menu screen.
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level Selection")) //If we are in the main menu screen.
         {
             PlayerPrefs.SetInt(save.musicTime, 0);
             initMainMenu();

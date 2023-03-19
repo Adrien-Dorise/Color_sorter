@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,55 @@ public class levels
 {
     
     static public List<Color> robotColorPerLevel = new List<Color>();
+
+
+    private void levelGenerator(int seed, int numberTube, int numberEmptyTube, int numberInitLayers, int numberMaxLayers, int tubeToWin, int maxLevelColor)
+    {
+        UnityEngine.Random.InitState(seed);
+        List<List<Color>> generatedLevel = new List<List<Color>>();
+        for(int i = 0; i < numberTube - numberEmptyTube; i++)
+        {
+            generatedLevel.Add(new List<Color>());
+        }
+        int totalLayers = numberInitLayers * (numberTube - numberEmptyTube);
+        
+        //We select the colors used in this new level;
+        List<int> colorsUsed = new List<int>();
+        int rand, randMemory;
+        if(maxLevelColor > gameManager.colors.Length)
+        {
+            throw new System.Exception("The number of colors wanted in this level is higher than the total number of available colors");
+        }
+        else
+        {
+            while(colorsUsed.Count < maxLevelColor)
+            {
+                rand = UnityEngine.Random.Range(0,gameManager.colors.Length);
+                if(!colorsUsed.Contains(rand))
+                {
+                    colorsUsed.Add(rand);
+                }
+            }
+        }
+
+        randMemory = -1;
+        for(int lay = 0; lay < totalLayers; lay++)
+        {
+            rand = UnityEngine.Random.Range(0,gameManager.colors.Length);
+            if(rand != randMemory)
+            {
+                colorsUsed.Add(rand);
+            }
+            randMemory = rand;
+        }
+
+        //Get layers order
+        
+        UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
+    }
+    //setupObject.initLevelParameters(3, 1, 3, 3, 2);
+
+
 
     //Levels are done like:
     // Tube1: Color1, color2, Color3
