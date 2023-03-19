@@ -23,12 +23,13 @@ public class setup : MonoBehaviour
 
     //Scene parameters
     //This is to be set in editor according to the level disposition.
-    [SerializeField] private int numberOfTube = 3;
-    [SerializeField] private int numberOfEmptyTube = 1;
-    [SerializeField] private int numberOfMaxLayers = 4;
-    [SerializeField] private int numberOfInitLayers = 2;
-    [SerializeField] private int maxColors = 3;
-    [SerializeField] public int completeTubeToWin = 2;
+    private int numberOfTube;
+    private int numberOfEmptyTube;
+    private int numberOfMaxLayers;
+    private int numberOfInitLayers;
+    [SerializeField] public int completeTubeToWin;
+    private List<List<Color>> colorTubesList;
+    
 
     //Tube positions
     private List<Vector3> posTubes = new List<Vector3>(); //To set in start func: Possible position for each tube on the scene.
@@ -36,6 +37,7 @@ public class setup : MonoBehaviour
 
     //Color
     private Color colorArrow, colorButtons;
+
     private GameObject musicManager;
 
     // Start is called before the first frame update
@@ -79,10 +81,19 @@ public class setup : MonoBehaviour
             posTubes.Add(new Vector3(x3, y3, 0f));
             posTubes.Add(new Vector3(x4, y3, 0f));
             musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt(save.musicTime);
+            colorTubesList = levels.getLevelColors();
             initLevel();
         }
     }
 
+    public void initLevelParameters(int numberTube, int numberEmptyTube, int numberInitLayers, int numberMaxLayers, int tubeToWin)
+    {
+        numberOfTube = numberTube;
+        numberOfEmptyTube = numberEmptyTube;
+        numberOfMaxLayers = numberMaxLayers;
+        numberOfInitLayers = numberInitLayers;
+        completeTubeToWin = tubeToWin;
+    }
 
     /// <summary>
     /// Method <c>initLevel</c> Initialise a level screen after loading
@@ -95,7 +106,7 @@ public class setup : MonoBehaviour
     {
 
         List<Color> randomCol = new List<Color>();
-        for(int i = 0; i < Mathf.Min(numberOfInitLayers,maxColors); i++)
+        for(int i = 0; i < numberOfInitLayers; i++)
         {
             randomCol.Add(gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())]);
         }
@@ -107,7 +118,7 @@ public class setup : MonoBehaviour
 
         //We verify that we can change a color with the robot !
         bool isColorRobotChanged = false;
-        foreach (List<Color> col in levels.getLevelColors()) 
+        foreach (List<Color> col in colorTubesList) 
         {
             try
             {
@@ -123,20 +134,20 @@ public class setup : MonoBehaviour
         //We switch all layers of one color if impossible to find a colors corresponding to robot
         if(!isColorRobotChanged) 
         {
-            Color switchColor = levels.getLevelColors()[0].LastOrDefault();
-            for (int i = 0; i < levels.getLevelColors().Count; i++)
+            Color switchColor = colorTubesList[0].LastOrDefault();
+            for (int i = 0; i < colorTubesList.Count; i++)
             {
-                for(int j = 0; j < levels.getLevelColors()[i].Count; j++)
+                for(int j = 0; j < colorTubesList[i].Count; j++)
                 {
                     try
                     {
-                        if (levels.getLevelColors()[i][j] == colorRob) //Switch colors similar to robot by the switch color
+                        if (colorTubesList[i][j] == colorRob) //Switch colors similar to robot by the switch color
                         {
-                            levels.getLevelColors()[i][j] = switchColor;
+                            colorTubesList[i][j] = switchColor;
                         }
-                        else if (levels.getLevelColors()[i][j] == switchColor) 
+                        else if (colorTubesList[i][j] == switchColor) 
                         {
-                            levels.getLevelColors()[i][j] = colorRob;
+                            colorTubesList[i][j] = colorRob;
                         }
                     }
                     catch (Exception e) { Debug.Log(e); }
@@ -153,7 +164,7 @@ public class setup : MonoBehaviour
             tube.transform.localPosition = posTubes[i];
             if(i < numberOfTube - numberOfEmptyTube)
             {
-                tube.GetComponent<testTube>().initialise(numberOfMaxLayers, levels.getLevelColors()[i]);
+                tube.GetComponent<testTube>().initialise(numberOfMaxLayers, colorTubesList[i]);
 
                 //Change color according to robot
                 try
@@ -161,16 +172,8 @@ public class setup : MonoBehaviour
                     if(tube.GetComponent<testTube>().colorList.Peek() == colorRob && !isTubeChangedByRobot)
                     {
                         tube.GetComponent<testTube>().removeColorLayer();
-                        /*
-                         * Strategy with randomize switched color
-                        Color newColor = gameManager.colors[UnityEngine.Random.Range(0, maxColors)];
-                        while(newColor == colorRob)
-                        {
-                            newColor = gameManager.colors[UnityEngine.Random.Range(0, maxColors)];
-                        }
-                        */
                         Color newColor = gameManager.colors[0];
-                        for(int iCol = 0; iCol < maxColors; iCol++)
+                        for(int iCol = 0; iCol < gameManager.colors.Count(); iCol++)
                         {
                             newColor = gameManager.colors[iCol]; 
                             if(newColor != colorRob)
@@ -212,9 +215,10 @@ public class setup : MonoBehaviour
         colorArrow = gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
         colorButtons = gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
         GameObject buttons = GameObject.Find("Level Buttons");
-        selection selectScript = GameObject.Find("Selection Canvas").GetComponent<selection>();
+        selection selectScript = GameObject.Find("Buttons Canvas").GetComponent<selection>();
         GameObject levelsButton = GameObject.Find("Level Buttons");
         GameObject quitButton = GameObject.Find("Quit");
+        GameObject buttonsCanvas = GameObject.Find("Buttons Canvas");
 
         //Initialise
         robot.GetComponent<robot>().initialise(levels.robotColorPerLevel.LastOrDefault());
@@ -226,9 +230,9 @@ public class setup : MonoBehaviour
         //Arrows hiding
         if(PlayerPrefs.GetInt(save.availableLevels) <= 9)
         {
-            selectScript.gameObject.transform.GetChild(1).gameObject.SetActive(false);
+            buttonsCanvas.gameObject.transform.GetChild(1).gameObject.SetActive(false);
         }
-        selectScript.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        buttonsCanvas.gameObject.transform.GetChild(0).gameObject.SetActive(false);
 
 
     }

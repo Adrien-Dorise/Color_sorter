@@ -1401,8 +1401,11 @@ MonoBehaviour:
   tubePrefab: {fileID: 0}
   robot: {fileID: 0}
   numberOfTube: 1
-  numberOfInitLayers: 2
+  numberOfEmptyTube: 1
   numberOfMaxLayers: 4
+  numberOfInitLayers: 2
+  maxColors: 3
+  completeTubeToWin: 2
 --- !u!4 &1203805572
 Transform:
   m_ObjectHideFlags: 0
@@ -1705,6 +1708,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e0f60b664293d54599f8264a35fe4f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isNewTubeCompleted: 0
   pooringTime: 0.8
   translationTime: 1
   xOffset: 0.5
@@ -2551,11 +2555,18 @@ MonoBehaviour:
   eyesHeart: {fileID: 21300000, guid: 8319cc0f49a98644b9d162340c490eb7, type: 3}
   isIdle: 0
   eyeColor: {r: 0, g: 0, b: 0, a: 0}
+  yOffsetMax: 0
+  xOffsetMax: 0
   xBoost: 0
   yBoost: 0
+  eyesSpeed: 0
+  eyeTempo: 0
+  eyePos: {x: 0, y: 0, z: 0}
   scalingTempo: 0.005
   scalingSpeed: 0.025
   endScale: 9.5
+  startScale: 0
+  idleSpeed: 0
 --- !u!222 &2015467393
 CanvasRenderer:
   m_ObjectHideFlags: 0

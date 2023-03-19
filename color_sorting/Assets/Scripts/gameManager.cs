@@ -18,14 +18,14 @@ public class gameManager : MonoBehaviour
     public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
     static public states currentState { get; private set; }
     static public Color[] colors;
-    public GameObject memoryTube { get; private set; }
+    [SerializeField] public GameObject memoryTube;
     private GameObject tubesGroupObject;
     private Image victorySprite;
     private robot robotScript;
     private audio audioManager;
 
     private setup setupScript;
-    private int completedTube;
+    [SerializeField] private int completedTube;
     public bool isNewTubeCompleted;
 
 
@@ -166,11 +166,11 @@ public class gameManager : MonoBehaviour
             xDir = -1;
             rotation *= -1;
         }
-        robotScript.switchEyeColor(memoryTube.GetComponent<testTube>().colorList.Peek());
+        robotScript.switchEyeColor(tube1.GetComponent<testTube>().colorList.Peek());
         Color pooredColor = Color.black;
         try
         {
-            pooredColor = memoryTube.GetComponent<testTube>().colorList.Peek();
+            pooredColor = tube1.GetComponent<testTube>().colorList.Peek();
         }
         catch(Exception e)
         {
@@ -233,10 +233,6 @@ public class gameManager : MonoBehaviour
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
         
         setSortOrder(tube1,tube2, 0);
-        if(memoryTube == tube1) //If when the tube is back in position the player hasn't selected another tube, we remove this one from memory
-        {
-            memoryTube = null;
-        }
     }
 
     
@@ -472,6 +468,7 @@ public class gameManager : MonoBehaviour
                 if(act == actions.pooring)
                 {
                     StartCoroutine(pooringAnimation(memoryTube, obj));
+                    memoryTube = null;
                 }
 
                 else if(act == actions.finishAction)
@@ -479,15 +476,14 @@ public class gameManager : MonoBehaviour
                     if(isNewTubeCompleted)
                     {
                         completedTube++;
+                        isNewTubeCompleted = false;
                         if(completedTube >= setupScript.completeTubeToWin) //Victory
                         {
-                            completedTube++;
                             currentState = states.endLevel;
                             gameState(actions.noAction);
                         }
                         else //New tube complete
                         {
-                            completedTube++;
                             audioManager.GetComponent<audio>().tubeCompleteSound();
                             robotScript.eyesStateMachine(robot.eyesActions.animate, robot.avalaibleAnim.happy);
                             currentState = states.idleNoTube;

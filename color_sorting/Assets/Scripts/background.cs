@@ -19,7 +19,6 @@ public class background : MonoBehaviour
 
     public void onClick()
     {
-        Debug.Log("background click");
         managerScript.gameState(gameManager.actions.clickedBackround);
     }
 

@@ -17,8 +17,8 @@ public class selection : MonoBehaviour
 
     private Color arrowsColor;
 
-    public int maxDisplayedLevel; //Max level on the displayed icons in the selection screen
-    public string textLevel = "1"; //"1" is for init, do not touch
+    [HideInInspector] public int maxDisplayedLevel; //Max level on the displayed icons in the selection screen
+    [HideInInspector] public string textLevel = "1"; //"1" is for init, do not touch
     private int levelPerScreen;
 
     // Start is called before the first frame update

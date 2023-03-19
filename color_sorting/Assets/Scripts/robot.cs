@@ -52,11 +52,11 @@ public class robot : MonoBehaviour
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();    
         
         //Eyes animation
-        xBoost = 60f;
-        yBoost = 60f;
-        yOffsetMax = 25f;
+        xBoost = 175f; //xBoost and yBoost are for tracked state
+        yBoost = 30f;
+        yOffsetMax = 30f;
         xOffsetMax = 50f;
-        eyesSpeed = 325f;
+        eyesSpeed = 360f;
         eyesIdleTempos = new List<float> { 3.5f , 3.5f, 3f, 2.5f, 2.5f, 2f, 1.5f, 1f, 0.5f };
         eyesPositions = new List<Vector3> { Vector3.zero,
                                             new Vector3(xOffsetMax, yOffsetMax,0),
@@ -175,6 +175,14 @@ public class robot : MonoBehaviour
         Vector3 deltaPos = new Vector3(transf.position.x, transf.position.y, 0f) - eyesObject.transform.position;
         eyePos = new Vector3(deltaPos.normalized.x * xBoost, deltaPos.normalized.y * yBoost, 0f); //Removed z component
         Debug.DrawRay(eyesObject.transform.position, deltaPos*3, Color.red);
+        if(Mathf.Abs(eyePos.x) > xOffsetMax)
+        {
+            eyePos.x = xOffsetMax * Mathf.Sign(eyePos.x);
+        }
+        if(Mathf.Abs(eyePos.y) > yOffsetMax)
+        {
+            eyePos.y = yOffsetMax * Mathf.Sign(eyePos.y);
+        }
     }
 
 

@@ -13,7 +13,7 @@ public class button : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        selectScript = GameObject.Find("Selection Canvas").GetComponent<selection>();
+        selectScript = GameObject.Find("Buttons Canvas").GetComponent<selection>();
     }
 
     public void onClick()

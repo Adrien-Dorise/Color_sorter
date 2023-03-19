@@ -15,7 +15,6 @@ public class levels
     
     static public List<Color> robotColorPerLevel = new List<Color>();
 
-
     //Levels are done like:
     // Tube1: Color1, color2, Color3
     // Tube2: Color1, color2, Color3
@@ -25,6 +24,7 @@ public class levels
         new List<Color>{ gameManager.colors[2], gameManager.colors[1], gameManager.colors[1] },
         new List<Color>{gameManager.colors[2], gameManager.colors[1],gameManager.colors[2]},
     };
+
     
     static public List<List<Color>> Level1 = new List<List<Color>>()
     {
@@ -88,27 +88,37 @@ public class levels
 
     static public List<List<Color>> getLevelColors()
     {
+        setup setupObject = GameObject.Find("Setup").GetComponent<setup>(); 
+        //( numberTube,  numberEmptyTube,  numberInitLayers,  numberMaxLayers,  tubeToWin)
+
         switch (SceneManager.GetActiveScene().name) 
         {
-            case "testScene":
+            case "testLevel":
+                setupObject.initLevelParameters(3, 1, 3, 3, 2);
                 return testLevel;
                 
             case "Level1":
-                return testLevel;
+                setupObject.initLevelParameters(6, 2, 4, 4, 4);
+                return Level1;
 
             case "Level2":
+                setupObject.initLevelParameters(7, 2, 4, 4, 5);
                 return Level2;
                 
             case "Level3":
+                setupObject.initLevelParameters(8, 2, 4, 4, 6);
                 return Level3;
 
             case "Level4":
+                setupObject.initLevelParameters(9, 2, 4, 4, 7);
                 return Level4;
 
             case "Level5":
+                setupObject.initLevelParameters(10, 2, 4, 4, 8);
                 return Level5;
             
             case "Level6":
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
                 return Level6;
 
             /*
