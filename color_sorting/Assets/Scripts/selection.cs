@@ -97,7 +97,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void onQuitToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Level Selection");
     }
 
 
@@ -128,7 +128,7 @@ public class selection : MonoBehaviour
     public void Reset()
     {
         PlayerPrefs.DeleteAll();
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Level Selection");
     }
 
     /// <summary>

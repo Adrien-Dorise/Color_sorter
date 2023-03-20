@@ -14,7 +14,7 @@ using UnityEngine.UI;
 public class gameManager : MonoBehaviour
 {
     
-    public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, mainMenu }
+    public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, levelSelection }
     public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
     static public states currentState { get; private set; }
     static public Color[] colors;
@@ -45,11 +45,12 @@ public class gameManager : MonoBehaviour
 
     private void Awake()
     {
-        currentScene = "MainMenu";
+        currentScene = "Level Selection";
         completedTube = 0;
-        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("MainMenu"))
+        isNewTubeCompleted = false;
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level Selection"))
         {
-            currentState = states.mainMenu;
+            currentState = states.levelSelection;
         }
         else
         {
@@ -102,7 +103,7 @@ public class gameManager : MonoBehaviour
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
-        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("MainMenu"))
+        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Level Selection"))
         {
             victorySprite = GameObject.Find("Victory").GetComponent<Image>();
         }
@@ -287,7 +288,7 @@ public class gameManager : MonoBehaviour
         }
         saveRobotColorManagement(PlayerPrefs.GetInt(save.currentLevel), savedColor);
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Level Selection");
 
     }
 

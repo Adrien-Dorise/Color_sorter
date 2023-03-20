@@ -111,8 +111,15 @@ public class setup : MonoBehaviour
             randomCol.Add(gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())]);
         }
 
-        Color colorRob;
-        colorRob = levels.robotColorPerLevel[PlayerPrefs.GetInt(save.currentLevel)-1];
+        Color colorRob = gameManager.colors[0];
+        try
+        {
+            colorRob = levels.robotColorPerLevel[PlayerPrefs.GetInt(save.currentLevel)-1];
+        }
+        catch(Exception e)
+        {
+            Debug.LogWarning("If warning appearing in <test level>, it is OK\n" + e);
+        }
         robot.GetComponent<robot>().initialise(colorRob);
 
 
@@ -189,7 +196,7 @@ public class setup : MonoBehaviour
                 }
                 catch(Exception ex)
                 {
-                    Debug.Log(ex);
+                    Debug.LogError(ex);
                 }
             }
             else
