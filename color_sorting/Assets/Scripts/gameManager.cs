@@ -172,11 +172,14 @@ public class gameManager : MonoBehaviour
         try
         {
             pooredColor = tube1.GetComponent<testTube>().colorList.Peek();
+            tube1.GetComponent<Image>().raycastTarget = false;
+            tube2.GetComponent<Image>().raycastTarget = false;
         }
         catch(Exception e)
         {
             Debug.Log(e);
         }
+
 
         //Sorting order update
         setSortOrder(tube1,tube2, 10);
@@ -224,6 +227,7 @@ public class gameManager : MonoBehaviour
 
 
         //Return to initial position
+        tube2.GetComponent<Image>().raycastTarget = true;
         foreach(Image sprite in tube1.transform.GetChild(0).GetComponentsInChildren<Image>())
         {
             sprite.enabled = false;
@@ -232,7 +236,7 @@ public class gameManager : MonoBehaviour
         //tube1.transform.rotation = initialRotation;
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
         yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
-        
+        tube1.GetComponent<Image>().raycastTarget = true;
         setSortOrder(tube1,tube2, 0);
     }
 

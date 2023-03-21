@@ -107,6 +107,7 @@ public class levels
         //Print generated level in debug console
         string str = "";
         int count = 1;
+        Debug.Log("Level" + PlayerPrefs.GetInt(save.currentLevel));
         Debug.Log("Seed: " + seed);
         foreach(List<int> tube in debugList)
         {
@@ -201,14 +202,11 @@ public class levels
         //( numberTube,  numberEmptyTube,  numberInitLayers,  numberMaxLayers,  tubeToWin)
         List<List<Color>> generatedLevel;
         int seed, numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor;
-        switch (SceneManager.GetActiveScene().name) 
+        switch (PlayerPrefs.GetInt(save.currentLevel)) 
         {
-            case "testLevel":
-                setupObject.initLevelParameters(3, 1, 3, 3, 2);
-                generatedLevel = levels.levelGenerator(-1635485455,3,1,3,3,2,2);
-                return generatedLevel;
+            
                 
-            case "Level1":
+            case 1:
                 numberTube = 6;
                 numberEmptyTube = 2;
                 numberInitLayers = 4;
@@ -221,8 +219,7 @@ public class levels
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
                 return generatedLevel;
 
-            case "Level2":
-
+            case 2:
                 setupObject.initLevelParameters(7, 2, 4, 4, 5);
                 numberTube = 7;
                 numberEmptyTube = 2;
@@ -230,13 +227,13 @@ public class levels
                 numberMaxLayers = 4;
                 tubeToWin = 5;
                 maxLevelColor = 5;
-                seed = 0;
+                seed = 2039950124;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
                 return generatedLevel;
                 
-            case "Level3":
+            case 3:
                 setupObject.initLevelParameters(8, 2, 4, 4, 6);
                 numberTube = 8;
                 numberEmptyTube = 2;
@@ -244,13 +241,13 @@ public class levels
                 numberMaxLayers = 4;
                 tubeToWin = 6;
                 maxLevelColor = 6;
-                seed = 0;
+                seed = -612813029;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
                 return generatedLevel;
 
-            case "Level4":
+            case 4:
                 setupObject.initLevelParameters(9, 2, 4, 4, 7);
                 numberTube = 9;
                 numberEmptyTube = 2;
@@ -258,13 +255,13 @@ public class levels
                 numberMaxLayers = 4;
                 tubeToWin = 7;
                 maxLevelColor = 7;
-                seed = 0;
+                seed = -1838037443;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
                 return generatedLevel;
 
-            case "Level5":
+            case 5:
                 setupObject.initLevelParameters(10, 2, 4, 4, 8);
                 numberTube = 10;
                 numberEmptyTube = 2;
@@ -278,7 +275,36 @@ public class levels
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
                 return generatedLevel;
             
-            case "Level6":
+            case 6:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 142450910;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            
+            case 7:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+                
+            case 8:
                 setupObject.initLevelParameters(5, 1, 4, 4, 4);
                 numberTube = 5;
                 numberEmptyTube = 1;
@@ -292,41 +318,2000 @@ public class levels
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
                 return generatedLevel;
 
-            /*
-            case "Level7":
-                return Level7;
-                break;
-            case "Level8":
-                return Level8;
-                break;
-            case "Level9":
-                return Level9;
-                break;
-            case "Level10":
-                return Level10;
-                break;
-            case "Level11":
-                return Level11;
-                break;
-            case "Level12":
-                return Level12;
-                break;
-            case "Level13":
-                return Level13;
-                break;
-            case "Level14":
-                return Level14;
-                break;
-            case "Level15":
-                return Level15;
-                break;
-            case "Level16":
-                return Level16;
-                break;
-                */
-            default: return null;
-        }
-    }
+            case 9:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
 
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 10:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 11:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 12:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 13:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 14:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 15:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 16:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 17:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 18:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 19:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 20:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 21:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 22:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 23:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 24:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 25:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 26:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 27:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 28:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 29:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 30:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 31:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 32:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 33:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 34:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 35:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 36:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 37:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 38:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 39:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 40:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 41:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 42:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 43:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 44:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 45:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 46:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 47:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 48:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 49:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 50:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 51:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 52:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 53:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 54:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 55:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 56:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 57:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 58:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 59:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 60:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 61:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 62:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 63:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 64:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 65:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 66:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 67:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 68:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 69:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 70:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 71:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 72:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 73:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 74:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 75:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 76:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 77:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 78:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 79:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 80:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 81:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 82:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 83:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 84:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 85:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 86:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 87:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 88:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 89:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 90:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 91:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 92:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 93:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 94:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 95:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 96:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 97:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 98:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 99:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 100:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 101:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 102:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 103:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 104:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 105:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 106:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 107:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 108:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 109:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 110:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 111:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 112:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 113:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 114:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 115:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 116:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 117:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 118:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 119:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 120:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 121:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 122:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 123:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 124:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 125:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 126:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 127:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 128:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 129:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 130:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 131:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 132:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 133:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 134:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 135:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 136:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 137:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 138:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 139:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 140:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 141:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 142:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 143:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 144:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 145:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 146:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 147:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 148:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 149:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            case 150:
+                setupObject.initLevelParameters(5, 1, 4, 4, 4);
+                numberTube = 5;
+                numberEmptyTube = 1;
+                numberInitLayers = 4;
+                numberMaxLayers = 4;
+                tubeToWin = 4;
+                maxLevelColor = 4;
+                seed = 0;
+
+                setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
+                generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
+                return generatedLevel;
+
+            default: 
+                setupObject.initLevelParameters(3, 1, 3, 3, 2);
+                generatedLevel = levels.levelGenerator(-1635485455,3,1,3,3,2,2);
+                return generatedLevel;
+                    }
+
+                }
 
 }
