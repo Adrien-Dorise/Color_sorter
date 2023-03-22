@@ -109,6 +109,7 @@ public class levels
         int count = 1;
         Debug.Log("Level" + PlayerPrefs.GetInt(save.currentLevel));
         Debug.Log("Seed: " + seed);
+        /*
         foreach(List<int> tube in debugList)
         {
             str = "";
@@ -119,7 +120,7 @@ public class levels
             Debug.Log("tube <" + count + ">:" + str);
             count++;
         }
-        
+        */
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
         return generatedLevel;
     }
@@ -292,13 +293,13 @@ public class levels
             
             case 7:
                 setupObject.initLevelParameters(5, 1, 4, 4, 4);
-                numberTube = 5;
+                numberTube = 12;
                 numberEmptyTube = 1;
                 numberInitLayers = 4;
                 numberMaxLayers = 4;
-                tubeToWin = 4;
-                maxLevelColor = 4;
-                seed = 0;
+                tubeToWin = 11;
+                maxLevelColor = 11;
+                seed = -667877602;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor);
