@@ -10,9 +10,12 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class selection : MonoBehaviour
 {
+    //All level setup
+    [SerializeField] private GameObject musicManager;
+
+    //Level selection setup
     [SerializeField] GameObject levelIconPrefab;
     [SerializeField] private GameObject rightArrow, leftArrow;
-    [SerializeField] private GameObject musicManager;
 
 
     private Color arrowsColor;
@@ -88,7 +91,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void onQuitApp()
     {
-        Application.Quit();
+        SceneManager.LoadScene("Main Menu");
     }
 
 
@@ -97,7 +100,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void onQuitToMenu()
     {
-        SceneManager.LoadScene("Level Selection");
+        //SceneManager.LoadScene("Level Selection");
     }
 
 
@@ -130,6 +133,7 @@ public class selection : MonoBehaviour
         PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("Level Selection");
     }
+
 
     /// <summary>
     /// Method <c>displayLevelButton</c> decide which main menu's selection arrows have to be displayed
@@ -174,6 +178,7 @@ public class selection : MonoBehaviour
             currentLevel++;
         }
     }
+
 
 }
 

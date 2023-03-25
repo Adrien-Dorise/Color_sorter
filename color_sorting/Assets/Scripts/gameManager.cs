@@ -14,7 +14,7 @@ using UnityEngine.UI;
 public class gameManager : MonoBehaviour
 {
     
-    public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, levelSelection }
+    public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
     public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
     static public states currentState { get; private set; }
     static public Color[] colors;
@@ -52,7 +52,11 @@ public class gameManager : MonoBehaviour
         {
             currentState = states.levelSelection;
         }
-        else
+        else if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
+        {
+            currentState = states.def;
+        }
+        else 
         {
             currentState = states.idleFirstAction;
         }

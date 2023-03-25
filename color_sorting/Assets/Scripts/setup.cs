@@ -58,31 +58,39 @@ public class setup : MonoBehaviour
 
         musicManager = GameObject.Find("Music Manager");
 
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level Selection")) //If we are in the main menu screen.
+        switch(gameManager.currentState)
         {
-            PlayerPrefs.SetInt(save.musicTime, 0);
-            initMainMenu();
-        }
-        else //If we are in a level scene
-        {
-            //Tube positions
-            int x1 = -833, x2 = 833, x3 = -2500, x4 = 2500;
-            int y1 = 1500, y2 = -1200, y3 = 3800; 
-            posTubes.Add(new Vector3(x1, y1, 0f));
-            posTubes.Add(new Vector3(x2, y1, 0f));
-            posTubes.Add(new Vector3(x1, y2, 0f));
-            posTubes.Add(new Vector3(x2, y2, 0f));
-            posTubes.Add(new Vector3(x1, y3, 0f));
-            posTubes.Add(new Vector3(x2, y3, 0f));
-            posTubes.Add(new Vector3(x3, y1, 0f));
-            posTubes.Add(new Vector3(x4, y1, 0f));
-            posTubes.Add(new Vector3(x3, y2, 0f));
-            posTubes.Add(new Vector3(x4, y2, 0f));
-            posTubes.Add(new Vector3(x3, y3, 0f));
-            posTubes.Add(new Vector3(x4, y3, 0f));
-            musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt(save.musicTime);
-            colorTubesList = levels.getLevelColors();
-            initLevel();
+            case gameManager.states.def:
+                PlayerPrefs.SetInt(save.musicTime, 0);
+                robot.GetComponent<robot>().initialise(levels.robotColorPerLevel.LastOrDefault());
+                break;
+            
+            case gameManager.states.levelSelection:
+                PlayerPrefs.SetInt(save.musicTime, 0);
+                initMainMenu();
+                break;    
+
+            case gameManager.states.idleFirstAction:
+                //Tube positions
+                int x1 = -833, x2 = 833, x3 = -2500, x4 = 2500;
+                int y1 = 1500, y2 = -1200, y3 = 3800; 
+                posTubes.Add(new Vector3(x1, y1, 0f));
+                posTubes.Add(new Vector3(x2, y1, 0f));
+                posTubes.Add(new Vector3(x1, y2, 0f));
+                posTubes.Add(new Vector3(x2, y2, 0f));
+                posTubes.Add(new Vector3(x1, y3, 0f));
+                posTubes.Add(new Vector3(x2, y3, 0f));
+                posTubes.Add(new Vector3(x3, y1, 0f));
+                posTubes.Add(new Vector3(x4, y1, 0f));
+                posTubes.Add(new Vector3(x3, y2, 0f));
+                posTubes.Add(new Vector3(x4, y2, 0f));
+                posTubes.Add(new Vector3(x3, y3, 0f));
+                posTubes.Add(new Vector3(x4, y3, 0f));
+                musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt(save.musicTime);
+                colorTubesList = levels.getLevelColors();
+                initLevel();
+                break;
+        
         }
     }
 
