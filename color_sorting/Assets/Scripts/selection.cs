@@ -100,7 +100,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void onQuitToMenu()
     {
-        //SceneManager.LoadScene("Level Selection");
+        SceneManager.LoadScene("Level Selection");
     }
 
 
