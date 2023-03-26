@@ -60,19 +60,7 @@ public class gameManager : MonoBehaviour
         {
             currentState = states.idleFirstAction;
         }
-        colors = new Color[11] { 
-            new Color(0.067f, 0.235f, 0.859f, 1), //Blue
-            new Color(0.235f, 0.067f, 0.863f, 1), //BluePurple
-            new Color(0.435f,0.043f,0.859f), //Purple
-            new Color(0.847f, 0.0f, 0.847f), //Pink
-            new Color(0.5f, 0.0f, 0.5f), //PinkRed
-            new Color(1.0f, 0.118f, 0.0f), //Red
-            new Color(1.0f, 0.424f, 0.0f), //Orange
-            new Color(0.047f, 0.373f, 0.851f), //CyanBlue
-            new Color(0.004f, 0.792f, 0.827f), //Cyan
-            new Color(0.0f, 0.894f, 0.166f), //Green
-            new Color(1.0f, 0.859f, 0.0f), //Yellow
-        };
+        colors = colorBlindSettings.initColors();
 
 
         if (!PlayerPrefs.HasKey(save.availableLevels)) //First play ! 

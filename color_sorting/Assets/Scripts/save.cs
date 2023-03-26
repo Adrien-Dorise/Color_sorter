@@ -17,6 +17,7 @@ public class save
     static public string currentLevel = "Current Level"; //Store the level number the user is playing
     static public string musicTime = "Music Timestamp"; //Store the level time to load it exactly where it was when changing scene
     static public string playedLevel = "Played level";
+    static public string colors = "Color";
 
     
 
