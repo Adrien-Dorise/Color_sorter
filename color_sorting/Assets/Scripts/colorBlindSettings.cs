@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class colorBlindSettings : MonoBehaviour
+public class colorBlindSettings
 {
 
     private gameManager managerScript; 
-
+    
     const int numberOfColors = 11;    
-    Color[] baseColor =  new Color[numberOfColors] { 
+    private Color[] baseColor =  new Color[numberOfColors] { 
             new Color(0.067f, 0.235f, 0.859f, 1), //Blue
             new Color(0.235f, 0.067f, 0.863f, 1), //BluePurple
             new Color(0.435f,0.043f,0.859f), //Purple
@@ -24,6 +24,10 @@ public class colorBlindSettings : MonoBehaviour
             //new Color(0.0f, 0.894f, 0.5f), //Green2
         };
 
+    
+
+
+    //Save color system
     private void setBaseColors()
     {
         int iter = 0;
@@ -34,11 +38,24 @@ public class colorBlindSettings : MonoBehaviour
         }
     }
 
+    private void switchSavedColor(int colorIndex, Color newColor)
+    {
+        PlayerPrefs.SetString(save.colors + colorIndex, ColorUtility.ToHtmlStringRGBA(newColor));
+    }
+
+
+    static public void resetColorSettings()
+    {
+        colorBlindSettings c = new colorBlindSettings();
+        c.setBaseColors();
+    }
+
     static public Color[] initColors()
     {
         Color[] colors = new Color[numberOfColors];
         int iter = 0;
         colorBlindSettings c = new colorBlindSettings();
+        
         if(!PlayerPrefs.HasKey(save.colors + iter)) //No colors saved before (first game)
         {
             c.setBaseColors();      
@@ -57,31 +74,32 @@ public class colorBlindSettings : MonoBehaviour
             }
             iter++;
         }
-    
         return colors;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    static public Color returnSavedColor(int index)
     {
-        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
-        
-        for(int i = 0; i < this.transform.childCount-1; i++)
-        {
-            try
+        Color color;
+        if(ColorUtility.TryParseHtmlString("#"+PlayerPrefs.GetString(save.colors + index), out color))
             {
-                this.transform.GetChild(i).GetComponent<Image>().color = gameManager.colors[i];
+                return color; 
             }
-            catch(System.Exception e)
+            else
             {
-                Debug.Log("Not enough color available in game manager\n" + e);
+                return Color.black;
             }
-        }
     }
 
 
+
     
     
-
-
+    
 }
+
+
+
+
+
+
+
