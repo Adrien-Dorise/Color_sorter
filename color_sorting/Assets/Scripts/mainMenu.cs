@@ -13,7 +13,7 @@ public class mainMenu : MonoBehaviour
     private int colorInSelection;
     private GameObject colorButtonsParent, backColorBlind, resetButton, dummyColorButton, dummyNewColor;
 
-    public Color[] dummycolors;
+    private Color saveColor;
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +39,6 @@ public class mainMenu : MonoBehaviour
         backColorBlind.SetActive(true);
         dummyColorButton.SetActive(true);
         
-        dummycolors = wheelCanvas.transform.GetChild(0).GetComponent<Image>().sprite.texture.GetPixels();
     }
 
     //Main Canvas
@@ -69,10 +68,12 @@ public class mainMenu : MonoBehaviour
         musicCanvas.SetActive(false);
     }
 
-    public void colorblindButton()
+
+    public void setColorForColorBlindSettings()
     {
+
         //We set the correct colors for the colorblind buttons
-        for(int i = 0; i < colorButtonsParent.transform.childCount-1; i++)
+        for(int i = 0; i < colorButtonsParent.transform.childCount; i++)
         {
             try
             {
@@ -83,7 +84,11 @@ public class mainMenu : MonoBehaviour
                 Debug.Log("Not enough color available in game manager\n" + e);
             }
         }
+    }
 
+    public void colorblindButton()
+    {
+        setColorForColorBlindSettings();
         mainCanvas.SetActive(false);
         optionsCanvas.SetActive(false);
         colorBlindCanvas.SetActive(true);
@@ -104,6 +109,7 @@ public class mainMenu : MonoBehaviour
     public void resetColorblind()
     {
         colorBlindSettings.resetColorSettings();
+        setColorForColorBlindSettings();
     }
 
     //!!! Color blind menu !!!
@@ -113,21 +119,43 @@ public class mainMenu : MonoBehaviour
         colorBlindCanvas.SetActive(false);
 
         dummyColorButton.GetComponent<Image>().color = colorBlindSettings.returnSavedColor(colorIndex);
+        dummyNewColor.GetComponent<Image>().color = colorBlindSettings.returnSavedColor(colorIndex);
+        saveColor = colorBlindSettings.returnSavedColor(colorIndex);
         wheelCanvas.SetActive(true);
     }
 
     public void wheelButton()
     {
-        //Touch input = Input.GetTouch(0);
-        Vector3 playerPick = Input.mousePosition;
+        //Goal = get wheel color from click
 
-        Color[] wheelData = wheelCanvas.transform.GetChild(0).GetComponent<Image>().sprite.texture.GetPixels();
+        GameObject wheel = wheelCanvas.transform.GetChild(0).gameObject;
+
+        //First, we get click in regards to camera
+        Vector2 playerPick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        //Then, we translate origin point to bottom left border of the sprite
+        Vector2 spriteSize = new Vector2(wheel.GetComponent<Image>().rectTransform.rect.width,wheel.GetComponent<Image>().rectTransform.rect.height);
+        spriteSize *= wheelCanvas.GetComponent<RectTransform>().localScale;
+        Vector2 wheelPosition = wheel.GetComponent<RectTransform>().position;
+        playerPick = playerPick - wheelPosition + spriteSize/2;
+
+        //Then, we convert position to texture size
+        Vector2 textureSize = new Vector2(wheel.GetComponent<Image>().sprite.texture.width,wheel.GetComponent<Image>().sprite.texture.height);
+        Vector2 ratio = textureSize / spriteSize;
+        playerPick = playerPick * ratio;
+
+        //Finally, we select the color on the texture
         Color newColor = wheelCanvas.transform.GetChild(0).GetComponent<Image>().sprite.texture.GetPixel((int)playerPick.x, (int)playerPick.y);
-        Debug.Log((int)playerPick.x + "/" + (int)playerPick.y + " = " + newColor);
-        dummyNewColor.GetComponent<Image>().color = newColor;
+
+        if(newColor != Color.white && newColor != new Color(0f,0f,0f,0f))
+        {
+            //Debug.Log((int)playerPick.x + "/" + (int)playerPick.y + " = " + newColor);
+            dummyNewColor.GetComponent<Image>().color = newColor;
+            saveColor = newColor;
+        }
     }
 
-    
+
 
     public void backButton(string currentCanvas)
     {
@@ -149,6 +177,8 @@ public class mainMenu : MonoBehaviour
         }
         else if (currentCanvas == "colorWheel")
         {
+            colorBlindSettings.switchSavedColor(colorInSelection, saveColor);
+            setColorForColorBlindSettings();
             mainCanvas.SetActive(false);
             optionsCanvas.SetActive(false);
             colorBlindCanvas.SetActive(true);
