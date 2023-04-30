@@ -486,14 +486,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.9411765, b: 0.85490197, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d5b9f386e6768844e83dbdfd818dd9b6, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -623,6 +623,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e0f60b664293d54599f8264a35fe4f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  memoryTube: {fileID: 0}
+  completedTube: 0
   isNewTubeCompleted: 0
   pooringTime: 0.8
   translationTime: 1
@@ -675,11 +677,6 @@ MonoBehaviour:
   tubeParent: {fileID: 5402475648518815157}
   tubePrefab: {fileID: 3314082627624055801, guid: 17f18e771fe071c4c98379c9264758b5, type: 3}
   robot: {fileID: 5402475648297189175}
-  numberOfTube: 3
-  numberOfEmptyTube: 1
-  numberOfMaxLayers: 3
-  numberOfInitLayers: 3
-  maxColors: 2
   completeTubeToWin: 2
 --- !u!1 &5402475649411277580
 GameObject:
@@ -1241,10 +1238,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5391c405475f184f9ab1cc2d0c5f274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicManager: {fileID: 0}
   levelIconPrefab: {fileID: 0}
   rightArrow: {fileID: 0}
   leftArrow: {fileID: 0}
-  musicManager: {fileID: 0}
   maxDisplayedLevel: 0
   textLevel: 
 --- !u!1 &5402475649877643317

@@ -70,7 +70,7 @@ public class setup : MonoBehaviour
                 initMainMenu();
                 break;    
 
-            case gameManager.states.idleFirstAction:
+            case gameManager.states.idleNoTube:
                 //Tube positions
                 int x1 = -833, x2 = 833, x3 = -2500, x4 = 2500;
                 int y1 = 1500, y2 = -1200, y3 = 3800; 
@@ -130,7 +130,7 @@ public class setup : MonoBehaviour
         }
         robot.GetComponent<robot>().initialise(colorRob);
 
-
+        /*
         //We verify that we can change a color with the robot !
         bool isColorRobotChanged = false;
         foreach (List<Color> col in colorTubesList) 
@@ -170,6 +170,7 @@ public class setup : MonoBehaviour
                 }
             }
         }
+        */
 
         //Initialise tubes
         bool isTubeChangedByRobot = false;
@@ -181,6 +182,7 @@ public class setup : MonoBehaviour
             {
                 tube.GetComponent<testTube>().initialise(numberOfMaxLayers, colorTubesList[i]);
 
+                /*
                 //Change color according to robot
                 try
                 {
@@ -206,6 +208,7 @@ public class setup : MonoBehaviour
                 {
                     Debug.LogError(ex);
                 }
+                */
             }
             else
             {
@@ -218,6 +221,10 @@ public class setup : MonoBehaviour
         //gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
     }
 
+    private void switchFirstLayer()
+    {
+        
+    }
 
     /// <summary>
     /// Method <c>initMainMeny</c> Initialise the main screen after loading.

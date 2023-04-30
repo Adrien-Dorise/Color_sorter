@@ -58,7 +58,7 @@ public class gameManager : MonoBehaviour
         }
         else 
         {
-            currentState = states.idleFirstAction;
+            currentState = states.idleNoTube;
         }
         colors = colorBlindSettings.initColors();
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,9 +12,10 @@ public class mainMenu : MonoBehaviour
 
     //ColorBlind
     private int colorInSelection;
-    private GameObject colorButtonsParent, backColorBlind, resetButton, dummyColorButton, dummyNewColor;
-
+    private GameObject colorButtonsParent, backColorBlind, resetButton, dummyColorButton, dummyNewColor, wheel;
     private Color saveColor;
+    private Color[] textureColor;
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +29,7 @@ public class mainMenu : MonoBehaviour
         backColorBlind = colorBlindCanvas.transform.GetChild(2).gameObject;
         dummyColorButton = wheelCanvas.transform.GetChild(1).gameObject;
         dummyNewColor = wheelCanvas.transform.GetChild(2).gameObject;
+        wheel = wheelCanvas.transform.GetChild(0).gameObject;
 
         mainCanvas.SetActive(true);
         optionsCanvas.SetActive(false);
@@ -121,14 +124,30 @@ public class mainMenu : MonoBehaviour
         dummyColorButton.GetComponent<Image>().color = colorBlindSettings.returnSavedColor(colorIndex);
         dummyNewColor.GetComponent<Image>().color = colorBlindSettings.returnSavedColor(colorIndex);
         saveColor = colorBlindSettings.returnSavedColor(colorIndex);
+        setWheelColors();
         wheelCanvas.SetActive(true);
+    }
+
+    private void setWheelColors()
+    {
+        List<Color> forbidenColors = new List<Color>();
+        forbidenColors.AddRange(gameManager.colors);
+        textureColor = wheel.GetComponent<Image>().sprite.texture.GetPixels();
+        Debug.Log(forbidenColors[0]);
+        for(int pxl=0; pxl < textureColor.Length; pxl++)
+        {
+            if(forbidenColors.Exists(x => x == textureColor[pxl]))
+            {
+                textureColor[pxl] = Color.white;
+            }
+        }
+        wheel.GetComponent<Image>().sprite.texture.SetPixels(textureColor);
+        wheel.GetComponent<Image>().sprite.texture.Apply();
     }
 
     public void wheelButton()
     {
         //Goal = get wheel color from click
-
-        GameObject wheel = wheelCanvas.transform.GetChild(0).gameObject;
 
         //First, we get click in regards to camera
         Vector2 playerPick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -153,6 +172,8 @@ public class mainMenu : MonoBehaviour
             dummyNewColor.GetComponent<Image>().color = newColor;
             saveColor = newColor;
         }
+        Debug.Log(newColor);
+        
     }
 
 
