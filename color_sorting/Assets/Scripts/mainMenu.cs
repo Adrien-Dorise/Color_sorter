@@ -192,7 +192,7 @@ public class mainMenu : MonoBehaviour
 
     public bool isSameColor(Color colorA, Color colorB)
     {
-        float threshold = 0.10f;
+        float threshold = 0.08f;
         if(Mathf.Abs(colorA.r - colorB.r) >= threshold)
         { return false; }
         if(Mathf.Abs(colorA.b - colorB.b) >= threshold)
@@ -225,7 +225,7 @@ public class mainMenu : MonoBehaviour
                 {
                     foreach(int idx in colorGroups[colorGroupsIndex.IndexOf(wheelCol)])
                     {
-                        textureColor[idx] = Color.white;
+                        textureColor[idx] = Color.black;
                     }
                 }
             }
@@ -256,7 +256,7 @@ public class mainMenu : MonoBehaviour
         //Finally, we select the color on the texture
         Color newColor = wheelCanvas.transform.GetChild(0).GetComponent<Image>().sprite.texture.GetPixel((int)playerPick.x, (int)playerPick.y);
 
-        if(newColor != Color.white && newColor != new Color(0f,0f,0f,0f))
+        if(newColor != Color.white && newColor != Color.black &&  newColor.a == 1f)
         {
             //Debug.Log((int)playerPick.x + "/" + (int)playerPick.y + " = " + newColor);
             dummyNewColor.GetComponent<Image>().color = newColor;
