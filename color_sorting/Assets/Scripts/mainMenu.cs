@@ -17,6 +17,7 @@ public class mainMenu : MonoBehaviour
     private Color[] textureColor;
     private List<List<int>> colorGroups;
     private List<Color> colorGroupsIndex;
+    private bool isLoadingWheelComplete;
     [SerializeField] private Sprite referenceColorWheelSprite;
     private Texture2D colorWheelTexture;
 
@@ -33,6 +34,7 @@ public class mainMenu : MonoBehaviour
         dummyColorButton = wheelCanvas.transform.GetChild(1).gameObject;
         dummyNewColor = wheelCanvas.transform.GetChild(2).gameObject;
         wheel = wheelCanvas.transform.GetChild(0).gameObject;
+        isLoadingWheelComplete = false;
         StartCoroutine(initWheelColors());
 
 
@@ -131,17 +133,17 @@ public class mainMenu : MonoBehaviour
         saveColor = colorBlindSettings.returnSavedColor(colorIndex);
         
         setWheelColors();
+        while(!isLoadingWheelComplete)
+        {}
         wheelCanvas.SetActive(true);
     }
 
 
-    [SerializeField] List<Color> tempColor = new List<Color>();
     private IEnumerator initWheelColors()
     {
         colorWheelTexture = new Texture2D(referenceColorWheelSprite.texture.width, referenceColorWheelSprite.texture.height, referenceColorWheelSprite.texture.format, false);
         Graphics.CopyTexture(referenceColorWheelSprite.texture,colorWheelTexture);
         wheel.GetComponent<Image>().sprite = Sprite.Create(colorWheelTexture, new Rect(0.0f, 0.0f, colorWheelTexture.width, colorWheelTexture.height), new Vector2(0.0f, 0.0f), 100.0f);
-        Debug.Log(colorWheelTexture.isReadable);
 
         //Creation of color array to speed up forbidden color research speed.
         colorGroupsIndex = new List<Color>();
@@ -167,7 +169,6 @@ public class mainMenu : MonoBehaviour
                 }
                 if(!isContained)
                 {
-                    tempColor.Add(textureColor[pxl]);
                     colorGroupsIndex.Add(textureColor[pxl]);
                     colorGroups.Add(new List<int>());
                     colorGroups[colorGroupsIndex.Count - 1].Add(idx);
@@ -178,15 +179,13 @@ public class mainMenu : MonoBehaviour
                 textureColor[pxl] = new Color(0f,0f,0f,0f);
             }
             
-            if(idx %500000 == 0)
+            if(idx %1000000 == 0)
             {
-                Debug.Log(idx + " / " + size);
-                Debug.Log(colorGroupsIndex.Count);
-                yield return new WaitForSeconds(0f);
+                yield return null;
             }
             idx++;
         }
-        Debug.Log("Finished");
+        isLoadingWheelComplete = true;
     }
 
 
