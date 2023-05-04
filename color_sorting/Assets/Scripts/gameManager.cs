@@ -17,7 +17,7 @@ public class gameManager : MonoBehaviour
     public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
     public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
     static public states currentState { get; private set; }
-    static public Color[] colors;
+    static public List<Color> colors;
     [SerializeField] public GameObject memoryTube;
     private GameObject tubesGroupObject;
     private Image victorySprite;

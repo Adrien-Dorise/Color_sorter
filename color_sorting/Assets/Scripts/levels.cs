@@ -42,7 +42,7 @@ public class levels
         //We select the colors used in this new level;
         List<int> colorsUsed = new List<int>();
         int randTube, randTubeMemory, randColor;
-        if(maxLevelColor > gameManager.colors.Length)
+        if(maxLevelColor > gameManager.colors.Count)
         {
             throw new System.Exception("The number of colors wanted in this level is higher than the total number of available colors");
         }
@@ -50,7 +50,7 @@ public class levels
         {
             while(colorsUsed.Count < maxLevelColor)
             {
-                randColor = UnityEngine.Random.Range(0,gameManager.colors.Length);
+                randColor = UnityEngine.Random.Range(0,gameManager.colors.Count);
                 if(!colorsUsed.Contains(randColor))
                 {
                     colorsUsed.Add(randColor);

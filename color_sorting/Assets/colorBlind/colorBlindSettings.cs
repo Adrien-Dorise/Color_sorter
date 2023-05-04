@@ -4,12 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class colorBlindSettings
-{
-
-    private gameManager managerScript; 
-    
-    const int numberOfColors = 10;    
-    private Color[] baseColor_v1 =  new Color[numberOfColors] { 
+{   
+    private List<Color> baseColor_v1 =  new List<Color> { 
             new Color(0.067f, 0.235f, 0.859f), //Blue
             new Color(0.235f, 0.067f, 0.863f), //BluePurple
             new Color(0.435f,0.043f,0.859f), //Purple
@@ -24,7 +20,7 @@ public class colorBlindSettings
             //new Color(0.0f, 0.894f, 0.5f), //Green2
         };
 
-        private Color[] baseColor_v2 =  new Color[numberOfColors] { 
+        private List<Color> baseColor_v2 =  new List<Color> { 
             new Color(0.839f, 0.016f, 0.106f), //Red
             new Color(0.914f,0.396f,0.043f), //Orange
             new Color(1.0f,0.894f,0.0f), //Yellow
@@ -37,7 +33,7 @@ public class colorBlindSettings
             new Color(0.882f,0.0f,0.420f), //Pink
         };
 
-    private Color[] baseColor =  new Color[numberOfColors] { 
+    private List<Color> baseColor =  new List<Color> { 
             new Color(0.698f, 0.000f, 0.071f), //Red
             new Color(0.859f,0.271f,0.000f), //Orange
             new Color(1.0f,0.765f,0.000f), //Yellow
@@ -77,9 +73,9 @@ public class colorBlindSettings
         c.setBaseColors();
     }
 
-    static public Color[] initColors()
+    static public List<Color> initColors()
     {
-        Color[] colors = new Color[numberOfColors];
+        List<Color> colors = new List<Color>();
         int iter = 0;
         colorBlindSettings c = new colorBlindSettings();
         
@@ -93,11 +89,11 @@ public class colorBlindSettings
         {
             if(ColorUtility.TryParseHtmlString("#"+PlayerPrefs.GetString(save.colors + iter), out color))
             {
-                colors[iter] = color; 
+                colors.Add(color); 
             }
             else
             {
-                colors[iter] = c.baseColor[iter];
+                colors.Add(c.baseColor[iter]);
             }
             iter++;
         }
@@ -116,10 +112,6 @@ public class colorBlindSettings
                 return Color.black;
             }
     }
-
-
-
-    
     
     
 }
