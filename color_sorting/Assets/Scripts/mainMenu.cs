@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
 public class mainMenu : MonoBehaviour
 {
 
@@ -123,6 +124,13 @@ public class mainMenu : MonoBehaviour
     }
 
     //!!! Color blind menu !!!
+
+    /// <summary>
+    /// Method <c>colorblindIndexButton</c> activate the wheel canvas when a color setting button is pressed by the player.
+    /// The color of the button is temporay stored in case the player choose to modify it.
+    /// As an algorithm setting up the wheel is set when starting the scene, a freeze can be seen if the player select the wheel canvas to before completely loading the wheel. 
+    /// </summary>
+    /// <param name="colorIndex"> Index of the color stored in case of switch. </param>
     public void colorblindIndexButton(int colorIndex)
     {
         colorInSelection = colorIndex;
@@ -138,7 +146,15 @@ public class mainMenu : MonoBehaviour
         wheelCanvas.SetActive(true);
     }
 
-
+    /// <summary>
+    /// Method <c>initWheelColors</c> setup the algorithm for faster wheel display.
+    /// When the player activate the wheel canvas, colors already selected are removed from selection.
+    /// To do so, each pixel of the wheel texture are seen to check the similarity with already stored color.
+    /// This process takes time and can end up in a severe freeze when displaying the wheel.
+    /// This function speed up the process by grouping similar colors' index together in a list.
+    /// Therefore, when needed, only the header of the list is checked for similarities with similar colors, and linked indexes are deactivated. 
+    /// Color headers are stored in colorGroupsIndex List and pixels' index are stored in colorGroups variable
+    /// </summary>
     private IEnumerator initWheelColors()
     {
         colorWheelTexture = new Texture2D(referenceColorWheelSprite.texture.width, referenceColorWheelSprite.texture.height, referenceColorWheelSprite.texture.format, false);
@@ -188,21 +204,33 @@ public class mainMenu : MonoBehaviour
         isLoadingWheelComplete = true;
     }
 
-
-    public bool isSameColor(Color colorA, Color colorB)
+    /// <summary>
+    /// Method <c>isSameColor</c> checks if two colors are close enough from each other to be considered similar
+    /// The strategy used checks each channel independantly to assess similarity
+    /// </summary>
+    /// <param name="color1"> First color </param>
+    /// <param name="color2"> Second color </param>
+    /// <returns> True if same colors, false otherwise </returns>
+    public bool isSameColor(Color color1, Color color2)
     {
         float threshold = 0.08f;
-        if(Mathf.Abs(colorA.r - colorB.r) >= threshold)
+        if(Mathf.Abs(color1.r - color2.r) >= threshold)
         { return false; }
-        if(Mathf.Abs(colorA.b - colorB.b) >= threshold)
+        if(Mathf.Abs(color1.b - color2.b) >= threshold)
         { return false; }
-        if(Mathf.Abs(colorA.g - colorB.g) >= threshold)
+        if(Mathf.Abs(color1.g - color2.g) >= threshold)
         { return false; }
 
         return true;
     }
 
-
+    /// <summary>
+    /// Method <c>setWheelColors</c> modifies the wheel texture to deactivate colors that are already chosen. 
+    /// It is done to ensure that each chosen colors are unique.
+    /// The sstrategy used is based on colorGroups and colorGroupsIndex variables set in <initColorWheel> function.
+    /// The similarity between the colors contained in colorGroupsIndex is checked. If similar, all pixels contained in the linked header are deactivated by using their index value.
+    /// The texture is cloned beforehand to ensure that the original sprite stays intact when reloading the game.
+    /// </summary>
     private void setWheelColors()
     {
         List<Color> forbidenColors = new List<Color>();
@@ -234,6 +262,10 @@ public class mainMenu : MonoBehaviour
         wheel.GetComponent<Image>().sprite.texture.Apply();
     }
 
+    /// <summary>
+    /// Method <c>wheelButton</c> replaces a saved color by the one selected by the player on the wheel
+    /// When the player clicks the wheel, the color value of the pixel selected is taken to replace the temporary saved color.
+    /// </summary>
     public void wheelButton()
     {
         //Goal = get wheel color from click

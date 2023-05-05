@@ -48,7 +48,13 @@ public class colorBlindSettings
     
 
 
+
     //Save color system
+
+    /// <summary>
+    /// Method <c>setBaseColors</c> Saves the colors set in the baseColor variable
+    /// The PlayerPrefs feature is used to save the colors in a string format. Each color is concatenated into a single string.
+    /// By doing so, only one key is necessary to save all colors. 
     private void setBaseColors()
     {
         int iter = 0;
@@ -57,23 +63,38 @@ public class colorBlindSettings
             PlayerPrefs.SetString(save.colors + iter, ColorUtility.ToHtmlStringRGBA(col));
             iter++;
         }
-        gameManager.colors = initColors();
+        gameManager.colors = loadColors();
     }
 
+    /// <summary>
+    /// Method <c>switchSavedColor</c> replaces a used color to a new one.
+    /// It is implemented in the colorblind setting screen 
+    /// It can be used in game when the player choose a new set of color for the game.
+    /// </summary>
+    /// <param name="colorIndex"> Index to the old color </param>
+    /// <param name="newColor"> Nez color that will be placed in the index given by colorIndex </param>
     static public void switchSavedColor(int colorIndex, Color newColor)
     {
         PlayerPrefs.SetString(save.colors + colorIndex, ColorUtility.ToHtmlStringRGBA(newColor));
-        gameManager.colors = initColors();
+        gameManager.colors = loadColors();
     }
 
-
+    /// <summary>
+    /// Method <c>resetColorSettings</c> replaces all modification made by the player by the colors contained in the List <baseColor> 
+    /// </summary>
     static public void resetColorSettings()
     {
         colorBlindSettings c = new colorBlindSettings();
         c.setBaseColors();
     }
 
-    static public List<Color> initColors()
+    /// <summary>
+    /// Method <c>loadColors</c> recovers the colors stored in PlayerPrefs.
+    /// The string containing the colors is parsed and convert into a Color variable.
+    /// If no colors are stored in PlayerPrefs (in case of first boot of the game), the colors in baseColor are used and saved. 
+    /// </summary>
+    /// <returns> True if same color or at least one tube empty, false otherwise </returns>
+    static public List<Color> loadColors()
     {
         List<Color> colors = new List<Color>();
         int iter = 0;
@@ -100,6 +121,12 @@ public class colorBlindSettings
         return colors;
     }
 
+    /// <summary>
+    /// Method <c>returnSavedColor</c> recover the color referenced by the index in PLayerPref save
+    /// If no color is found in the index (overflow), then the color black is returned
+    /// </summary>
+    /// <param name="index"> Index of the color to retrieve </param>
+    /// <returns> type=Color: Returns the color at given index. Black if overflow </returns>
     static public Color returnSavedColor(int index)
     {
         Color color;
