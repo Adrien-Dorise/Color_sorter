@@ -60,7 +60,7 @@ public class gameManager : MonoBehaviour
         {
             currentState = states.idleNoTube;
         }
-        colors = colorBlindSettings.initColors();
+        colors = colorBlindSettings.loadColors();
 
 
         if (!PlayerPrefs.HasKey(save.availableLevels)) //First play ! 
