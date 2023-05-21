@@ -8,6 +8,7 @@ public class levelSolver : MonoBehaviour
 {
     private GameObject tubeParents;
     private List<GameObject> tubes;
+    private int nodeID = 0;
 
     private bool isWin(List<GameObject> availableTubes)
     {
@@ -54,6 +55,47 @@ public class levelSolver : MonoBehaviour
         return false;
     }
 
+    IEnumerator wait(bool isFinish)
+    {
+        yield return new WaitForSeconds(1.5f);
+        isFinish = true;
+    }
+
+
+    private IEnumerator resolveGraph(List<GameObject> availableTubes, node initialNode, int nodeIdx)
+    {
+        nodeID++;
+        node tmpNode = initialNode;
+        foreach(int actID in initialNode.actionsToExplore)
+        {
+            Debug.Log("node" + nodeIdx);
+            yield return new WaitForSeconds(0.05f);
+            float initTimer = Time.time;
+            tmpNode = initialNode.performAction(availableTubes,actID);
+            
+            if(isWin(availableTubes))
+            {
+                Debug.Log("WIN node" + nodeID);
+                node winNodes = tmpNode;
+                while(winNodes.previousNode != null)
+                {
+                    winNodes.isWinnable = true;
+                    winNodes = winNodes.previousNode;
+                }
+                yield return new WaitForSeconds(0.05f);
+                tmpNode = tmpNode.rewindAction(availableTubes);
+                yield return new WaitForSeconds(0.05f);
+                nodeID++;
+            }
+            else
+            {
+                yield return StartCoroutine(resolveGraph(availableTubes, tmpNode, nodeID));
+            }
+        }
+        Debug.Log("All actions seen in node" + nodeIdx);
+        initialNode.rewindAction(availableTubes);
+        //yield return new WaitForSeconds(0.5f);
+    }
 
     private class graph
     {
@@ -63,11 +105,11 @@ public class levelSolver : MonoBehaviour
 
     private class node
     {
-        private node previousNode;
-        private action previousAction;
+        public node previousNode {get;private set;}
+        public action previousAction {get; private set;}
         private List<action> nextActions;
-        private List<int> actionsToExplore;
-        private bool isWinnable;
+        public List<int> actionsToExplore {get; private set;}
+        public bool isWinnable;
         private List<int> winnableNodes;
 
         public node(List<GameObject> tubesAvailable, action prevAction, node prevNode)
@@ -99,8 +141,10 @@ public class levelSolver : MonoBehaviour
                     {
                         differentAction = (pooredTube != previousAction.pooringTube && pooringTube != previousAction.pooredTube);
                     }
+                    bool pooringPossible = isPooringPossible(pooringTube, pooredTube);
+                    bool tubesIncomplete = !pooringTube.GetComponent<testTube>().tubeComplete && !pooredTube.GetComponent<testTube>().tubeComplete;
 
-                    if(levelSolver.isPooringPossible(pooringTube, pooredTube) && differentAction)
+                    if(differentAction && pooringPossible && tubesIncomplete)
                     {
                         nextActions.Add(new action(pooringTube, pooredTube));
                         actionsToExplore.Add(actionsToExplore.Count);
@@ -114,9 +158,9 @@ public class levelSolver : MonoBehaviour
 
         public node performAction(List<GameObject> tubesAvailable, int actionID)
         {
-            nextActions[actionID].printAction();
             int pooredLayers = gameManager.pooringAction(nextActions[actionID].pooringTube, nextActions[actionID].pooredTube);
             nextActions[actionID].setLayerPoored(pooredLayers);
+            nextActions[actionID].printAction();
 
             return new node(tubesAvailable, nextActions[actionID], this);
         }
@@ -128,8 +172,15 @@ public class levelSolver : MonoBehaviour
                 Debug.LogWarning("Can't rewind action as it does not have the information on the number of layer to rewind (layersPoor = 0)");
                 return this;
             }
-            
-            Color rewindColor = previousAction.pooredTube.GetComponent<testTube>().colorList.Peek(); 
+            Color rewindColor = Color.black; 
+            try
+            {
+                rewindColor = previousAction.pooredTube.GetComponent<testTube>().colorList.Peek();
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning("Error when rewinding: " + previousAction.pooredTube.name + " -> " + previousAction.pooringTube.name);
+            }
             for(int i = 0; i < previousAction.layersPoored; i++)
             {
                 previousAction.pooringTube.GetComponent<testTube>().addColorLayer(rewindColor);
@@ -174,6 +225,10 @@ public class levelSolver : MonoBehaviour
             tubes.Add(tubeParents.transform.GetChild(i).gameObject);
         }        
         currentNode = new node(tubes, null, null);
+
+        nodeID = 0;
+        StartCoroutine(resolveGraph(tubes, new node(tubes, null, null), nodeID));
+        //resolveGraph(tubes, new node(tubes, null, null), 0);
     }
 
     [SerializeField] bool scanNewActions = false;

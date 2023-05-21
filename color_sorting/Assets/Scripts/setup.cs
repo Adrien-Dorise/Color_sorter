@@ -138,7 +138,7 @@ public class setup : MonoBehaviour
         {
             GameObject tube = Instantiate(tubePrefab, tubeParent.transform);
             tube.transform.localPosition = posTubes[i];
-            tube.name = "Test Tube (" + i + ")"; 
+            tube.name = "(" + i + ")"; 
             if(i < numberOfTube - numberOfEmptyTube)
             {
                 tube.GetComponent<testTube>().initialise(numberOfMaxLayers, colorTubesList[i]);
@@ -187,7 +187,7 @@ public class setup : MonoBehaviour
         }
         buttonsCanvas.gameObject.transform.GetChild(0).gameObject.SetActive(false);
 
-
+        
     }
 }
 
