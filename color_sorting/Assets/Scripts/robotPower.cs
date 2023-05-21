@@ -10,6 +10,34 @@ public class robotPower : MonoBehaviour
     When the players finishes on either a bonus or malus color, the effect activates for the next level
     */
 
+    public enum powerEnum {neutral, powerup, powerdown};
+    //Contains whether a level is powered up or down. 
+    static List<powerEnum> poweredLevel = new List<powerEnum>();
+
+
+    private void savePoweredLevels()
+    {
+
+    }
+
+    private void loadPoweredLevels()
+    {
+        //0 for neutral, 1 for powered up and 2 powered down
+        if(!PlayerPrefs.HasKey(save.poweredLevel)) //If first time playing the game
+        {
+            string poweredSave = "";
+            for(int i = 0; i < save.maxAvailableLevels; i++)
+            {
+                poweredSave += "0";
+                poweredLevel.Add(powerEnum.neutral);
+            }
+        }
+        else
+        {
+            string poweredSave = PlayerPrefs.GetString(save.poweredLevel);
+        }
+    }
+
     // !!! Bonus !!!
     /// <summary>
     /// Method <c>rollBackOne</c> allows the player to cancel is last moves.

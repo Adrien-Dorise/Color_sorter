@@ -18,6 +18,7 @@ public class save
     static public string musicTime = "Music Timestamp"; //Store the level time to load it exactly where it was when changing scene
     static public string playedLevel = "Played level";
     static public string colors = "Color";
+    static public string poweredLevel = "powerup"; //Information about if a level is powered up or down
 
     
 
