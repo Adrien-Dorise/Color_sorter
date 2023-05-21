@@ -20,6 +20,7 @@ public class setup : MonoBehaviour
     [SerializeField] private GameObject tubeParent;
     [SerializeField] private GameObject tubePrefab;
     [SerializeField] private GameObject robot;
+    private gameManager managerScript;
 
     //Scene parameters
     //This is to be set in editor according to the level disposition.
@@ -56,9 +57,10 @@ public class setup : MonoBehaviour
             }
         }
 
+        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
         musicManager = GameObject.Find("Music Manager");
 
-        switch(gameManager.currentState)
+        switch(managerScript.currentState)
         {
             case gameManager.states.def:
                 PlayerPrefs.SetInt(save.musicTime, 0);
@@ -130,85 +132,16 @@ public class setup : MonoBehaviour
         }
         robot.GetComponent<robot>().initialise(colorRob);
 
-        /*
-        //We verify that we can change a color with the robot !
-        bool isColorRobotChanged = false;
-        foreach (List<Color> col in colorTubesList) 
-        {
-            try
-            {
-                if (col.LastOrDefault() == colorRob)
-                {
-                    isColorRobotChanged = true;
-                    break;
-                }
-            }
-            catch (Exception e) { Debug.Log(e); }
-        }
-
-        //We switch all layers of one color if impossible to find a colors corresponding to robot
-        if(!isColorRobotChanged) 
-        {
-            Color switchColor = colorTubesList[0].LastOrDefault();
-            for (int i = 0; i < colorTubesList.Count; i++)
-            {
-                for(int j = 0; j < colorTubesList[i].Count; j++)
-                {
-                    try
-                    {
-                        if (colorTubesList[i][j] == colorRob) //Switch colors similar to robot by the switch color
-                        {
-                            colorTubesList[i][j] = switchColor;
-                        }
-                        else if (colorTubesList[i][j] == switchColor) 
-                        {
-                            colorTubesList[i][j] = colorRob;
-                        }
-                    }
-                    catch (Exception e) { Debug.Log(e); }
-
-                }
-            }
-        }
-        */
-
         //Initialise tubes
         bool isTubeChangedByRobot = false;
         for (int i = 0; i < numberOfTube; i++)
         {
             GameObject tube = Instantiate(tubePrefab, tubeParent.transform);
             tube.transform.localPosition = posTubes[i];
+            tube.name = "Test Tube (" + i + ")"; 
             if(i < numberOfTube - numberOfEmptyTube)
             {
                 tube.GetComponent<testTube>().initialise(numberOfMaxLayers, colorTubesList[i]);
-
-                /*
-                //Change color according to robot
-                try
-                {
-                    if(tube.GetComponent<testTube>().colorList.Peek() == colorRob && !isTubeChangedByRobot)
-                    {
-                        tube.GetComponent<testTube>().removeColorLayer();
-                        Color newColor = gameManager.colors[0];
-                        for(int iCol = 0; iCol < gameManager.colors.Count(); iCol++)
-                        {
-                            newColor = gameManager.colors[iCol]; 
-                            if(newColor != colorRob)
-                            {
-                                break;
-                            }
-                        }
-
-
-                        tube.GetComponent<testTube>().addColorLayer(newColor);
-                        isTubeChangedByRobot = true;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Debug.LogError(ex);
-                }
-                */
             }
             else
             {
@@ -217,8 +150,6 @@ public class setup : MonoBehaviour
 
 
         }
-        
-        //gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
     }
 
     private void switchFirstLayer()
