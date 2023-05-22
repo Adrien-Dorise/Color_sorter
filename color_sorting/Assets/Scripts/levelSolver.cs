@@ -3,12 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class levelSolver : MonoBehaviour
 {
+    public bool debugLog = true;
     private GameObject tubeParents;
     private List<GameObject> tubes;
     private int nodeID = 0;
+    private List<List<string>> statesVisited; //Consist of the R value of the color
+    public int count=0;
+    public float waitTime = 0.01f;
+
+
+    
+    [SerializeField] bool scanNewActions = false;
+    [SerializeField] bool doAction = false;
+    [SerializeField] bool rewind = false;
+    node currentNode;
+    private bool doInit = true;
 
     private bool isWin(List<GameObject> availableTubes)
     {
@@ -55,6 +68,42 @@ public class levelSolver : MonoBehaviour
         return false;
     }
 
+    private bool isVisitedState(List<GameObject> tubes)
+    {
+        List<string> currentState = new List<string>();
+        foreach(GameObject tube in tubes)
+        {
+            string tubeLayers = "";
+            foreach(Image layerColor in tube.transform.GetChild(1).GetComponentsInChildren<Image>())
+            {
+                tubeLayers += layerColor.color.ToString();
+            }
+            currentState.Add(tubeLayers);
+        }
+
+        bool isSimilar;
+        foreach(List<string> knownstate in statesVisited)
+        {
+            isSimilar = true;
+            for(int i=0; i<knownstate.Count; i++)
+            {
+                if(knownstate[i] != currentState[i])
+                {
+                    isSimilar = false;
+                    break;
+                }
+            }
+            if(isSimilar)
+            {
+                //If we arrive here, it means that all layer from all tubes are similar.
+                return true;
+            }
+        }
+        statesVisited.Add(currentState);
+        count = statesVisited.Count;
+        return false;
+    }
+
     IEnumerator wait(bool isFinish)
     {
         yield return new WaitForSeconds(1.5f);
@@ -62,39 +111,57 @@ public class levelSolver : MonoBehaviour
     }
 
 
+    bool isWinnable = false;
     private IEnumerator resolveGraph(List<GameObject> availableTubes, node initialNode, int nodeIdx)
     {
+
         nodeID++;
         node tmpNode = initialNode;
-        foreach(int actID in initialNode.actionsToExplore)
+        if(!isVisitedState(availableTubes))
         {
-            Debug.Log("node" + nodeIdx);
-            yield return new WaitForSeconds(0.05f);
-            float initTimer = Time.time;
-            tmpNode = initialNode.performAction(availableTubes,actID);
-            
             if(isWin(availableTubes))
             {
-                Debug.Log("WIN node" + nodeID);
-                node winNodes = tmpNode;
+                isWinnable = true;
+                if(debugLog){Debug.Log("WIN node" + nodeIdx);}
+                node winNodes = initialNode;
                 while(winNodes.previousNode != null)
                 {
                     winNodes.isWinnable = true;
                     winNodes = winNodes.previousNode;
                 }
-                yield return new WaitForSeconds(0.05f);
-                tmpNode = tmpNode.rewindAction(availableTubes);
-                yield return new WaitForSeconds(0.05f);
-                nodeID++;
+                winNodes.isWinnable = true;
+                yield return new WaitForSeconds(waitTime);
+              
             }
             else
             {
-                yield return StartCoroutine(resolveGraph(availableTubes, tmpNode, nodeID));
+                foreach(int actID in initialNode.actionsToExplore)
+                {
+                    if(debugLog){Debug.Log("node" + nodeIdx + ": " + (actID+1) + " / " + initialNode.actionsToExplore.Count + " actions");}
+                    float initTimer = Time.time;
+                    yield return new WaitForSeconds(waitTime);
+                    tmpNode = initialNode.performAction(availableTubes,actID);
+                    yield return StartCoroutine(resolveGraph(availableTubes, tmpNode, nodeID));
+                    
+                }
+
             }
+            if(debugLog){Debug.Log("All actions seen in node" + nodeIdx);}
         }
-        Debug.Log("All actions seen in node" + nodeIdx);
-        initialNode.rewindAction(availableTubes);
-        //yield return new WaitForSeconds(0.5f);
+        else
+        {
+            if(debugLog){Debug.Log("State already visited for node" + nodeIdx);}
+        }
+
+        if(nodeIdx == 0)
+        {
+            if(debugLog){Debug.Log("All graph complete ! Is it possible to finish the level: " + isWinnable);}
+        }
+        else
+        {
+            initialNode.rewindAction(availableTubes);
+        }
+        yield return new WaitForSeconds(waitTime);
     }
 
     private class graph
@@ -144,6 +211,7 @@ public class levelSolver : MonoBehaviour
                     bool pooringPossible = isPooringPossible(pooringTube, pooredTube);
                     bool tubesIncomplete = !pooringTube.GetComponent<testTube>().tubeComplete && !pooredTube.GetComponent<testTube>().tubeComplete;
 
+
                     if(differentAction && pooringPossible && tubesIncomplete)
                     {
                         nextActions.Add(new action(pooringTube, pooredTube));
@@ -160,7 +228,7 @@ public class levelSolver : MonoBehaviour
         {
             int pooredLayers = gameManager.pooringAction(nextActions[actionID].pooringTube, nextActions[actionID].pooredTube);
             nextActions[actionID].setLayerPoored(pooredLayers);
-            nextActions[actionID].printAction();
+            //nextActions[actionID].printAction();
 
             return new node(tubesAvailable, nextActions[actionID], this);
         }
@@ -218,6 +286,7 @@ public class levelSolver : MonoBehaviour
     private IEnumerator init()
     {
         yield return new WaitForEndOfFrame();
+        statesVisited = new List<List<string>>();
         tubes = new List<GameObject>();
         tubeParents = GameObject.Find("Tube Canvas").transform.GetChild(0).gameObject;
         for(int i=0; i < tubeParents.transform.childCount; i++)
@@ -227,17 +296,12 @@ public class levelSolver : MonoBehaviour
         currentNode = new node(tubes, null, null);
 
         nodeID = 0;
+
         StartCoroutine(resolveGraph(tubes, new node(tubes, null, null), nodeID));
-        //resolveGraph(tubes, new node(tubes, null, null), 0);
+
+
     }
 
-    [SerializeField] bool scanNewActions = false;
-    [SerializeField] bool doAction = false;
-    [SerializeField] bool rewind = false;
-    node currentNode;
-
-
-    private bool doInit = true;
     private void FixedUpdate()
     {
         if(doInit)
@@ -256,6 +320,7 @@ public class levelSolver : MonoBehaviour
         {
             doAction = false;
             currentNode = currentNode.performAction(tubes,0);
+            Debug.Log(isVisitedState(tubes));
             if(isWin(tubes))
             {
                 Debug.Log("win");

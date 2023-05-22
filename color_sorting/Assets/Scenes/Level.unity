@@ -152,7 +152,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4c988107121776409e09553cbc5841a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tubes: []
+  debugLog: 1
+  count: 0
+  waitTime: 0.001
+  scanNewActions: 0
+  doAction: 0
+  rewind: 0
 --- !u!4 &628497216
 Transform:
   m_ObjectHideFlags: 0
