@@ -152,7 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4c988107121776409e09553cbc5841a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugLog: 1
+  debugLog: 0
+  stopAtWin: 0
   count: 0
   waitTime: 0.001
   scanNewActions: 0

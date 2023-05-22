@@ -7,13 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class levelSolver : MonoBehaviour
 {
-    public bool debugLog = true;
+    public bool debugLog = false;
+    public bool stopAtWin = true;
     private GameObject tubeParents;
     private List<GameObject> tubes;
     private int nodeID = 0;
     private List<List<string>> statesVisited; //Consist of the R value of the color
     public int count=0;
-    public float waitTime = 0.01f;
+    public float waitTime = 0.001f;
 
 
     
@@ -131,6 +132,10 @@ public class levelSolver : MonoBehaviour
                 }
                 winNodes.isWinnable = true;
                 yield return new WaitForSeconds(waitTime);
+                if(stopAtWin)
+                {
+                    yield break;
+                }
               
             }
             else
@@ -141,7 +146,12 @@ public class levelSolver : MonoBehaviour
                     float initTimer = Time.time;
                     yield return new WaitForSeconds(waitTime);
                     tmpNode = initialNode.performAction(availableTubes,actID);
+                    if(debugLog){initialNode.nextActions[actID].printAction();}
                     yield return StartCoroutine(resolveGraph(availableTubes, tmpNode, nodeID));
+                    if(stopAtWin && isWinnable)
+                    {
+                        yield break;
+                    }
                     
                 }
 
@@ -155,7 +165,7 @@ public class levelSolver : MonoBehaviour
 
         if(nodeIdx == 0)
         {
-            if(debugLog){Debug.Log("All graph complete ! Is it possible to finish the level: " + isWinnable);}
+            Debug.Log("All graph complete ! Is it possible to finish the level: " + isWinnable);
         }
         else
         {
@@ -174,7 +184,7 @@ public class levelSolver : MonoBehaviour
     {
         public node previousNode {get;private set;}
         public action previousAction {get; private set;}
-        private List<action> nextActions;
+        public List<action> nextActions {get; private set;}
         public List<int> actionsToExplore {get; private set;}
         public bool isWinnable;
         private List<int> winnableNodes;
@@ -206,11 +216,10 @@ public class levelSolver : MonoBehaviour
                     }
                     else
                     {
-                        differentAction = (pooredTube != previousAction.pooringTube && pooringTube != previousAction.pooredTube);
+                        differentAction = !(pooredTube == previousAction.pooringTube && pooringTube == previousAction.pooredTube);
                     }
                     bool pooringPossible = isPooringPossible(pooringTube, pooredTube);
                     bool tubesIncomplete = !pooringTube.GetComponent<testTube>().tubeComplete && !pooredTube.GetComponent<testTube>().tubeComplete;
-
 
                     if(differentAction && pooringPossible && tubesIncomplete)
                     {
@@ -228,8 +237,7 @@ public class levelSolver : MonoBehaviour
         {
             int pooredLayers = gameManager.pooringAction(nextActions[actionID].pooringTube, nextActions[actionID].pooredTube);
             nextActions[actionID].setLayerPoored(pooredLayers);
-            //nextActions[actionID].printAction();
-
+            
             return new node(tubesAvailable, nextActions[actionID], this);
         }
 
