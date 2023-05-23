@@ -166,6 +166,10 @@ public class levelSolver : MonoBehaviour
         if(nodeIdx == 0)
         {
             Debug.Log("All graph complete ! Is it possible to finish the level: " + isWinnable);
+            if(!isWinnable)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
         }
         else
         {
@@ -306,8 +310,6 @@ public class levelSolver : MonoBehaviour
         nodeID = 0;
 
         StartCoroutine(resolveGraph(tubes, new node(tubes, null, null), nodeID));
-
-
     }
 
     private void FixedUpdate()
