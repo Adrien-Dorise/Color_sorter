@@ -92,15 +92,15 @@ public class levels
                                 s+=a + " ";
                             }
                             Debug.Log(s);*/
-                            if(availableColors[randColor] >= numberMaxLayers)
-                            {
-                                availableColors.RemoveAt(randColor);
-                                colorsUsed.RemoveAt(randColor);
-                            }
                             if(availableTubes[randTube] >= numberInitLayers)
                             {
                                 availableTubes.RemoveAt(randTube);
                                 tubesUsed.RemoveAt(randTube);
+                            }
+                            if(availableColors[randColor] >= numberMaxLayers)
+                            {
+                                availableColors.RemoveAt(randColor);
+                                colorsUsed.RemoveAt(randColor);
                             }
                             randTubeMemory = randTube;
                             foundLayer = true;
@@ -109,50 +109,62 @@ public class levels
                 }
                 break;
 
-            case 2:
+            case 2: //We occasionally repoor the same color in the same tube
+                int memoryTube = 0, memoryColor = 0;
+                float reuseTube;
                 for(int lay = 0; lay < totalLayers; lay++)
+                {
+                    foundLayer = false;
+                    while(!foundLayer)
                     {
-                        foundLayer = false;
-                        while(!foundLayer)
+                        randTube = UnityEngine.Random.Range(0,availableTubes.Count); //Finding correct tube
+                        randColor = UnityEngine.Random.Range(0,availableColors.Count); //Finding correct color
+                        reuseTube =  UnityEngine.Random.Range(0f,1f); //Set a number to reuse the tube. 
+                        if(reuseTube < 0.40f && (memoryTube < availableTubes.Count && memoryColor < availableColors.Count)) //Change the reuse tube to modify rewind probability (< 0.2f means 20% chances of rewind)
                         {
-                            randTube = UnityEngine.Random.Range(0,availableTubes.Count); //Finding correct tube
-                            if(true)
+                                randTube = memoryTube;
+                                randColor = memoryColor;
+                                //Debug.Log("Rewind");  
+                        }
+                        memoryTube = randTube;
+                        memoryColor = randColor;
+
+
+                        if(true)
+                        {
+
+                            //Setting up new color
+                            associatedColor = gameManager.colors[colorsUsed[randColor]];
+                            generatedLevel[tubesUsed[randTube]].Add(associatedColor);
+                            debugList[tubesUsed[randTube]].Add(colorsUsed[randColor]);
+
+                            //Removing completely used colors or tubes
+                            availableColors[randColor] += 1;
+                            availableTubes[randTube] += 1;
+
+                            if(availableTubes[randTube] >= numberInitLayers)
                             {
-                                randColor = UnityEngine.Random.Range(0,availableColors.Count); //Finding correct color
-
-                                //Setting up new color
-                                associatedColor = gameManager.colors[colorsUsed[randColor]];
-                                generatedLevel[tubesUsed[randTube]].Add(associatedColor);
-                                debugList[tubesUsed[randTube]].Add(colorsUsed[randColor]);
-
-                                //Removing completely used colors or tubes
-                                availableColors[randColor] += 1;
-                                availableTubes[randTube] += 1;
-
-                                if(availableColors[randColor] >= numberMaxLayers)
-                                {
-                                    availableColors.RemoveAt(randColor);
-                                    colorsUsed.RemoveAt(randColor);
-                                }
-                                if(availableTubes[randTube] >= numberInitLayers)
-                                {
-                                    availableTubes.RemoveAt(randTube);
-                                    tubesUsed.RemoveAt(randTube);
-                                }
-                                randTubeMemory = randTube;
-                                foundLayer = true;
+                                availableTubes.RemoveAt(randTube);
+                                tubesUsed.RemoveAt(randTube);
+                            }
+                            if(availableColors[randColor] >= numberMaxLayers)
+                            {
+                                availableColors.RemoveAt(randColor);
+                                colorsUsed.RemoveAt(randColor);
                             }
                         }
+                        foundLayer = true;
                     }
-                    break;
-        }
+                }
+                break;
+            }
 
         //Print generated level in debug console
-        string str = "";
-        int count = 1;
         Debug.Log("Level" + PlayerPrefs.GetInt(save.currentLevel));
         Debug.Log("Seed: " + seed);
         /*
+        string str = "";
+        int count = 1;
         foreach(List<int> tube in debugList)
         {
             str = "";
@@ -969,7 +981,7 @@ public class levels
                 numberMaxLayers = 6;
                 tubeToWin = 8;
                 maxLevelColor = 8;
-                seed = 0;
+                seed = 740350752;//1876527899;
                 generatorVersion = 2;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
@@ -983,8 +995,8 @@ public class levels
                 numberMaxLayers = 6;
                 tubeToWin = 9;
                 maxLevelColor = 9;
-                seed = 0;
-                generatorVersion = 1;
+                seed = 315066914;
+                generatorVersion = 2;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor, generatorVersion);
