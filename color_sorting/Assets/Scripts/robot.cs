@@ -118,7 +118,7 @@ public class robot : MonoBehaviour
         isIdling = true;
         if (this.transform.localScale.x <= endScale)
         {
-            while (this.transform.localScale.x < endScale && gameManager.currentState == gameManager.states.idleFirstAction)
+            while (this.transform.localScale.x < endScale && managerScript.currentState == gameManager.states.idleFirstAction)
             {
                 this.transform.localScale = new Vector3(this.transform.localScale.x + idleSpeed, this.transform.localScale.y + idleSpeed, 1);
                 yield return new WaitForSeconds(scalingTempo);
@@ -127,7 +127,7 @@ public class robot : MonoBehaviour
         }
         else
         {
-            while (this.transform.localScale.x > startScale && gameManager.currentState == gameManager.states.idleFirstAction)
+            while (this.transform.localScale.x > startScale && managerScript.currentState == gameManager.states.idleFirstAction)
             {
                 this.transform.localScale = new Vector3(this.transform.localScale.x - idleSpeed, this.transform.localScale.y - idleSpeed, 1);
                 yield return new WaitForSeconds(scalingTempo);
@@ -404,7 +404,7 @@ public class robot : MonoBehaviour
     private void FixedUpdate()
     {
         
-        if(gameManager.currentState == gameManager.states.idleFirstAction && !isIdling)
+        if(managerScript.currentState == gameManager.states.idleFirstAction && !isIdling)
         {
             StartCoroutine(robotIdle());
         }

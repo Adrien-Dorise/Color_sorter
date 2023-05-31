@@ -9,6 +9,7 @@ using System.Collections.Generic;
 public class save
 {
     static public bool debugDev = true; // Set true to have access to all levels
+    static public bool debugLevel = false; // Set true to remove tube animations during levels
     static public int maxAvailableLevels = 77; //Change when increase the number of levels in the game
 
 

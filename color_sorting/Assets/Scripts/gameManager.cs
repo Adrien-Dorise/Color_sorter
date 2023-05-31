@@ -16,7 +16,7 @@ public class gameManager : MonoBehaviour
     
     public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
     public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
-    static public states currentState { get; private set; }
+    public states currentState { get; private set; }
     static public List<Color> colors;
     [SerializeField] public GameObject memoryTube;
     private GameObject tubesGroupObject;
@@ -60,7 +60,7 @@ public class gameManager : MonoBehaviour
         {
             currentState = states.idleNoTube;
         }
-        colors = colorBlindSettings.initColors();
+        colors = colorBlindSettings.loadColors();
 
 
         if (!PlayerPrefs.HasKey(save.availableLevels)) //First play ! 
@@ -113,7 +113,7 @@ public class gameManager : MonoBehaviour
     /// <param name="tube1"> First tube to check </param>
     /// <param name="tube2"> Second tube to check </param>
     /// <returns> True if same color or at least one tube empty, false otherwise </returns>
-    private bool areSameColor(GameObject tube1, GameObject tube2)
+    static public bool areSameColor(GameObject tube1, GameObject tube2)
     {
         if(tube1.GetComponent<testTube>().colorList.Count == 0 || tube2.GetComponent<testTube>().colorList.Count == 0)
         {
@@ -126,6 +126,13 @@ public class gameManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Method <c>setSortOrder</c> manage the order of two tubes on a same canvas
+    /// It is used during pooring animation to ensure that the pooring tube is in front of the poored tube and avoid sprite overlapping.
+    /// </summary>
+    /// <param name="tube1"> Tube moved that poors the layer </param>
+    /// <param name="tube2"> Tube that receive the color layer </param>
+    /// <param name="sortOrder"> sorting value taken as a reference to set the two tubes.
     private void setSortOrder(GameObject tube1, GameObject tube2, int sortOrder)
     {
         tube1.GetComponent<Canvas>().sortingOrder = sortOrder+5; //Tube order
@@ -145,59 +152,10 @@ public class gameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Method <c>pooringAnimation</c> manage the animation when a tube is porring a layer into another one.
-    /// The moved tube is both translated and rotated into position. Then a small tempo is set while pooring layer. Finally, the tube is set back into position.
-    /// </summary>
-    /// <param name="tube1"> Tube moved that poors the layer </param>
-    /// <param name="tube2"> Tube that receive the color layer </param>
-    private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2)
+
+    static public int pooringAction(GameObject tube1, GameObject tube2)
     {
-        int xDir = 1;
-        float rotation = 40f;
-        Vector3 initialPosition = tube1.transform.localPosition;
-        float initialRotation = tube1.transform.localRotation.eulerAngles.z;
-        if(tube1.transform.localPosition.x < tube2.transform.localPosition.x) //pooring tube is at right
-        {
-            xDir = -1;
-            rotation *= -1;
-        }
-        robotScript.switchEyeColor(tube1.GetComponent<testTube>().colorList.Peek());
-        Color pooredColor = Color.black;
-        try
-        {
-            pooredColor = tube1.GetComponent<testTube>().colorList.Peek();
-            tube1.GetComponent<Image>().raycastTarget = false;
-            tube2.GetComponent<Image>().raycastTarget = false;
-        }
-        catch(Exception e)
-        {
-            Debug.Log(e);
-        }
-
-
-        //Sorting order update
-        setSortOrder(tube1,tube2, 10);
-
-        //Animate
-        //Move memory tube to selected tube
-        Vector3 newPos = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
-        float newRot = rotation;
-        yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(newPos,newRot,translationTime));
-        //tube1.transform.localPosition = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
-        //tube1.transform.Rotate(new Vector3(0, 0, rotation));
-
-
-        //Add poored liquid
-        tube1.transform.GetChild(0).localScale = new Vector3(-xDir,1,1);
-        foreach(Image sprite in tube1.transform.GetChild(0).GetComponentsInChildren<Image>())
-        {
-            sprite.enabled = true;
-            sprite.color = pooredColor;
-        }
-        audioManager.pooringSound();   
-
-        //tube's liquid management
+        int pooredLayers = 0;
         bool stillNotMax = tube2.GetComponent<testTube>().colorList.Count < tube2.GetComponent<testTube>().maxLiquid;
         bool notEmpty = tube1.GetComponent<testTube>().colorList.Count != 0;
         int safeGuard = 0;    
@@ -215,24 +173,96 @@ public class gameManager : MonoBehaviour
             tube1.GetComponent<testTube>().removeColorLayer();
             stillNotMax = tube2.GetComponent<testTube>().colorList.Count < tube2.GetComponent<testTube>().maxLiquid;
             notEmpty = tube1.GetComponent<testTube>().colorList.Count != 0;
+            pooredLayers++;
         }  
-        gameState(actions.finishAction);
-        yield return new WaitForSeconds(pooringTime);
+        return pooredLayers;
+    }
 
+    /// <summary>
+    /// Method <c>pooringAnimation</c> manage the animation when a tube is porring a layer into another one.
+    /// The moved tube is both translated and rotated into position. Then a small tempo is set while pooring layer. Finally, the tube is set back into position.
+    /// </summary>
+    /// <param name="tube1"> Tube moved that poors the layer </param>
+    /// <param name="tube2"> Tube that receive the color layer </param>
+    private IEnumerator pooringAnimation(GameObject tube1, GameObject tube2)
+    {
+        int xDir = 1;
+        float rotation = 40f;
+        Vector3 initialPosition = tube1.transform.localPosition;
+        float initialRotation = tube1.transform.localRotation.eulerAngles.z;
+        Color pooredColor = Color.black;
 
-
-        //Return to initial position
-        tube2.GetComponent<Image>().raycastTarget = true;
-        foreach(Image sprite in tube1.transform.GetChild(0).GetComponentsInChildren<Image>())
+        if(tube1.transform.localPosition.x < tube2.transform.localPosition.x) //pooring tube is at right
         {
-            sprite.enabled = false;
+            xDir = -1;
+            rotation *= -1;
         }
-        //tube1.transform.position = initialPosition;
-        //tube1.transform.rotation = initialRotation;
+        robotScript.switchEyeColor(tube1.GetComponent<testTube>().colorList.Peek());
+        try
+        {
+            pooredColor = tube1.GetComponent<testTube>().colorList.Peek();
+            if(!save.debugDev)
+            {
+                tube1.GetComponent<Image>().raycastTarget = false;
+                tube2.GetComponent<Image>().raycastTarget = false;
+            }
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e);
+        }
+    
+
+
+        //Animate
+        if(!save.debugLevel)
+        {
+            //Sorting order update
+            setSortOrder(tube1,tube2, 10);
+        
+            //Move memory tube to selected tube
+            Vector3 newPos = new Vector3(tube2.transform.localPosition.x + xOffset * xDir, tube2.transform.localPosition.y + yOffset, 0f);
+            float newRot = rotation;
+            yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(newPos,newRot,translationTime));
+
+            //Add poored liquid
+            tube1.transform.GetChild(0).localScale = new Vector3(-xDir,1,1);
+            foreach(Image sprite in tube1.transform.GetChild(0).GetComponentsInChildren<Image>())
+            {
+                sprite.enabled = true;
+                sprite.color = pooredColor;
+            }
+            audioManager.pooringSound();   
+        }
+
+        //tube's liquid management
+        pooringAction(tube1, tube2);
+        if(tube2.GetComponent<testTube>().tubeComplete)
+        {
+            isNewTubeCompleted = true;
+        }
+        gameState(actions.finishAction);
+
+        //End animations
+        if(!save.debugLevel)
+        {
+            yield return new WaitForSeconds(pooringTime);
+
+            //Return to initial position
+            tube2.GetComponent<Image>().raycastTarget = true;
+            foreach(Image sprite in tube1.transform.GetChild(0).GetComponentsInChildren<Image>())
+            {
+                sprite.enabled = false;
+            }
+        }
+
         StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
-        yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
-        tube1.GetComponent<Image>().raycastTarget = true;
-        setSortOrder(tube1,tube2, 0);
+        if(!save.debugLevel)
+        { 
+            yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
+            tube1.GetComponent<Image>().raycastTarget = true;
+            setSortOrder(tube1,tube2, 0);
+        }
     }
 
     
@@ -365,7 +395,10 @@ public class gameManager : MonoBehaviour
 
                             //One layer change method
                             tubeScript.removeColorLayer();
-                            tubeScript.addColorLayer(robotScript.eyeColor);
+                            if(tubeScript.addColorLayer(robotScript.eyeColor))
+                            {
+                                isNewTubeCompleted = true;
+                            }
 
                             currentState = states.idleNoTube;
                         }
