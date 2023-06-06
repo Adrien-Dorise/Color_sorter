@@ -82,14 +82,15 @@ public class testTube : MonoBehaviour
     /// This is done by adding a variable to the colorList global stack
     /// </summary>
     /// <param name="color"> state the color of the new layer </param>
-    public void addColorLayer(Color color)
+    /// <return> gives the information if the tube is now complete
+    public bool addColorLayer(Color color)
     {
         GameObject child = Instantiate(liquidPrefab, this.transform.GetChild(1));
         child.transform.localScale = new Vector3(1f, 1f / maxLiquid, 1f);
         child.transform.localPosition = new Vector3(0f, -yOffset + (yOffset / maxLiquid) + (colorList.Count * 2 * yOffset / maxLiquid), 0f);
         colorList.Push(color);
         child.transform.GetComponent<Image>().color = color;
-        tubeComplete = isComplete();
+        return isComplete();
 
     }
 
@@ -100,6 +101,7 @@ public class testTube : MonoBehaviour
     /// </summary>
     public void removeColorLayer()
     {
+        this.tubeComplete = false;
         try
         {
             Destroy(this.transform.GetChild(1).GetChild(colorList.Count-1).gameObject);
@@ -118,19 +120,33 @@ public class testTube : MonoBehaviour
     {
         if (scalingUp)
         {
-            while (this.transform.localScale.x < endScale)
+            if(!save.debugLevel)
             {
-                this.transform.localScale = new Vector3(this.transform.localScale.x + scalingSpeed, this.transform.localScale.y + scalingSpeed, 1);
-                yield return new WaitForSeconds(scalingTempo);
+                while (this.transform.localScale.x < endScale)
+                {
+                    this.transform.localScale = new Vector3(this.transform.localScale.x + scalingSpeed, this.transform.localScale.y + scalingSpeed, 1);
+                    yield return new WaitForSeconds(scalingTempo);
+                }
+            }
+            else
+            {
+                this.transform.localScale = new Vector3(endScale, endScale, 1);
             }
 
         }
         else
         {
-            while (this.transform.localScale.x > 1)
+            if(!save.debugLevel)
             {
-                this.transform.localScale = new Vector3(this.transform.localScale.x - scalingSpeed, this.transform.localScale.y - scalingSpeed, 1);
-                yield return new WaitForSeconds(scalingTempo);
+                while (this.transform.localScale.x > 1)
+                {
+                    this.transform.localScale = new Vector3(this.transform.localScale.x - scalingSpeed, this.transform.localScale.y - scalingSpeed, 1);
+                    yield return new WaitForSeconds(scalingTempo);
+                }
+            }
+            else
+            {
+                this.transform.localScale = new Vector3(1, 1, 1);
             }
 
         }
@@ -205,11 +221,7 @@ public class testTube : MonoBehaviour
         {
             isCmplt = false;
         }
-
-        if(isCmplt)
-        {
-            managerScript.isNewTubeCompleted = true;
-        }
+        this.tubeComplete = isCmplt;
         return isCmplt;
     }
 
