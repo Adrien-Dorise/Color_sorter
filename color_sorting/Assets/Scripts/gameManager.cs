@@ -256,7 +256,7 @@ public class gameManager : MonoBehaviour
             }
         }
 
-        StartCoroutine(tube1.GetComponent<testTube>().tubeScaling(false));
+        tube1.GetComponent<testTube>().tubeScaling(false);
         if(!save.debugLevel)
         { 
             yield return StartCoroutine(tube1.GetComponent<testTube>().moveTube(initialPosition,initialRotation,translationTime));
@@ -431,7 +431,7 @@ public class gameManager : MonoBehaviour
                         if (!obj.GetComponent<testTube>().tubeComplete && notEmpty)
                         {
                             //Debug.Log("tube clicked");
-                            StartCoroutine(obj.GetComponent<testTube>().tubeScaling(true));
+                            obj.GetComponent<testTube>().tubeScaling(true);
                             memoryTube = obj;
                             currentState = states.idleTube;
                         }
@@ -452,20 +452,20 @@ public class gameManager : MonoBehaviour
                         bool notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
                         if(obj == memoryTube) //Same tube selected
                         {
-                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
+                            memoryTube.GetComponent<testTube>().tubeScaling(false);
                             memoryTube = null;
                             currentState = states.idleNoTube;
                         }
                         else if (obj.GetComponent<testTube>().tubeComplete) //completed tube selected
                         {
-                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
+                            memoryTube.GetComponent<testTube>().tubeScaling(false);
                             memoryTube = null;
                             currentState = states.idleNoTube;
                         }
                         else if(!areSameColor(obj, memoryTube)) //New tube selected but different colors
                         {
-                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
-                            StartCoroutine(obj.GetComponent<testTube>().tubeScaling(true));
+                            memoryTube.GetComponent<testTube>().tubeScaling(false);
+                            obj.GetComponent<testTube>().tubeScaling(true);
                             memoryTube = obj;
                         }
                         else if (areSameColor(memoryTube, obj) && stillNotMax) //New tube is ok to poor additional color
@@ -475,14 +475,14 @@ public class gameManager : MonoBehaviour
                         }
                         else if (areSameColor(memoryTube, obj) && !stillNotMax) //New tube is too full to be poored
                         {
-                            StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
-                            StartCoroutine(obj.GetComponent<testTube>().tubeScaling(true));
+                            memoryTube.GetComponent<testTube>().tubeScaling(false);
+                            obj.GetComponent<testTube>().tubeScaling(true);
                             memoryTube = obj;
                         }
                     }
                     else if(act == actions.clickedRobot || act == actions.clickedBackround)
                     {
-                        StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
+                        memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
                         currentState = states.idleNoTube;
                     }
@@ -490,7 +490,7 @@ public class gameManager : MonoBehaviour
                 catch (Exception ex)
                 {
                     Debug.LogWarning(ex);
-                    StartCoroutine(memoryTube.GetComponent<testTube>().tubeScaling(false));
+                    memoryTube.GetComponent<testTube>().tubeScaling(false);
                     memoryTube = null;
                     currentState = states.idleNoTube;
                 }

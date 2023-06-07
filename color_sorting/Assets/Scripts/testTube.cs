@@ -29,6 +29,7 @@ public class testTube : MonoBehaviour
     [SerializeField] private float scalingSpeed; //Speed at which a u=tube is up or down scaled
     [SerializeField] private float endScale; //Max scale threshold when animating
     private bool isMoving; //Set true when the tube have to move from one position to another
+    private Coroutine scalingRoutine; //Variable used to ensure that the tube is not tryinng to scale up and down simultaneously
 
 
     private void Awake()
@@ -110,13 +111,21 @@ public class testTube : MonoBehaviour
         catch(Exception e) { Debug.LogException(e); }
     }
 
+    public void tubeScaling(bool scalingUp)
+    {
+        if(scalingRoutine != null)
+        {
+            StopCoroutine(scalingRoutine);
+        }
+        scalingRoutine = StartCoroutine(tubeScalingRoutine(scalingUp));
+    }
 
     /// <summary>
     /// Method <c>tubeScaling</c> animate the tube by up or down scaling it.
     /// Note that this is an IEnumerator to be called with StartCoroutine
     /// </summary>
     /// <param name="scaling up">: true to scale up, false to scale down </param>
-    public IEnumerator tubeScaling(bool scalingUp)
+    private IEnumerator tubeScalingRoutine(bool scalingUp)
     {
         if (scalingUp)
         {
@@ -138,6 +147,7 @@ public class testTube : MonoBehaviour
         {
             if(!save.debugLevel)
             {
+                this.transform.localScale = new Vector3(endScale, endScale, 1);
                 while (this.transform.localScale.x > 1)
                 {
                     this.transform.localScale = new Vector3(this.transform.localScale.x - scalingSpeed, this.transform.localScale.y - scalingSpeed, 1);
@@ -148,7 +158,6 @@ public class testTube : MonoBehaviour
             {
                 this.transform.localScale = new Vector3(1, 1, 1);
             }
-
         }
     }
 
