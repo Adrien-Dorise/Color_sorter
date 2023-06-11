@@ -71,10 +71,12 @@ public class levelSolver : MonoBehaviour
                     //Check if we can poor all similar layers into new tube
                     int n_layersToPoor = 1;
                     int n_pooringLayersAvailable = pooredTube.GetComponent<testTube>().maxLiquid - pooredTube.GetComponent<testTube>().colorList.Count;
+                    bool isCompletionMove;
+                    int similarLayersInPooredTube = 0;
                     if(pooringTube.GetComponent<testTube>().colorList.Count > 1)
                     {
-                        Color col = pooringTube.GetComponent<testTube>().colorList.ToArray()[0];
-                        while(pooringTube.GetComponent<testTube>().colorList.ToArray()[n_layersToPoor] == col)
+                        Color pooringCol = pooringTube.GetComponent<testTube>().colorList.ToArray()[0];
+                        while(pooringTube.GetComponent<testTube>().colorList.ToArray()[n_layersToPoor] == pooringCol)
                         {
                             n_layersToPoor++;
                             if(n_layersToPoor >= pooringTube.GetComponent<testTube>().colorList.Count)
@@ -82,8 +84,20 @@ public class levelSolver : MonoBehaviour
                                 break;
                             }
                         }
+                        for(int i=0; i<pooredTube.GetComponent<testTube>().colorList.Count; i++)
+                        {
+                            if(pooredTube.GetComponent<testTube>().colorList.ToArray()[i] == pooringCol)
+                            {
+                                similarLayersInPooredTube++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
                     }
-                    allPooringLayersFit = n_layersToPoor <= n_pooringLayersAvailable;
+                    isCompletionMove = similarLayersInPooredTube + n_pooringLayersAvailable == pooredTube.GetComponent<testTube>().maxLiquid;
+                    allPooringLayersFit = n_layersToPoor <= n_pooringLayersAvailable || isCompletionMove;
 
                     //We verify that this move is not switching all layers from the pooring tube to an empty poored one, causing a useless move to be performed
                     notSwitchingTube = !(n_layersToPoor == pooringTube.GetComponent<testTube>().colorList.Count && pooredTube.GetComponent<testTube>().colorList.Count == 0);

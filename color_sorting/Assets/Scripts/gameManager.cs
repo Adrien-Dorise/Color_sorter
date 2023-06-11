@@ -302,6 +302,17 @@ public class gameManager : MonoBehaviour
     }
 
 
+    public void updateCompletedTubes()
+    {
+        completedTube = 0;
+        foreach(testTube tubeScript in tubesGroupObject.GetComponentsInChildren<testTube>())
+        {
+            if(tubeScript.isComplete())
+            {
+                completedTube++;
+            }
+        }
+    }
 
     private IEnumerator victory()
     {

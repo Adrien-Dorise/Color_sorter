@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class robotPower : MonoBehaviour
 {
@@ -19,10 +20,11 @@ public class robotPower : MonoBehaviour
     [SerializeField] GameObject prefabSolver;
     levelSolver mainSolver;
 
-    [SerializeField] private bool do_rollBack, do_isWinnable, do_nextMove;
+    [SerializeField] private bool do_rollBack, do_isWinnable, do_nextMove, do_deleteColor;
 
     private GameObject nextPooringTube, nextPooredTube;
     private bool isStateWinnable;
+    private gameManager managerScript;
 
     private IEnumerator Start()
     {
@@ -35,6 +37,7 @@ public class robotPower : MonoBehaviour
             tubes.Add(tubeParents.transform.GetChild(i).gameObject);
         }
         mainSolver = GameObject.Find("Level Solver").GetComponent<levelSolver>();
+        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
     }
 
     private void savePoweredLevels()
@@ -120,7 +123,70 @@ public class robotPower : MonoBehaviour
     /// </summary>
     private void deleteColor()
     {
+        Color colorToDelete=Color.black, colorReference=Color.black;
+        bool isColorToDeleteFound = false, isColorReferenceFound=false, allDone=false;
         
+        //Finding colors to swap
+        isColorToDeleteFound = false;
+        foreach(GameObject tube in tubes)
+        {
+            if(!tube.GetComponent<testTube>().isComplete() && tube.GetComponent<testTube>().colorList.Count > 0)
+            {
+                
+                foreach(Color col in tube.GetComponent<testTube>().colorList.ToArray())
+                {
+                    if(!isColorToDeleteFound)
+                    {
+                        colorToDelete = col;
+                        isColorToDeleteFound = true;    
+                    }
+                    if(isColorToDeleteFound && col != colorToDelete && !isColorReferenceFound)
+                    {
+                        colorReference = col;
+                        isColorReferenceFound = true;
+                    }
+                    if(isColorToDeleteFound && isColorReferenceFound && col != colorToDelete && col != colorReference) //We make sure that at least three colors are present in the level (Avoid having only one color left)
+                    {
+                        allDone = true;
+                        break;
+                    }
+                }
+                if(allDone)
+                {
+                    break;
+                }
+            }
+        }
+
+        //Process swapping
+        if(allDone)
+        {
+            List<Color> newColors = new List<Color>();
+            foreach(GameObject tube in tubes)
+            {
+                newColors.Clear();
+                int n_layers = tube.GetComponent<testTube>().colorList.Count;
+                for(int i=0; i<n_layers; i++)
+                {
+                    newColors.Add(tube.GetComponent<testTube>().colorList.Pop());
+                    if(newColors[^1] == colorToDelete)
+                    {
+                        newColors[^1] = colorReference;
+                    }
+                }
+
+                for(int i=0; i<n_layers; i++)
+                {
+                    tube.GetComponent<testTube>().colorList.Push(newColors[(n_layers-1)-i]);
+                    tube.transform.GetChild(1).GetChild(i).GetComponent<Image>().color = newColors[(n_layers-1)-i];
+                }
+            }
+            managerScript.updateCompletedTubes();
+        }
+        else
+        {
+            Debug.Log("Impossible to swap color as level setup does not permit it");
+        }
     }
 
 
@@ -195,6 +261,11 @@ public class robotPower : MonoBehaviour
         {
             do_rollBack = false;
             rollBackOne();
+        }
+        if(do_deleteColor)
+        {
+            do_deleteColor = false;
+            deleteColor();
         }
 
     }

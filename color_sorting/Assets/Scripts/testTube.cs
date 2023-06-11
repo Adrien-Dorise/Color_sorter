@@ -17,7 +17,6 @@ public class testTube : MonoBehaviour
     [SerializeField] public int initialLiquid, maxLiquid; //Initialised by setup script: Initial sate of the tube
     private gameManager managerScript; //Reference to game manager object
     public Stack<Color> colorList = new Stack<Color>(); //Reference the current colors in the tube
-    [SerializeField] int colorCount; //Number of color layer in the tube
     public bool tubeComplete; //State if the tube is full and cannot be touched anymore
 
     //Layer
