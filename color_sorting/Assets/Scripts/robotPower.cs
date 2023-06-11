@@ -108,6 +108,7 @@ public class robotPower : MonoBehaviour
     private void rollBackOne()
     {
         mainSolver.rewindNode();
+        managerScript.updateCompletedTubes();
     }
 
     /// <summary>
@@ -182,6 +183,7 @@ public class robotPower : MonoBehaviour
                 }
             }
             managerScript.updateCompletedTubes();
+            mainSolver.reInitialise();
         }
         else
         {

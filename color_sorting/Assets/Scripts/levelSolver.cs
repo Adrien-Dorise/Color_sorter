@@ -383,6 +383,12 @@ public class levelSolver : MonoBehaviour
         }
     }
 
+    public void reInitialise()
+    {
+        Awake();
+        StartCoroutine(Start());
+    }
+
     private IEnumerator verifyLevel()
     {
         yield return StartCoroutine(resolveGraph(tubes, new node(tubes, null, null), nodeID));
