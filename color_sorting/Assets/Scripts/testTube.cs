@@ -205,9 +205,14 @@ public class testTube : MonoBehaviour
     /// Method <c>isComplete</c> set the behaviour when the colorList global stack count has reached the maxLayer threshold.
     /// For now: the tube cannot be used again by player when full.
     /// </summary>
-    private bool isComplete()
+    public bool isComplete()
     {
         bool isCmplt = true;
+        if(this.tubeComplete)
+        {
+            return true;
+        }
+        
         try
         {
             if (colorList.Count < maxLiquid)
@@ -232,14 +237,6 @@ public class testTube : MonoBehaviour
         }
         this.tubeComplete = isCmplt;
         return isCmplt;
-    }
-
-    private void FixedUpdate()
-    {
-        if(isMoving)
-        {
-
-        }
     }
 
 

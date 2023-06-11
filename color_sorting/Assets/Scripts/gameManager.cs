@@ -22,6 +22,7 @@ public class gameManager : MonoBehaviour
     private GameObject tubesGroupObject;
     private Image victorySprite;
     private robot robotScript;
+    private robotPower robotPowerScript;
     private audio audioManager;
 
     private setup setupScript;
@@ -96,6 +97,12 @@ public class gameManager : MonoBehaviour
 
         tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
+        try
+        {
+            robotPowerScript = GameObject.Find("Level Solver").GetComponent<robotPower>();
+        }
+        catch(Exception e)
+        {}
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
         if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Level Selection"))
@@ -236,7 +243,9 @@ public class gameManager : MonoBehaviour
         }
 
         //tube's liquid management
-        pooringAction(tube1, tube2);
+        int layerPoored = pooringAction(tube1, tube2);
+        robotPowerScript.updateMove(tube1,tube2,layerPoored);
+
         if(tube2.GetComponent<testTube>().tubeComplete)
         {
             isNewTubeCompleted = true;
