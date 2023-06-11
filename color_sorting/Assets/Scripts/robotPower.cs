@@ -21,6 +21,9 @@ public class robotPower : MonoBehaviour
 
     [SerializeField] private bool do_rollBack, do_isWinnable, do_nextMove;
 
+    private GameObject nextPooringTube, nextPooredTube;
+    private bool isStateWinnable;
+
     private IEnumerator Start()
     {
         yield return new WaitForEndOfFrame();
@@ -66,6 +69,34 @@ public class robotPower : MonoBehaviour
        mainSolver.advanceNode(pooringTube, pooredTube, layerPoored);
     }
 
+    private IEnumerator activateSolver()
+    {
+        GameObject tubeCanvasClone = Instantiate(tubeCanvas);
+        tubeCanvasClone.name = "Tube Canvas";
+        tubeCanvas.SetActive(false);
+        GameObject tmpSolver = Instantiate(prefabSolver);
+        tubeCanvasClone.transform.SetParent(tubeCanvas.transform.parent);
+        GameObject tubeParentClone = tubeCanvasClone.transform.GetChild(0).gameObject;
+        List<GameObject> tmpTubes = new List<GameObject>();
+        for(int i=0; i < tubeParentClone.transform.childCount; i++)
+        {
+            tmpTubes.Add(tubeParentClone.transform.GetChild(i).gameObject);
+
+            //Clone of original colorList stack from original tube to new tube
+            //Be careful as a simple cloning reverse the order of the stack (as stack creation from existing stack involves pop() method), hence double initalisation.
+            tmpTubes[i].transform.GetComponent<testTube>().colorList = new Stack<Color>(new Stack<Color>(tubeCanvas.transform.GetChild(0).GetChild(i).GetComponent<testTube>().colorList));
+        }
+        yield return (tmpSolver.transform.GetComponent<levelSolver>().searchWinnable(tmpTubes));
+        
+        isStateWinnable = tmpSolver.transform.GetComponent<levelSolver>().isLevelWinnable;
+        nextPooredTube = tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooredTube;
+        nextPooringTube = tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooringTube;
+        yield return new WaitForSeconds(1f);
+        Destroy(tubeCanvasClone);
+        Destroy(tmpSolver);
+        tubeCanvas.SetActive(true);
+    }
+
     // !!! Bonus !!!
     /// <summary>
     /// Method <c>rollBackOne</c> allows the player to cancel is last moves.
@@ -98,27 +129,8 @@ public class robotPower : MonoBehaviour
     /// </summary>
     private IEnumerator isWinnable()
     {
-        GameObject tubeCanvasClone = Instantiate(tubeCanvas);
-        tubeCanvasClone.name = "Tube Canvas";
-        tubeCanvas.SetActive(false);
-        GameObject tmpSolver = Instantiate(prefabSolver);
-        tubeCanvasClone.transform.SetParent(tubeCanvas.transform.parent);
-        GameObject tubeParentClone = tubeCanvasClone.transform.GetChild(0).gameObject;
-        List<GameObject> tmpTubes = new List<GameObject>();
-        for(int i=0; i < tubeParentClone.transform.childCount; i++)
-        {
-            tmpTubes.Add(tubeParentClone.transform.GetChild(i).gameObject);
-
-            //Clone of original colorList stack from original tube to new tube
-            //Be careful as a simple cloning reverse the order of the stack (as stack creation from existing stack involves pop() method), hence double initalisation.
-            tmpTubes[i].transform.GetComponent<testTube>().colorList = new Stack<Color>(new Stack<Color>(tubeCanvas.transform.GetChild(0).GetChild(i).GetComponent<testTube>().colorList));
-        }
-        yield return (tmpSolver.transform.GetComponent<levelSolver>().searchWinnable(tmpTubes));
-        Debug.Log("isWinnable: " + tmpSolver.transform.GetComponent<levelSolver>().isLevelWinnable);
-        yield return new WaitForSeconds(1f);
-        Destroy(tubeCanvasClone);
-        Destroy(tmpSolver);
-        tubeCanvas.SetActive(true);
+        yield return StartCoroutine(activateSolver());
+        Debug.Log("Is state winnable? " + isStateWinnable);
     }
 
     
@@ -127,9 +139,8 @@ public class robotPower : MonoBehaviour
     /// </summary>
     private IEnumerator findNextMove()
     {
-        List<GameObject> tmpTubes = new List<GameObject>();
-        yield return (mainSolver.searchWinnable(tmpTubes));
-        Debug.Log("isWinnable: " + mainSolver.isLevelWinnable);
+        yield return StartCoroutine(activateSolver());
+        Debug.Log( "pooring winnable: tube " +  nextPooringTube.name + "poored winnable: tube " +  nextPooredTube.name );
     }
 
     // !!! Malus !!!

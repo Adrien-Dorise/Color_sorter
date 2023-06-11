@@ -33,11 +33,13 @@ public class levelSolver : MonoBehaviour
         public List<int> actionsToExplore {get; private set;}
         public bool isWinnable;
         private List<int> winnableNodes;
+        public List<node> nextVisitedNodes;
 
         public node(List<GameObject> tubesAvailable, action prevAction, node prevNode)
         {
             actionsToExplore = new List<int>();
             nextActions = new List<action>();
+            nextVisitedNodes = new List<node>();
             isWinnable = false;
             winnableNodes = new List<int>();
             previousAction = prevAction;
@@ -49,12 +51,12 @@ public class levelSolver : MonoBehaviour
         private void findActions(List<GameObject> tubesAvailable)
         {
             int pooringID=1, pooredID=1;
+            bool differentAction, pooringPossible, tubesIncomplete, allPooringLayersFit, notSwitchingTube;
             foreach(GameObject pooringTube in tubesAvailable)
             {
                 pooredID=1;
                 foreach(GameObject pooredTube in tubesAvailable)
                 {
-                    bool differentAction;
                     if(previousAction == null)
                     {
                         differentAction = true;
@@ -63,10 +65,30 @@ public class levelSolver : MonoBehaviour
                     {
                         differentAction = !(pooredTube == previousAction.pooringTube && pooringTube == previousAction.pooredTube);
                     }
-                    bool pooringPossible = isPooringPossible(pooringTube, pooredTube);
-                    bool tubesIncomplete = !pooringTube.GetComponent<testTube>().isComplete() && !pooredTube.GetComponent<testTube>().isComplete();
+                    pooringPossible = isPooringPossible(pooringTube, pooredTube);
+                    tubesIncomplete = !pooringTube.GetComponent<testTube>().isComplete() && !pooredTube.GetComponent<testTube>().isComplete();
+                    
+                    //Check if we can poor all similar layers into new tube
+                    int n_layersToPoor = 1;
+                    int n_pooringLayersAvailable = pooredTube.GetComponent<testTube>().maxLiquid - pooredTube.GetComponent<testTube>().colorList.Count;
+                    if(pooringTube.GetComponent<testTube>().colorList.Count > 1)
+                    {
+                        Color col = pooringTube.GetComponent<testTube>().colorList.ToArray()[0];
+                        while(pooringTube.GetComponent<testTube>().colorList.ToArray()[n_layersToPoor] == col)
+                        {
+                            n_layersToPoor++;
+                            if(n_layersToPoor >= pooringTube.GetComponent<testTube>().colorList.Count)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    allPooringLayersFit = n_layersToPoor <= n_pooringLayersAvailable;
 
-                    if(differentAction && pooringPossible && tubesIncomplete)
+                    //We verify that this move is not switching all layers from the pooring tube to an empty poored one, causing a useless move to be performed
+                    notSwitchingTube = !(n_layersToPoor == pooringTube.GetComponent<testTube>().colorList.Count && pooredTube.GetComponent<testTube>().colorList.Count == 0);
+
+                    if(differentAction && pooringPossible && tubesIncomplete && allPooringLayersFit && notSwitchingTube)
                     {
                         nextActions.Add(new action(pooringTube, pooredTube));
                         actionsToExplore.Add(actionsToExplore.Count);
@@ -82,8 +104,10 @@ public class levelSolver : MonoBehaviour
         {
             int pooredLayers = gameManager.pooringAction(nextActions[actionID].pooringTube, nextActions[actionID].pooredTube);
             nextActions[actionID].setLayerPoored(pooredLayers);
-            
-            return new node(tubesAvailable, nextActions[actionID], this);
+            node nextNode =  new node(tubesAvailable, nextActions[actionID], this);
+            this.nextVisitedNodes.Add(nextNode);
+
+            return nextNode;
         }
 
         public node rewindAction(List<GameObject> tubesAvailable)
@@ -206,7 +230,6 @@ public class levelSolver : MonoBehaviour
         }
 
         bool isSimilar;
-        Debug.Log(statesVisited.Count);
         foreach(List<string> knownstate in statesVisited)
         {
             isSimilar = true;
@@ -259,7 +282,10 @@ public class levelSolver : MonoBehaviour
                 yield return new WaitForSeconds(waitTime);
                 if(stopAtWin)
                 {
-                    Debug.Log("Faster break as a win position is reached");
+                    if(debugLog)
+                    {
+                        Debug.Log("Faster break as a win position is reached");
+                    }
                     yield break;
                 }
               
@@ -291,7 +317,10 @@ public class levelSolver : MonoBehaviour
 
         if(nodeIdx == 0)
         {
-            Debug.Log("All graph complete ! Is it possible to finish the level: " + isWinnable);
+            if(debugLog)
+            {
+                Debug.Log("All graph complete ! Is it possible to finish the level: " + isWinnable);   
+            }
         }
         else
         {
@@ -314,10 +343,30 @@ public class levelSolver : MonoBehaviour
         currentNode = currentNode.rewindAction(tubes);
     }
 
+    public GameObject nextWinnablePooringTube, nextWinnablePooredTube;
     public IEnumerator searchWinnable(List<GameObject> tubesForSolving)
     {
-        yield return(resolveGraph(tubesForSolving, new levelSolver.node(tubesForSolving,null,null), nodeID));
+        node tmpNode = new node(tubesForSolving, null, null);
+        yield return(resolveGraph(tubesForSolving, tmpNode, nodeID));
         isLevelWinnable = currentNode.isWinnable;
+
+        if(!isLevelWinnable)
+        {
+            nextWinnablePooredTube = null;
+            nextWinnablePooringTube = null;
+        }
+        else
+        {
+            foreach(node n in tmpNode.nextVisitedNodes)
+            {
+                if(n.isWinnable)
+                {
+                    nextWinnablePooredTube = n.previousAction.pooredTube;
+                    nextWinnablePooringTube = n.previousAction.pooringTube;
+                    break;
+                }
+            }
+        }
     }
 
     private IEnumerator verifyLevel()
