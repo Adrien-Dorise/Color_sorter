@@ -49,7 +49,14 @@ public class setup : MonoBehaviour
         {
             try
             {
-                levels.robotColorPerLevel.Add(gameManager.colors[int.Parse(colorVal)]);
+                if(int.Parse(colorVal) == 255) //White color
+                {
+                    levels.robotColorPerLevel.Add(Color.white);
+                }
+                else
+                {
+                    levels.robotColorPerLevel.Add(gameManager.colors[int.Parse(colorVal)]);
+                }
             }
             catch(Exception e)
             {

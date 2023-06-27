@@ -14,8 +14,8 @@ using UnityEngine.UI;
 public class gameManager : MonoBehaviour
 {
     
-    public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
-    public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
+    public enum states { wait, robotPower, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
+    public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction, usePower }
     public states currentState { get; private set; }
     static public List<Color> colors;
     [SerializeField] public GameObject memoryTube;
@@ -23,6 +23,7 @@ public class gameManager : MonoBehaviour
     private Image victorySprite;
     private robot robotScript;
     private robotPower robotPowerScript;
+    private powerManager powerManagerScript;
     private audio audioManager;
 
     private setup setupScript;
@@ -75,7 +76,7 @@ public class gameManager : MonoBehaviour
                     str += "0 ";
                 }
                 str = str.Remove(str.Length - 1);
-                    PlayerPrefs.SetString(save.robotColor,str);
+                PlayerPrefs.SetString(save.robotColor,str);
             }
             else
             {
@@ -97,17 +98,16 @@ public class gameManager : MonoBehaviour
 
         tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
-        try
-        {
-            robotPowerScript = GameObject.Find("Level Solver").GetComponent<robotPower>();
-        }
-        catch(Exception e)
-        {}
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
         if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Level Selection"))
         {
             victorySprite = GameObject.Find("Victory").GetComponent<Image>();
+        }
+        else if(SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Level"))
+        {
+            robotPowerScript = GameObject.Find("Level Solver").GetComponent<robotPower>();
+            powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
         }
         memoryTube = null;
     }
@@ -349,99 +349,6 @@ public class gameManager : MonoBehaviour
     {
         switch(currentState)
         {
-
-            case states.idleFirstAction:
-                if(act == actions.clickedRobot)
-                {
-                    try
-                    {
-                        StartCoroutine(obj.GetComponent<robot>().robotSelected(true));
-                        currentState = states.idleRobot;
-                    }
-                    catch(Exception ex)
-                    {
-                        //Can't find the robot script -> bad gameObject
-                        Debug.LogWarning(ex);
-                    }
-
-                }
-                break;
-
-            case states.idleRobot:
-                try
-                {
-                    if(act == actions.clickedTube) 
-                    {
-                        testTube tubeScript = obj.GetComponent<testTube>();
-                        if(tubeScript.colorList.Count <= 0) //Chose empty tube
-                        {
-                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                            currentState = states.idleFirstAction;
-                        }
-                        else if (robotScript.eyeColor != tubeScript.colorList.Peek()) //If clicked tube's upper color is different from the robot's color
-                        {
-                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                            bool notEmpty = tubeScript.colorList.Count != 0;
-                            Color previousColor = tubeScript.colorList.Peek();
-                            
-                            /*
-                            This can change all similar layer color to upper layer.
-                            Don' know how to integrate it in the game right now
-                            while (notEmpty)
-                            {
-                                if (safeGuard > 10)
-                                {
-                                    Debug.LogWarning("Safeguard reached while pooring!");
-                                    break;
-                                }
-                                safeGuard++;
-
-                                if (tubeScript.colorList.Peek() != previousColor)
-                                {
-                                    break;
-                                }
-                                previousColor = tubeScript.colorList.Peek();  
-
-                                //Switch colors
-                                tubeScript.removeColorLayer();
-                                notEmpty = tubeScript.colorList.Count != 0;
-                                layerRemoved++;
-                            }
-                            for (int i = 0; i < layerRemoved; i++)
-                            {
-                                tubeScript.addColorLayer(robotScript.eyeColor);
-                            }
-                            */
-
-                            //One layer change method
-                            tubeScript.removeColorLayer();
-                            if(tubeScript.addColorLayer(robotScript.eyeColor))
-                            {
-                                isNewTubeCompleted = true;
-                            }
-
-                            currentState = states.idleNoTube;
-                        }
-                        else
-                        {
-                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                            currentState = states.idleFirstAction;
-                        }
-                    }
-                    else
-                    {
-                        StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                        currentState = states.idleFirstAction;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                    currentState = states.idleFirstAction;
-                    Debug.LogWarning(ex);
-                }
-                break;
-
             case states.idleNoTube:
                 try
                 {
@@ -460,6 +367,15 @@ public class gameManager : MonoBehaviour
                 catch(Exception ex)
                 {
                     Debug.LogWarning(ex);
+                }
+
+                if(act == actions.clickedRobot)
+                {
+                    if(powerManagerScript.checkPowerAvailable())
+                    {
+                        currentState = states.robotPower;
+                        gameState(actions.usePower);
+                    }
                 }
                 break;
             
@@ -500,7 +416,14 @@ public class gameManager : MonoBehaviour
                             memoryTube = obj;
                         }
                     }
-                    else if(act == actions.clickedRobot || act == actions.clickedBackround)
+                    else if(act == actions.clickedRobot && powerManagerScript.checkPowerAvailable())
+                    {
+                        memoryTube.GetComponent<testTube>().tubeScaling(false);
+                        memoryTube = null;
+                        currentState = states.robotPower;
+                        gameState(actions.usePower);
+                    }
+                    else if((act == actions.clickedRobot && !powerManagerScript.checkPowerAvailable()) || act == actions.clickedBackround)
                     {
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
@@ -546,6 +469,13 @@ public class gameManager : MonoBehaviour
                     {
                         currentState = states.idleNoTube;
                     }
+                }
+                break;
+
+            case states.robotPower:
+                if(act == actions.clickedRobot)
+                {
+
                 }
                 break;
 

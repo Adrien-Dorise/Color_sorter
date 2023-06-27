@@ -22,7 +22,7 @@ public class robot : MonoBehaviour
     //Eye animation (to set in Start())
     private enum eyesStates { idle, tracked, animated }
     public enum eyesActions {newIdle, animate, endAnimate, nothing}
-    public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart}
+    public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart, solving, foundSolution, defaultPower}
     private avalaibleAnim currentAnim;
     private eyesStates currentState;
     [SerializeField] private float yOffsetMax, xOffsetMax;
@@ -37,7 +37,7 @@ public class robot : MonoBehaviour
     
 
     //Robot scaling (to set in Start())
-    bool isIdling;
+    public bool isIdling;
     [SerializeField] private float scalingTempo;
     [SerializeField] private float scalingSpeed;
     [SerializeField] private float endScale;
@@ -115,10 +115,9 @@ public class robot : MonoBehaviour
     /// </summary>
     public IEnumerator robotIdle()
     {
-        isIdling = true;
         if (this.transform.localScale.x <= endScale)
         {
-            while (this.transform.localScale.x < endScale && managerScript.currentState == gameManager.states.idleFirstAction)
+            while (this.transform.localScale.x < endScale && isIdling)
             {
                 this.transform.localScale = new Vector3(this.transform.localScale.x + idleSpeed, this.transform.localScale.y + idleSpeed, 1);
                 yield return new WaitForSeconds(scalingTempo);
@@ -127,14 +126,13 @@ public class robot : MonoBehaviour
         }
         else
         {
-            while (this.transform.localScale.x > startScale && managerScript.currentState == gameManager.states.idleFirstAction)
+            while (this.transform.localScale.x > startScale && isIdling)
             {
                 this.transform.localScale = new Vector3(this.transform.localScale.x - idleSpeed, this.transform.localScale.y - idleSpeed, 1);
                 yield return new WaitForSeconds(scalingTempo);
             }
 
         }
-        isIdling = false;
     }
 
 
@@ -403,13 +401,7 @@ public class robot : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
-        if(managerScript.currentState == gameManager.states.idleFirstAction && !isIdling)
-        {
-            StartCoroutine(robotIdle());
-        }
         eyesObject.transform.localPosition = Vector3.MoveTowards(eyesObject.transform.localPosition, eyePos,eyesSpeed * Time.fixedDeltaTime);
-
         eyesStateMachine(eyesActions.nothing);
     }
 

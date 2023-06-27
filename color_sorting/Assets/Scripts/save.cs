@@ -20,6 +20,7 @@ public class save
     static public string playedLevel = "Played level";
     static public string colors = "Color";
     static public string poweredLevel = "powerup"; //Information about if a level is powered up or down
+    static public string powerToken = "power token";
 
     
 
