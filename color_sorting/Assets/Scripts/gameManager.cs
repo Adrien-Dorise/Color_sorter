@@ -73,7 +73,7 @@ public class gameManager : MonoBehaviour
                 PlayerPrefs.SetInt(save.availableLevels, save.maxAvailableLevels);
                 for(int i = 0; i < save.maxAvailableLevels; i++)
                 {
-                    str += "0 ";
+                    str += "255 ";
                 }
                 str = str.Remove(str.Length - 1);
                 PlayerPrefs.SetString(save.robotColor,str);
@@ -100,12 +100,9 @@ public class gameManager : MonoBehaviour
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
-        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Level Selection"))
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
         {
             victorySprite = GameObject.Find("Victory").GetComponent<Image>();
-        }
-        else if(SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Level"))
-        {
             robotPowerScript = GameObject.Find("Level Solver").GetComponent<robotPower>();
             powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
         }
