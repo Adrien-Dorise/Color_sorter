@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class powerManager : MonoBehaviour
 {
@@ -9,15 +13,35 @@ public class powerManager : MonoBehaviour
     private robotPower powerScript;
     private gameManager managerScript;
     private int powerAvailables = 4;
+    private List<GameObject> tokensObjects; // List containing the tokens object in the <Token Canvas> GameObject. It is possible to access image (child(0)) and text (child(1))
 
     [SerializeField] private bool debug_check;
 
     // Start is called before the first frame update
     void Start()
     {
+        if(!PlayerPrefs.HasKey(save.powerToken))
+        {
+            string tokens_values = "";
+            for(int i=0; i<gameManager.colors.Count; i++)
+            {
+                tokens_values += "0 ";
+            }
+            tokens_values = tokens_values.Remove(tokens_values.Length - 1);
+            PlayerPrefs.SetString(save.powerToken, tokens_values);
+        }
+
         debug_check = false;
         powerScript = GameObject.Find("Robot").GetComponent<robotPower>();
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
+        
+        tokensObjects = new List<GameObject>();
+        for(int i = 0; i < GameObject.Find("Token Canvas").transform.childCount - 1; i++)
+        {
+            tokensObjects.Add(GameObject.Find("Token Canvas").transform.GetChild(i).gameObject);
+        }
+        initTokenObject(gameManager.colors);
+
         maxlevelTokenIdxPerPower = new List<int>();
         powersNeededTokens = new List<List<int>>();
         for(int i=0; i<powerAvailables; i++)
@@ -26,9 +50,52 @@ public class powerManager : MonoBehaviour
             powersNeededTokens.Add(new List<int>());
             setPowerToken(i, 5);
         }
+
     }
 
-    
+    public void updateOneToken(int tokenID, int increment)
+    {
+        string tokenSave = "";
+        List<int> tokensValues = loadTokens();
+        tokensValues[tokenID] += increment;
+        foreach(int token in tokensValues)
+        {
+            tokenSave += token.ToString() + " ";
+        }
+        tokenSave = tokenSave.Remove(tokenSave.Length - 1);
+
+        PlayerPrefs.SetString(save.powerToken, tokenSave);
+    }
+
+    private List<int> loadTokens()
+    {
+        List<int> tokensValues = new List<int>();
+        string[] savedTokens = PlayerPrefs.GetString(save.powerToken).Split(' ');
+        foreach(string tok in savedTokens)
+        {
+            tokensValues.Add(int.Parse(tok));
+        }
+        return tokensValues;
+
+    }
+
+    private void initTokenObject(List<Color> colors)
+    {
+        List<int> tokensValues = loadTokens();
+        for(int id=0; id<tokensObjects.Count; id++)
+        {
+            try
+            {
+                tokensObjects[id].transform.GetChild(0).GetComponent<Image>().color = colors[id];
+                tokensObjects[id].transform.GetChild(1).GetComponent<Text>().text = tokensValues[id].ToString();
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning("WARNING: Impossible to load color or text for token object " + id);
+            }
+            Debug.Log(tokensValues[id]);
+        }
+    }
     
     /// <summary>
     /// Create a random token list from the colors available. 
@@ -37,7 +104,7 @@ public class powerManager : MonoBehaviour
     /// </summary>
     /// <param name="powerIdx"></param>
     /// <param name="necessaryTokens"></param>
-    void setPowerToken(int powerIdx, int necessaryTokens)
+    private void setPowerToken(int powerIdx, int necessaryTokens)
     {
         powersNeededTokens[powerIdx].Clear();
         for(int i=0; i<necessaryTokens; i++)

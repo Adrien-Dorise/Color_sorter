@@ -332,6 +332,7 @@ public class gameManager : MonoBehaviour
             }
             savedColor++;
         }
+        powerManagerScript.updateOneToken(savedColor, 1);
         saveRobotColorManagement(PlayerPrefs.GetInt(save.currentLevel), savedColor);
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Level Selection");
