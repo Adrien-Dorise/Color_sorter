@@ -52,6 +52,7 @@ public class powerManager : MonoBehaviour
         }
 
     }
+    
 
     public void updateOneToken(int tokenID, int increment)
     {

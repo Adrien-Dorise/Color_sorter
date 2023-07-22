@@ -72,6 +72,45 @@ public class robotPower : MonoBehaviour
        mainSolver.advanceNode(pooringTube, pooredTube, layerPoored);
     }
 
+    
+    public void powerButton(string selection)
+    {
+        managerScript.gameState(gameManager.actions.usePower,null,selection);
+
+    }
+
+    /// <summary>
+    /// powerButtonRoutine is called by the state machine. 
+    /// It performs the power action when a specific button is pressed. The power selected is laucnhed by calling the corresponding method
+    /// </summary>
+    /// <param name="selection">Power linked to the pressed button </param>
+    public IEnumerator powerButtonRoutine(string selection)
+    {
+        managerScript.gameState(gameManager.actions.usePower);
+        
+        if(selection == "rollBack")
+        {
+            rollBackOne();
+        }
+        
+        else if(selection == "isWin")
+        {
+            yield return StartCoroutine(isWinnable());
+        }
+            
+        else if(selection == "nextMove")
+        {
+            yield return StartCoroutine(findNextMove());
+        }
+
+        else if (selection == "deleteColor")
+        {
+            deleteColor();
+        }
+        managerScript.gameState(gameManager.actions.finishAction);
+    }
+
+
     private IEnumerator activateSolver()
     {
         GameObject tubeCanvasClone = Instantiate(tubeCanvas);
@@ -111,6 +150,8 @@ public class robotPower : MonoBehaviour
         managerScript.updateCompletedTubes();
     }
 
+
+
     /// <summary>
     /// Method <c>addTube</c> adds an empty tube in the level.
     /// </summary>
@@ -118,6 +159,7 @@ public class robotPower : MonoBehaviour
     {
         
     }
+
 
     /// <summary>
     /// Method <c>deleteColor</c> removes one color entirely from the current level.
@@ -210,6 +252,7 @@ public class robotPower : MonoBehaviour
         yield return StartCoroutine(activateSolver());
         Debug.Log( "pooring winnable: tube " +  nextPooringTube.name + "poored winnable: tube " +  nextPooredTube.name );
     }
+
 
     // !!! Malus !!!
 
