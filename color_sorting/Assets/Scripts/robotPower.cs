@@ -12,8 +12,6 @@ public class robotPower : MonoBehaviour
     */
 
     public enum powerEnum {neutral, powerup, powerdown};
-    //Contains whether a level is powered up or down. 
-    static List<powerEnum> poweredLevel = new List<powerEnum>();
     List<GameObject> tubes;
     GameObject tubeCanvas;
 
@@ -40,28 +38,6 @@ public class robotPower : MonoBehaviour
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
     }
 
-    private void savePoweredLevels()
-    {
-
-    }
-
-    private void loadPoweredLevels()
-    {
-        //0 for neutral, 1 for powered up and 2 powered down
-        if(!PlayerPrefs.HasKey(save.poweredLevel)) //If first time playing the game
-        {
-            string poweredSave = "";
-            for(int i = 0; i < save.maxAvailableLevels; i++)
-            {
-                poweredSave += "0";
-                poweredLevel.Add(powerEnum.neutral);
-            }
-        }
-        else
-        {
-            string poweredSave = PlayerPrefs.GetString(save.poweredLevel);
-        }
-    }
 
     /// <summary>
     /// Method <c>updateMove</c> must be called by the gameManager when a change occurs in the game.
@@ -73,44 +49,6 @@ public class robotPower : MonoBehaviour
     }
 
     
-    public void powerButton(string selection)
-    {
-        managerScript.gameState(gameManager.actions.usePower,null,selection);
-
-    }
-
-    /// <summary>
-    /// powerButtonRoutine is called by the state machine. 
-    /// It performs the power action when a specific button is pressed. The power selected is laucnhed by calling the corresponding method
-    /// </summary>
-    /// <param name="selection">Power linked to the pressed button </param>
-    public IEnumerator powerButtonRoutine(string selection)
-    {
-        managerScript.gameState(gameManager.actions.usePower);
-        
-        if(selection == "rollBack")
-        {
-            rollBackOne();
-        }
-        
-        else if(selection == "isWin")
-        {
-            yield return StartCoroutine(isWinnable());
-        }
-            
-        else if(selection == "nextMove")
-        {
-            yield return StartCoroutine(findNextMove());
-        }
-
-        else if (selection == "deleteColor")
-        {
-            deleteColor();
-        }
-        managerScript.gameState(gameManager.actions.finishAction);
-    }
-
-
     private IEnumerator activateSolver()
     {
         GameObject tubeCanvasClone = Instantiate(tubeCanvas);
@@ -144,7 +82,7 @@ public class robotPower : MonoBehaviour
     /// Method <c>rollBackOne</c> allows the player to cancel is last moves.
     /// The game comes bakc entirely at the state before the last action
     /// </summary>
-    private void rollBackOne()
+    public void rollBackOne()
     {
         mainSolver.rewindNode();
         managerScript.updateCompletedTubes();
@@ -164,7 +102,7 @@ public class robotPower : MonoBehaviour
     /// <summary>
     /// Method <c>deleteColor</c> removes one color entirely from the current level.
     /// </summary>
-    private void deleteColor()
+    public void deleteColor()
     {
         Color colorToDelete=Color.black, colorReference=Color.black;
         bool isColorToDeleteFound = false, isColorReferenceFound=false, allDone=false;
@@ -237,7 +175,7 @@ public class robotPower : MonoBehaviour
     /// <summary>
     /// Method <c>isWinnable</c> indicates if the player can still win the puzzle at its current state.
     /// </summary>
-    private IEnumerator isWinnable()
+    public IEnumerator isWinnable()
     {
         yield return StartCoroutine(activateSolver());
         Debug.Log("Is state winnable? " + isStateWinnable);
@@ -247,7 +185,7 @@ public class robotPower : MonoBehaviour
     /// <summary>
     /// Method <c>findNextMove</c> indicates the next possible move to the player.
     /// </summary>
-    private IEnumerator findNextMove()
+    public IEnumerator findNextMove()
     {
         yield return StartCoroutine(activateSolver());
         Debug.Log( "pooring winnable: tube " +  nextPooringTube.name + "poored winnable: tube " +  nextPooredTube.name );

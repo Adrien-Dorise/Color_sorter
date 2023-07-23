@@ -375,6 +375,7 @@ public class gameManager : MonoBehaviour
                 if(act == actions.clickedRobot)
                 {
                     currentState = states.powerSelection;
+                    powerManagerScript.setInteractablePowerButtons();
                     powerCanvas.SetActive(true);
                 }
                 break;
@@ -422,6 +423,7 @@ public class gameManager : MonoBehaviour
                         currentState = states.powerSelection;
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
+                        powerManagerScript.setInteractablePowerButtons();
                         powerCanvas.SetActive(true);
                     }
                     else if(act == actions.clickedBackround)
@@ -472,7 +474,7 @@ public class gameManager : MonoBehaviour
                 {
                     currentState = states.robotPower;
                     powerCanvas.SetActive(false);
-                    StartCoroutine(robotPowerScript.powerButtonRoutine(info));
+                    StartCoroutine(powerManagerScript.powerButtonRoutine(info));
                 }
 
                 else if(act == actions.clickedRobot || act == actions.clickedBackround)

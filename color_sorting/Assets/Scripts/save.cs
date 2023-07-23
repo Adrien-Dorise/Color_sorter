@@ -10,6 +10,7 @@ public class save
 {
     static public bool debugDev = false; // Set true to have access to all levels
     static public bool debugLevel = false; // Set true to remove tube animations during levels
+    static public bool debugPower = false; // Set true to always access powers
     static public int maxAvailableLevels = 77; //Change when increase the number of levels in the game
 
 
@@ -19,7 +20,6 @@ public class save
     static public string musicTime = "Music Timestamp"; //Store the level time to load it exactly where it was when changing scene
     static public string playedLevel = "Played level";
     static public string colors = "Color";
-    static public string poweredLevel = "powerup"; //SEE IF STILL USEFULL //Information about if a level is powered up or down
     static public string powerToken = "power token"; //Number of tokens available to the player
 
     

@@ -8,12 +8,17 @@ using UnityEngine.UI;
 
 public class powerManager : MonoBehaviour
 {
-    public List<int> maxlevelTokenIdxPerPower; //List indicating the level creting the max token strike for each power. The list length is equal to the number of power. 
+    public List<int> maxlevelTokenIdxPerPower; //List indicating the level creating the max token strike for each power. The list length is equal to the number of power. 
     private List<List<int>> powersNeededTokens; //List containing the tokens needed for each power to be activated
     private robotPower powerScript;
     private gameManager managerScript;
     private int powerAvailables = 4;
     private List<GameObject> tokensObjects; // List containing the tokens object in the <Token Canvas> GameObject. It is possible to access image (child(0)) and text (child(1))
+
+    private GameObject powerButtonsCanvas;
+
+
+    
 
     [SerializeField] private bool debug_check;
 
@@ -32,9 +37,10 @@ public class powerManager : MonoBehaviour
         }
 
         debug_check = false;
-        powerScript = GameObject.Find("Robot").GetComponent<robotPower>();
+        powerScript = this.GetComponent<robotPower>();
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
-        
+        powerButtonsCanvas = GameObject.Find("Power Buttons");
+    
         tokensObjects = new List<GameObject>();
         for(int i = 0; i < GameObject.Find("Token Canvas").transform.childCount - 1; i++)
         {
@@ -44,15 +50,122 @@ public class powerManager : MonoBehaviour
 
         maxlevelTokenIdxPerPower = new List<int>();
         powersNeededTokens = new List<List<int>>();
+        
         for(int i=0; i<powerAvailables; i++)
         {
             maxlevelTokenIdxPerPower.Add(0);   
-            powersNeededTokens.Add(new List<int>());
-            setPowerToken(i, 5);
+            
+            //powersNeededTokens.Add(new List<int>());
+            //setPowerToken(i, 5);
+        }
+        powersNeededTokens = new List<List<int>>{
+            new List<int>{0}, //rollBack
+            new List<int>{1}, //isWin
+            new List<int>{0}, //nextMove
+            new List<int>{0} //deleteColor
+        };
+    }
+
+
+    /// <summary>
+    /// powerButton is called by the button, that call the state machine, that then call the coroutine 
+    /// It performs the power action when a specific button is pressed. The power selected is laucnhed by calling the corresponding method
+    /// </summary>
+    /// <param name="selection">Power linked to the pressed button </param>
+    public void powerButton(string selection)
+    {
+        managerScript.gameState(gameManager.actions.usePower,null,selection);
+    }
+    public IEnumerator powerButtonRoutine(string selection)
+    {        
+        if(selection == "rollBack")
+        {
+            foreach(int token in powersNeededTokens[0])
+            {
+                updateOneToken(token,-1);
+            }
+            powerScript.rollBackOne();
+        }
+        
+        else if(selection == "isWin")
+        {
+            foreach(int token in powersNeededTokens[1])
+            {
+                updateOneToken(token,-1);
+            }
+            yield return StartCoroutine(powerScript.isWinnable());
+        }
+            
+        else if(selection == "nextMove")
+        {
+            foreach(int token in powersNeededTokens[2])
+            {
+                updateOneToken(token,-1);
+            }
+            yield return StartCoroutine(powerScript.findNextMove());
         }
 
+        else if (selection == "deleteColor")
+        {
+            foreach(int token in powersNeededTokens[3])
+            {
+                updateOneToken(token,-1);
+            }
+            powerScript.deleteColor();
+        }
+        managerScript.gameState(gameManager.actions.finishAction);
     }
+
     
+    /// <summary>
+    /// checkPowerAvailable verify if a power can be used by the player at the moment.
+    /// This method compare the needed token for the wanted power with the tokens possessed by the player
+    /// </summary>
+    /// <param name="powerID"> Power id to be checked (3 to check power identified by number 3 </param>
+    /// <returns>Return True if power can be used, false otherwise</returns>
+    private bool checkPowerAvailable(int powerID)
+    {
+        List<int> availableTokens = loadTokens(); 
+        Debug.Log("power" + powerID);
+        foreach(int neededToken in powersNeededTokens[powerID])
+        {
+            Debug.Log(neededToken);
+            Debug.Log(availableTokens[neededToken]);
+            if(availableTokens[neededToken] <= 0) //No tokens left available -> power can't be used
+            {
+                return false;
+            }
+            else
+            {
+                availableTokens[neededToken] --;
+            }
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// setInteractablePowerButtons activate or not each power buttons in the Power Canvas GameObject
+    /// To do so, it verifies the availability of each powers in the game by using the "checkPowerAvailable" method.
+    /// This method is mainly used when activating the power buttons canvas, so that only available powers can be selected by the player.
+    /// </summary>
+    public void setInteractablePowerButtons()
+    {
+        if(!save.debugPower)
+        {
+            for(int childID=1; childID < powerButtonsCanvas.transform.childCount; childID++)
+            {
+                int powerID = childID-1; //We remove first iteration to consider the background object as it is child(0) of the power canvas.
+                if(checkPowerAvailable(powerID))
+                {
+                    powerButtonsCanvas.transform.GetChild(childID).GetComponent<Button>().interactable = true;
+                }
+                else
+                {
+                    powerButtonsCanvas.transform.GetChild(childID).GetComponent<Button>().interactable = false;
+                }
+            }
+        }
+    }
 
     public void updateOneToken(int tokenID, int increment)
     {
@@ -66,8 +179,16 @@ public class powerManager : MonoBehaviour
         tokenSave = tokenSave.Remove(tokenSave.Length - 1);
 
         PlayerPrefs.SetString(save.powerToken, tokenSave);
+
+        initTokenObject(gameManager.colors);
     }
 
+    /// <summary>
+    /// loadTokens returns the token possessed by the player in the form of a list.
+    /// The PlayerPrefs of the game are checked to recover the current states of each token.
+    /// The PlayerPrefs are parsed to be given in form of a list. Each indices represent the token available for a specific color of the game
+    /// </summary>
+    /// <returns> List of int representing the available tokens for each colors </returns>
     private List<int> loadTokens()
     {
         List<int> tokensValues = new List<int>();
@@ -94,17 +215,16 @@ public class powerManager : MonoBehaviour
             {
                 Debug.LogWarning("WARNING: Impossible to load color or text for token object " + id);
             }
-            Debug.Log(tokensValues[id]);
         }
     }
     
     /// <summary>
     /// Create a random token list from the colors available. 
     /// The tokens are integers representing the color in gameManager "colors" variable.
-    /// This method only check the token chain of the given power index
+    /// For now, the token chain is created at random, meaning a random list of integer is creating of length given by necessary token parameter
     /// </summary>
     /// <param name="powerIdx"></param>
-    /// <param name="necessaryTokens"></param>
+    /// <param name="necessaryTokens">Number of tokens needed for that power</param>
     private void setPowerToken(int powerIdx, int necessaryTokens)
     {
         powersNeededTokens[powerIdx].Clear();
@@ -184,10 +304,6 @@ public class powerManager : MonoBehaviour
         }
     }
 
-    public bool checkPowerAvailable()
-    {
-        return false;
-    }
 
     private void debug()
     {
