@@ -20,7 +20,10 @@ public class save
     static public string musicTime = "Music Timestamp"; //Store the level time to load it exactly where it was when changing scene
     static public string playedLevel = "Played level";
     static public string colors = "Color";
-    static public string powerToken = "power token"; //Number of tokens available to the player
+    static public string powerToken = "Power token"; //Number of tokens available to the player
+    static public string mainMenuMusicState = "Main menu music state";
+    static public string levelMusicState = "Level music state";
+
 
     
 

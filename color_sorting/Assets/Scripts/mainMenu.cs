@@ -21,10 +21,12 @@ public class mainMenu : MonoBehaviour
     private bool isLoadingWheelComplete;
     [SerializeField] private Sprite referenceColorWheelSprite;
     private Texture2D colorWheelTexture;
+    private musicManager musicManagerScript;
 
     // Start is called before the first frame update
     void Start()
     {
+        musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
 
         //ColorBlind
         colorInSelection = 0;
@@ -55,11 +57,13 @@ public class mainMenu : MonoBehaviour
     //Main Canvas
     public void quitButton()
     {
+        musicManagerScript.setMusicState(save.mainMenuMusicState, false);
         Application.Quit();
     }
     
     public void levelSelectionButton()
     {
+        musicManagerScript.setMusicState(save.mainMenuMusicState, true);
         SceneManager.LoadScene("Level Selection");
     }
 

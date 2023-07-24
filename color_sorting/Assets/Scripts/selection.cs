@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class selection : MonoBehaviour
 {
     //All level setup
-    [SerializeField] private GameObject musicManager;
+    private musicManager musicManagerScript;
 
     //Level selection setup
     [SerializeField] GameObject levelIconPrefab;
@@ -28,7 +28,7 @@ public class selection : MonoBehaviour
     void Start()
     {
         levelPerScreen = 9;
-        musicManager = GameObject.Find("Music Manager");
+        musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
     }
 
 
@@ -91,6 +91,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void onQuitApp()
     {
+        musicManagerScript.setMusicState(save.mainMenuMusicState, true);
         SceneManager.LoadScene("Main Menu");
     }
 
@@ -100,6 +101,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void onQuitToMenu()
     {
+        musicManagerScript.setMusicState(save.mainMenuMusicState, false);
         SceneManager.LoadScene("Level Selection");
     }
 
@@ -109,7 +111,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void onReplay()
     {
-        PlayerPrefs.SetInt("Music Timestamp", musicManager.GetComponent<AudioSource>().timeSamples);
+        musicManagerScript.setMusicState(save.levelMusicState, true);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -121,6 +123,8 @@ public class selection : MonoBehaviour
     {
         gameManager.currentScene = "Level" + textLevel;
         PlayerPrefs.SetInt("Current Level", int.Parse(textLevel));
+        musicManagerScript.setMusicState(save.mainMenuMusicState, false);
+        musicManagerScript.setMusicState(save.levelMusicState, false);
         SceneManager.LoadScene("Level");
     }
 
@@ -131,6 +135,7 @@ public class selection : MonoBehaviour
     public void Reset()
     {
         PlayerPrefs.DeleteAll();
+        musicManagerScript.setMusicState(save.mainMenuMusicState, true);
         SceneManager.LoadScene("Level Selection");
     }
 
