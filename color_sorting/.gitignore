@@ -1,6 +1,10 @@
 # .gitignore 
 # This file should be placed at the root of your Unity project directory
 
+#Personal
+../promotion/*
+../sprites/*
+
 ## Unity directories
 /[Ll]ibrary/
 /[Tt]emp/

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.Dependencies.Sqlite;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,15 +16,18 @@ using UnityEngine.UI;
 public class gameManager : MonoBehaviour
 {
     
-    public enum states { wait, idleFirstAction, idleRobot, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
-    public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, pooring, finishAction }
-    public states currentState { get; private set; }
+    public enum states { wait, powerSelection, robotPower, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
+    public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, finishAction, usePower }
+    [SerializeField] public states currentState; //{ get; private set; }
     static public List<Color> colors;
     [SerializeField] public GameObject memoryTube;
     private GameObject tubesGroupObject;
     private Image victorySprite;
     private robot robotScript;
+    private robotPower robotPowerScript;
+    private powerManager powerManagerScript;
     private audio audioManager;
+    private GameObject powerCanvas;
 
     private setup setupScript;
     [SerializeField] private int completedTube;
@@ -71,10 +76,10 @@ public class gameManager : MonoBehaviour
                 PlayerPrefs.SetInt(save.availableLevels, save.maxAvailableLevels);
                 for(int i = 0; i < save.maxAvailableLevels; i++)
                 {
-                    str += "0 ";
+                    str += "255 ";
                 }
                 str = str.Remove(str.Length - 1);
-                    PlayerPrefs.SetString(save.robotColor,str);
+                PlayerPrefs.SetString(save.robotColor,str);
             }
             else
             {
@@ -98,9 +103,13 @@ public class gameManager : MonoBehaviour
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
-        if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Level Selection"))
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
         {
             victorySprite = GameObject.Find("Victory").GetComponent<Image>();
+            robotPowerScript = GameObject.Find("Power Manager").GetComponent<robotPower>();
+            powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
+            powerCanvas = GameObject.Find("Power Buttons");
+            powerCanvas.SetActive(false);
         }
         memoryTube = null;
     }
@@ -236,7 +245,9 @@ public class gameManager : MonoBehaviour
         }
 
         //tube's liquid management
-        pooringAction(tube1, tube2);
+        int layerPoored = pooringAction(tube1, tube2);
+        robotPowerScript.updateMove(tube1,tube2,layerPoored);
+
         if(tube2.GetComponent<testTube>().tubeComplete)
         {
             isNewTubeCompleted = true;
@@ -293,6 +304,17 @@ public class gameManager : MonoBehaviour
     }
 
 
+    public void updateCompletedTubes()
+    {
+        completedTube = 0;
+        foreach(testTube tubeScript in tubesGroupObject.GetComponentsInChildren<testTube>())
+        {
+            if(tubeScript.isComplete())
+            {
+                completedTube++;
+            }
+        }
+    }
 
     private IEnumerator victory()
     {
@@ -315,6 +337,7 @@ public class gameManager : MonoBehaviour
             }
             savedColor++;
         }
+        powerManagerScript.updateOneToken(savedColor, 1);
         saveRobotColorManagement(PlayerPrefs.GetInt(save.currentLevel), savedColor);
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Level Selection");
@@ -325,103 +348,10 @@ public class gameManager : MonoBehaviour
     //!!! State machine !!! 
     // See diagram for state info
 
-    public void gameState(actions act, GameObject obj = null)
+    public void gameState(actions act, GameObject obj = null, string info = "")
     {
         switch(currentState)
         {
-
-            case states.idleFirstAction:
-                if(act == actions.clickedRobot)
-                {
-                    try
-                    {
-                        StartCoroutine(obj.GetComponent<robot>().robotSelected(true));
-                        currentState = states.idleRobot;
-                    }
-                    catch(Exception ex)
-                    {
-                        //Can't find the robot script -> bad gameObject
-                        Debug.LogWarning(ex);
-                    }
-
-                }
-                break;
-
-            case states.idleRobot:
-                try
-                {
-                    if(act == actions.clickedTube) 
-                    {
-                        testTube tubeScript = obj.GetComponent<testTube>();
-                        if(tubeScript.colorList.Count <= 0) //Chose empty tube
-                        {
-                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                            currentState = states.idleFirstAction;
-                        }
-                        else if (robotScript.eyeColor != tubeScript.colorList.Peek()) //If clicked tube's upper color is different from the robot's color
-                        {
-                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                            bool notEmpty = tubeScript.colorList.Count != 0;
-                            Color previousColor = tubeScript.colorList.Peek();
-                            
-                            /*
-                            This can change all similar layer color to upper layer.
-                            Don' know how to integrate it in the game right now
-                            while (notEmpty)
-                            {
-                                if (safeGuard > 10)
-                                {
-                                    Debug.LogWarning("Safeguard reached while pooring!");
-                                    break;
-                                }
-                                safeGuard++;
-
-                                if (tubeScript.colorList.Peek() != previousColor)
-                                {
-                                    break;
-                                }
-                                previousColor = tubeScript.colorList.Peek();  
-
-                                //Switch colors
-                                tubeScript.removeColorLayer();
-                                notEmpty = tubeScript.colorList.Count != 0;
-                                layerRemoved++;
-                            }
-                            for (int i = 0; i < layerRemoved; i++)
-                            {
-                                tubeScript.addColorLayer(robotScript.eyeColor);
-                            }
-                            */
-
-                            //One layer change method
-                            tubeScript.removeColorLayer();
-                            if(tubeScript.addColorLayer(robotScript.eyeColor))
-                            {
-                                isNewTubeCompleted = true;
-                            }
-
-                            currentState = states.idleNoTube;
-                        }
-                        else
-                        {
-                            StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                            currentState = states.idleFirstAction;
-                        }
-                    }
-                    else
-                    {
-                        StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                        currentState = states.idleFirstAction;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    StartCoroutine(robotScript.GetComponent<robot>().robotSelected(false));
-                    currentState = states.idleFirstAction;
-                    Debug.LogWarning(ex);
-                }
-                break;
-
             case states.idleNoTube:
                 try
                 {
@@ -430,16 +360,23 @@ public class gameManager : MonoBehaviour
                         bool notEmpty = obj.GetComponent<testTube>().colorList.Count != 0;
                         if (!obj.GetComponent<testTube>().tubeComplete && notEmpty)
                         {
+                            currentState = states.idleTube;
                             //Debug.Log("tube clicked");
                             obj.GetComponent<testTube>().tubeScaling(true);
                             memoryTube = obj;
-                            currentState = states.idleTube;
                         }
                     }
                 }
                 catch(Exception ex)
                 {
                     Debug.LogWarning(ex);
+                }
+
+                if(act == actions.clickedRobot)
+                {
+                    currentState = states.powerSelection;
+                    powerManagerScript.setInteractablePowerButtons();
+                    powerCanvas.SetActive(true);
                 }
                 break;
             
@@ -452,15 +389,15 @@ public class gameManager : MonoBehaviour
                         bool notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
                         if(obj == memoryTube) //Same tube selected
                         {
+                            currentState = states.idleNoTube;
                             memoryTube.GetComponent<testTube>().tubeScaling(false);
                             memoryTube = null;
-                            currentState = states.idleNoTube;
                         }
                         else if (obj.GetComponent<testTube>().tubeComplete) //completed tube selected
                         {
+                            currentState = states.idleNoTube;
                             memoryTube.GetComponent<testTube>().tubeScaling(false);
                             memoryTube = null;
-                            currentState = states.idleNoTube;
                         }
                         else if(!areSameColor(obj, memoryTube)) //New tube selected but different colors
                         {
@@ -471,7 +408,8 @@ public class gameManager : MonoBehaviour
                         else if (areSameColor(memoryTube, obj) && stillNotMax) //New tube is ok to poor additional color
                         {
                             currentState = states.poorColor;
-                            gameState(actions.pooring, obj);
+                            StartCoroutine(pooringAnimation(memoryTube, obj));
+                            memoryTube = null;
                         }
                         else if (areSameColor(memoryTube, obj) && !stillNotMax) //New tube is too full to be poored
                         {
@@ -480,31 +418,33 @@ public class gameManager : MonoBehaviour
                             memoryTube = obj;
                         }
                     }
-                    else if(act == actions.clickedRobot || act == actions.clickedBackround)
+                    else if(act == actions.clickedRobot)
                     {
+                        currentState = states.powerSelection;
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
+                        powerManagerScript.setInteractablePowerButtons();
+                        powerCanvas.SetActive(true);
+                    }
+                    else if(act == actions.clickedBackround)
+                    {
                         currentState = states.idleNoTube;
+                        memoryTube.GetComponent<testTube>().tubeScaling(false);
+                        memoryTube = null;
                     }
                 }
                 catch (Exception ex)
                 {
+                    currentState = states.idleNoTube;
                     Debug.LogWarning(ex);
                     memoryTube.GetComponent<testTube>().tubeScaling(false);
                     memoryTube = null;
-                    currentState = states.idleNoTube;
                 }
                 break;
                                
                 
             case states.poorColor:
-                if(act == actions.pooring)
-                {
-                    StartCoroutine(pooringAnimation(memoryTube, obj));
-                    memoryTube = null;
-                }
-
-                else if(act == actions.finishAction)
+                if(act == actions.finishAction)
                 {
                     if(isNewTubeCompleted)
                     {
@@ -517,15 +457,59 @@ public class gameManager : MonoBehaviour
                         }
                         else //New tube complete
                         {
+                            currentState = states.idleNoTube;
                             audioManager.GetComponent<audio>().tubeCompleteSound();
                             robotScript.eyesStateMachine(robot.eyesActions.animate, robot.avalaibleAnim.happy);
-                            currentState = states.idleNoTube;
                         }
                     }
                     else //Nothing new in this world
                     {
                         currentState = states.idleNoTube;
                     }
+                }
+                break;
+
+            case states.powerSelection:
+                if(act == actions.usePower)
+                {
+                    currentState = states.robotPower;
+                    powerCanvas.SetActive(false);
+                    StartCoroutine(powerManagerScript.powerButtonRoutine(info));
+                }
+
+                else if(act == actions.clickedRobot || act == actions.clickedBackround)
+                {
+                    currentState = states.idleNoTube;                    
+                    powerCanvas.SetActive(false);
+                }
+
+                try
+                {
+                    if(act == actions.clickedTube)
+                    {
+                        powerCanvas.SetActive(false);
+                        bool notEmpty = obj.GetComponent<testTube>().colorList.Count != 0;
+                        if (!obj.GetComponent<testTube>().tubeComplete && notEmpty)
+                        {
+                            currentState = states.idleTube;
+                            //Debug.Log("tube clicked");
+                            obj.GetComponent<testTube>().tubeScaling(true);
+                            memoryTube = obj;
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    currentState = states.idleNoTube;
+                    Debug.LogWarning(ex);
+                }
+
+                break;
+
+            case states.robotPower:
+                if(act == actions.finishAction)
+                {
+                    currentState = states.idleNoTube;
                 }
                 break;
 

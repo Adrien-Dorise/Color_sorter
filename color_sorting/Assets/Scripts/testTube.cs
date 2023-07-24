@@ -17,7 +17,6 @@ public class testTube : MonoBehaviour
     [SerializeField] public int initialLiquid, maxLiquid; //Initialised by setup script: Initial sate of the tube
     private gameManager managerScript; //Reference to game manager object
     public Stack<Color> colorList = new Stack<Color>(); //Reference the current colors in the tube
-    [SerializeField] int colorCount; //Number of color layer in the tube
     public bool tubeComplete; //State if the tube is full and cannot be touched anymore
 
     //Layer
@@ -205,9 +204,14 @@ public class testTube : MonoBehaviour
     /// Method <c>isComplete</c> set the behaviour when the colorList global stack count has reached the maxLayer threshold.
     /// For now: the tube cannot be used again by player when full.
     /// </summary>
-    private bool isComplete()
+    public bool isComplete()
     {
         bool isCmplt = true;
+        if(this.tubeComplete)
+        {
+            return true;
+        }
+        
         try
         {
             if (colorList.Count < maxLiquid)
@@ -232,14 +236,6 @@ public class testTube : MonoBehaviour
         }
         this.tubeComplete = isCmplt;
         return isCmplt;
-    }
-
-    private void FixedUpdate()
-    {
-        if(isMoving)
-        {
-
-        }
     }
 
 

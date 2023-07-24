@@ -16,7 +16,6 @@ public class levels
     
     static public List<Color> robotColorPerLevel = new List<Color>();
 
-
     static public List<List<Color>> levelGenerator(int seed, int numberTube, int numberEmptyTube, int numberInitLayers, int numberMaxLayers, int tubeToWin, int maxLevelColor, int generatorVersion, float rewindPercentage=0.4f)
     {
         if(seed == 0)
