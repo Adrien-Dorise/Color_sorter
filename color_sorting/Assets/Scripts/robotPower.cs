@@ -188,7 +188,14 @@ public class robotPower : MonoBehaviour
     public IEnumerator findNextMove()
     {
         yield return StartCoroutine(activateSolver());
-        Debug.Log( "pooring winnable: tube " +  nextPooringTube.name + "poored winnable: tube " +  nextPooredTube.name );
+        if(isStateWinnable)
+        {
+            Debug.Log( "pooring winnable: tube " +  nextPooringTube.name + "poored winnable: tube " +  nextPooredTube.name );
+        }
+        else
+        {
+            Debug.Log("Cannot give next move: game now winnable");
+        }
     }
 
 

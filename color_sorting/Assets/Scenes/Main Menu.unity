@@ -896,7 +896,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: c8d26b325b132764787506ee7230037a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6376,7 +6376,7 @@ MonoBehaviour:
   colorBlindCanvas: {fileID: 455416320}
   wheelCanvas: {fileID: 1029733667}
   musicCanvas: {fileID: 1772306003}
-  referenceColorWheelSprite: {fileID: 21300000, guid: 7bc35b1b8a4497d478bc6b7e170401fd, type: 3}
+  referenceColorWheelSprite: {fileID: 21300000, guid: c8d26b325b132764787506ee7230037a, type: 3}
 --- !u!224 &9115938984265327186
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6552,6 +6552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e0f60b664293d54599f8264a35fe4f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: 0
   memoryTube: {fileID: 0}
   completedTube: 0
   isNewTubeCompleted: 0
