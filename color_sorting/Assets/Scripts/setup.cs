@@ -70,12 +70,10 @@ public class setup : MonoBehaviour
         switch(managerScript.currentState)
         {
             case gameManager.states.def:
-                PlayerPrefs.SetInt(save.musicTime, 0);
                 robot.GetComponent<robot>().initialise(levels.robotColorPerLevel.LastOrDefault());
                 break;
             
             case gameManager.states.levelSelection:
-                PlayerPrefs.SetInt(save.musicTime, 0);
                 initMainMenu();
                 break;    
 
@@ -95,7 +93,6 @@ public class setup : MonoBehaviour
                 posTubes.Add(new Vector3(x4, y2, 0f));
                 posTubes.Add(new Vector3(x3, y3, 0f));
                 posTubes.Add(new Vector3(x4, y3, 0f));
-                musicManager.GetComponent<AudioSource>().timeSamples = PlayerPrefs.GetInt(save.musicTime);
                 colorTubesList = levels.getLevelColors();
                 initLevel();
                 break;

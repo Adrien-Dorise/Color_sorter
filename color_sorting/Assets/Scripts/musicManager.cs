@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using System;
 
 public class musicManager : MonoBehaviour
 {
@@ -10,10 +12,14 @@ public class musicManager : MonoBehaviour
     //Audio clip for one shot musics
     //List for transitional musics
     [SerializeField] private AudioClip mainMenuMusic;
-    [SerializeField] private List<AudioClip> levelMusicParts;
+    [SerializeField] public List<AudioClip> levelMusicParts;
+    [HideInInspector] public int currentLevelMusicSection;
     
+    //User parameters
+    [SerializeField][Range(0.0f, 1.0f)] float maxVolume = 1.0f;
+
     //Speakers for main musics + transitions
-    private int currentSample;
+    private AudioSource[] speakers;
 
     //Transition parameters
     private float fadeDelay;
@@ -25,18 +31,44 @@ public class musicManager : MonoBehaviour
         //Transition parameters
         fadeDelay = 0.01f;
         fadeCoeff = 0.002f;
+
+        //Speakers initialisation
+        speakers = new AudioSource[2];
+        speakers[0] = this.gameObject.AddComponent<AudioSource>();
+        speakers[0].loop = true;
+        speakers[0].playOnAwake = false;
+        speakers[1] = this.gameObject.AddComponent<AudioSource>();
+        speakers[1].loop = true;
+        speakers[1].playOnAwake = false;
+
+        //Set up the music for current scene
+        musicChoiceManager();
+        currentLevelMusicSection = 0;
+
     }
 
+    /// <summary>
+    ///musicChoiceManager setup the music to be played depending on the level.
+    ///It is here that all choices of music is performed.
+    ///Each music are chosen depending on criteria defined by the game dev. Usually, the scene name is a pretty straightforward way of choosing musics.
+    /// </summary>
     private void musicChoiceManager()
     {
         string currentScene = SceneManager.GetActiveScene().name;
-        AudioSource speaker = this.GetComponent<AudioSource>();
-
-        if(currentScene == "Main Menu")
+        speakers[0].volume = maxVolume;
+        
+        if(currentScene == "Main Menu" || currentScene == "Level Selection")
         {
-            speaker.clip = mainMenuMusic;
+            speakers[0].clip = mainMenuMusic;
+            resumeMusic(speakers[0], save.mainMenuMusicState);
         }
-
+        else if(currentScene == "Level")
+        {
+            speakers[0].clip = levelMusicParts[0];
+            resumeMusic(speakers[0], save.levelMusicState);
+        }
+        
+        speakers[0].Play();
     }
 
     /// <summary>
@@ -58,57 +90,84 @@ public class musicManager : MonoBehaviour
         }
     }
 
-    private void resumeMusic()
+    /// <summary>
+    /// resumeMusic set the music played by the given AudioSource at the time saved in PlayerPrefs
+    /// </summary>
+    /// <param name="speaker">AudioSource containing the music to modify</param>
+    /// <param name="saveName">string corresponding to the PlayerPrefs token referencing the time to set the music</param>
+    private void resumeMusic(AudioSource speaker, string saveName)
     {
+        int sample = 0;
         try
         {
-            int sample = PlayerPrefs.GetInt(saveSample);
-            GetComponent<AudioSource>().timeSamples = sample;
+            sample = PlayerPrefs.GetInt(saveName);
         }
         catch(System.Exception e)
         {
-            Debug.Log(e);
+            Debug.LogWarning(e);
         }
+        Debug.Log(sample);
+        speaker.timeSamples = sample;
     }
 
-    private void switchAudio()
+    /// <summary>
+    /// switchAudio enables to switch smoothly between two audio clips.
+    /// This is used to transition between musics without a clear cut.
+    /// To do so, a cross fade is perfomed between two speakers running the musics at the same time.
+    /// </summary>
+    /// <param name="newMusic">New audio clip to use as a replacement of the current one</param>
+    public void switchAudio(AudioClip newMusic)
     {
-        if (currentAudio != gameManagerScript.closeness)
-        {
-            currentSample = speaker[0].timeSamples;
+            int currentSample = speakers[0].timeSamples;
+            
             //Switch old audio to speaker 1
-            speaker[1].clip = clip[currentAudio];
-            speaker[1].timeSamples = currentSample;
+            speakers[1].clip = speakers[0].clip;
+            speakers[1].timeSamples = currentSample;
+            speakers[1].volume = maxVolume;
+            speakers[1].Play();
 
             //Switch new audio to speaker 0
-            speaker[0].clip = clip[gameManagerScript.closeness];
-            speaker[0].timeSamples = currentSample;
-            currentAudio = gameManagerScript.closeness;
-
-            //Cross Fade
-            StartCoroutine(crossFade(fadeDelay));
+            speakers[0].Stop();
+            speakers[0].clip = newMusic;
+            speakers[0].volume = 0f;
+            speakers[0].timeSamples = currentSample;
             
-        }
+            //Cross Fade
+            try
+            {
+                StartCoroutine(crossFade(fadeDelay, fadeCoeff));
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning("Warning during cross fade in musicManager. It is probable that the error comes from a wrong timeSample value\n" + e);
+            }
+            
+        
     }
 
-    private IEnumerator crossFade(float delay)
+    /// <summary>
+    ///crossFade performs a fade between two audio clips
+    /// The audio contained in speaker 1 is smoothly replaced by the one contained in speaker 0
+    /// </summary>
+    /// <param name="delay">Speed at which the cross fade is performed</param>
+    /// <param name="fadeCoeff">Strength at which the volume is modified. Higher values means faster cross fade</param>
+    /// <returns></returns>
+    private IEnumerator crossFade(float delay, float fadeCoeff)
     {
-        speaker[0].volume = 0f;
-        speaker[1].volume = 1f;
+        speakers[0].volume = 0f;
+        speakers[1].volume = maxVolume;
+        speakers[0].Play();
+        speakers[1].Play();
 
-        speaker[0].Play();
-        speaker[1].Play();
-
-        while(speaker[1].volume >= 0.01f)
+        while(speakers[1].volume >= 0.01f)
         {
-            speaker[0].volume += fadeCoeff;
-            speaker[1].volume -= fadeCoeff;
+            speakers[0].volume += fadeCoeff;
+            speakers[1].volume -= fadeCoeff;
             yield return new WaitForSecondsRealtime(delay);
         }
 
-        speaker[0].volume = 1f;
-        speaker[1].Stop();
+        speakers[0].volume = maxVolume;
+        speakers[1].Stop();
 
     }
-
 }

@@ -28,6 +28,7 @@ public class gameManager : MonoBehaviour
     private powerManager powerManagerScript;
     private audio audioManager;
     private GameObject powerCanvas;
+    private musicManager musicManagerScript;
 
     private setup setupScript;
     [SerializeField] private int completedTube;
@@ -103,6 +104,7 @@ public class gameManager : MonoBehaviour
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
+        musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
         {
             victorySprite = GameObject.Find("Victory").GetComponent<Image>();
@@ -459,6 +461,8 @@ public class gameManager : MonoBehaviour
                         {
                             currentState = states.idleNoTube;
                             audioManager.GetComponent<audio>().tubeCompleteSound();
+                            musicManagerScript.currentLevelMusicSection++;
+                            musicManagerScript.switchAudio(musicManagerScript.levelMusicParts[musicManagerScript.currentLevelMusicSection]);
                             robotScript.eyesStateMachine(robot.eyesActions.animate, robot.avalaibleAnim.happy);
                         }
                     }

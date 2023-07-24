@@ -130,7 +130,7 @@ public class selection : MonoBehaviour
 
 
     /// <summary>
-    /// Method <c>Reset</c> manage reset save button behaviour
+    /// Method <c>Reset</c> manage reset button behaviour
     /// </summary>
     public void Reset()
     {

@@ -4323,7 +4323,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5391c405475f184f9ab1cc2d0c5f274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicManager: {fileID: 0}
   levelIconPrefab: {fileID: 0}
   rightArrow: {fileID: 0}
   leftArrow: {fileID: 0}
@@ -4607,7 +4606,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5391c405475f184f9ab1cc2d0c5f274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicManager: {fileID: 0}
   levelIconPrefab: {fileID: 0}
   rightArrow: {fileID: 0}
   leftArrow: {fileID: 0}
