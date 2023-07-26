@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -137,7 +136,6 @@ public class setup : MonoBehaviour
         robot.GetComponent<robot>().initialise(colorRob);
 
         //Initialise tubes
-        bool isTubeChangedByRobot = false;
         for (int i = 0; i < numberOfTube; i++)
         {
             GameObject tube = Instantiate(tubePrefab, tubeParent.transform);

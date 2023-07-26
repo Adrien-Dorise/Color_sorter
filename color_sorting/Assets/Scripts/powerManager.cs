@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -213,7 +211,7 @@ public class powerManager : MonoBehaviour
             }
             catch(Exception e)
             {
-                Debug.LogWarning("WARNING: Impossible to load color or text for token object " + id);
+                Debug.LogWarning("WARNING: Impossible to load color or text for token object " + id + "\n" + e);
             }
         }
     }
