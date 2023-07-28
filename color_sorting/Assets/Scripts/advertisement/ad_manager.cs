@@ -1,27 +1,55 @@
 using UnityEngine;
 using UnityEngine.Advertisements;
+using UnityEngine.SceneManagement;
 
 //https://docs.unity.com/ads/en-us/manual/UnityDeveloperIntegrations
 //https://docs.unity.com/ads/en-us/manual/InitializingTheUnitySDK
 //https://www.youtube.com/watch?v=SBtfuWEN5qk
 //https://www.youtube.com/watch?v=tzgOTVPXC-I
 
-public class ad_init : MonoBehaviour, IUnityAdsInitializationListener
+public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
 {
     [SerializeField] string _androidGameId;
     [SerializeField] string _iOSGameId;
     [SerializeField] bool _testMode = true;
     private string _gameId;
 
-    [SerializeField] ad_reward rewardScript;
-    [SerializeField] ad_video videoScript;
-    [SerializeField] ad_banner bannerScript;
+   // [SerializeField] ad_reward rewardScript;
+    ad_video videoScript;
+    ad_banner bannerScript;
  
     void Awake()
     {
         InitializeAds();
     }
+
+    private void Start()
+    {
+        //this.rewardScript = this.GetComponent<ad_reward>();
+        this.videoScript = this.GetComponent<ad_video>();
+        this.bannerScript = this.GetComponent<ad_banner>();
+        adSelection();
+    }
  
+    private void adSelection()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if(Advertisement.isInitialized)
+        {
+            if(currentScene == "Level Selection")
+            {
+                bannerScript.LoadAd();
+                bannerScript.ShowBannerAd();
+            }
+            if(currentScene == "Level")
+            {
+                videoScript.LoadAd();
+                videoScript.ShowAd();
+            }
+        }
+    }
+
     public void InitializeAds()
     {
     #if UNITY_IOS
@@ -41,10 +69,26 @@ public class ad_init : MonoBehaviour, IUnityAdsInitializationListener
     public void OnInitializationComplete()
     {
         Debug.Log("Unity Ads initialization complete.");
-        videoScript.LoadAd();
+        //videoScript.LoadAd();
+        //bannerScript.LoadAd();
 
     }
+
+    public void launchReward()
+    {
+        //rewardScript.ShowAd();
+    }
+
+    public void launchVideo()
+    {
+        videoScript.ShowAd();
+    }
  
+    public void launchBanner()
+    {
+        bannerScript.ShowBannerAd();
+    }
+
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
     {
         Debug.Log($"Unity Ads Initialization Failed: {error.ToString()} - {message}");
