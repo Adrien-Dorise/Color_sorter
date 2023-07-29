@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,7 +26,6 @@ public class testTube : MonoBehaviour
     [SerializeField] private float scalingTempo; //Time taking to up or down scale a tube
     [SerializeField] private float scalingSpeed; //Speed at which a u=tube is up or down scaled
     [SerializeField] private float endScale; //Max scale threshold when animating
-    private bool isMoving; //Set true when the tube have to move from one position to another
     private Coroutine scalingRoutine; //Variable used to ensure that the tube is not tryinng to scale up and down simultaneously
 
 
@@ -37,7 +35,6 @@ public class testTube : MonoBehaviour
         scalingSpeed = 0.025f;
         endScale = 1.3f;
         tubeComplete = false;
-        isMoving = false;
 
         //Layer offset
         yOffset = 980f;

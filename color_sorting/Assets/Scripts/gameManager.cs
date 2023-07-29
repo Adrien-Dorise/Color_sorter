@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting.Dependencies.Sqlite;
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -28,6 +26,7 @@ public class gameManager : MonoBehaviour
     private powerManager powerManagerScript;
     private audio audioManager;
     private GameObject powerCanvas;
+    private GameObject tokenCanvas;
     private musicManager musicManagerScript;
 
     private setup setupScript;
@@ -111,7 +110,12 @@ public class gameManager : MonoBehaviour
             robotPowerScript = GameObject.Find("Power Manager").GetComponent<robotPower>();
             powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
             powerCanvas = GameObject.Find("Power Buttons");
-            powerCanvas.SetActive(false);
+            powerCanvas.GetComponent<Canvas>().enabled = false;
+            tokenCanvas = GameObject.Find("Token Canvas");
+            foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
+            {
+                tokenButton.interactable = false;
+            }
         }
         memoryTube = null;
     }
@@ -378,7 +382,12 @@ public class gameManager : MonoBehaviour
                 {
                     currentState = states.powerSelection;
                     powerManagerScript.setInteractablePowerButtons();
-                    powerCanvas.SetActive(true);
+                    foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
+                    {
+                        
+                        tokenButton.interactable = true;
+                    }
+                    powerCanvas.GetComponent<Canvas>().enabled = true;
                 }
                 break;
             
@@ -426,7 +435,12 @@ public class gameManager : MonoBehaviour
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
                         powerManagerScript.setInteractablePowerButtons();
-                        powerCanvas.SetActive(true);
+                        foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
+                        {
+                            
+                            tokenButton.interactable = true;
+                        }
+                        powerCanvas.GetComponent<Canvas>().enabled = true;
                     }
                     else if(act == actions.clickedBackround)
                     {
@@ -477,21 +491,33 @@ public class gameManager : MonoBehaviour
                 if(act == actions.usePower)
                 {
                     currentState = states.robotPower;
-                    powerCanvas.SetActive(false);
+                    powerCanvas.GetComponent<Canvas>().enabled = false;
                     StartCoroutine(powerManagerScript.powerButtonRoutine(info));
+                    foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
+                    {
+                        tokenButton.interactable = false;
+                    }
                 }
 
                 else if(act == actions.clickedRobot || act == actions.clickedBackround)
                 {
                     currentState = states.idleNoTube;                    
-                    powerCanvas.SetActive(false);
+                    powerCanvas.GetComponent<Canvas>().enabled = false;
+                    foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
+                    {
+                        tokenButton.interactable = false;
+                    }
                 }
 
                 try
                 {
                     if(act == actions.clickedTube)
                     {
-                        powerCanvas.SetActive(false);
+                        powerCanvas.GetComponent<Canvas>().enabled = false;
+                        foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
+                        {
+                            tokenButton.interactable = false;
+                        }
                         bool notEmpty = obj.GetComponent<testTube>().colorList.Count != 0;
                         if (!obj.GetComponent<testTube>().tubeComplete && notEmpty)
                         {

@@ -143,7 +143,7 @@ public class levelSolver : MonoBehaviour
             }
             catch(Exception e)
             {
-                Debug.LogWarning("Error when rewinding: " + previousAction.pooredTube.name + " -> " + previousAction.pooringTube.name);
+                Debug.LogWarning("Error when rewinding: " + previousAction.pooredTube.name + " -> " + previousAction.pooringTube.name + "\n" + e);
             }
             for(int i = 0; i < previousAction.layersPoored; i++)
             {

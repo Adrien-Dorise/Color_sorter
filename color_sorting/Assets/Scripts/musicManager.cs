@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
 using System;
 
 public class musicManager : MonoBehaviour
@@ -106,7 +104,6 @@ public class musicManager : MonoBehaviour
         {
             Debug.LogWarning(e);
         }
-        Debug.Log(sample);
         speaker.timeSamples = sample;
     }
 

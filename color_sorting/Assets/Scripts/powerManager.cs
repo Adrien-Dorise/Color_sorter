@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,7 +40,7 @@ public class powerManager : MonoBehaviour
         powerButtonsCanvas = GameObject.Find("Power Buttons");
     
         tokensObjects = new List<GameObject>();
-        for(int i = 0; i < GameObject.Find("Token Canvas").transform.childCount - 1; i++)
+        for(int i = 0; i < GameObject.Find("Token Canvas").transform.childCount; i++)
         {
             tokensObjects.Add(GameObject.Find("Token Canvas").transform.GetChild(i).gameObject);
         }
@@ -126,11 +124,8 @@ public class powerManager : MonoBehaviour
     private bool checkPowerAvailable(int powerID)
     {
         List<int> availableTokens = loadTokens(); 
-        Debug.Log("power" + powerID);
         foreach(int neededToken in powersNeededTokens[powerID])
         {
-            Debug.Log(neededToken);
-            Debug.Log(availableTokens[neededToken]);
             if(availableTokens[neededToken] <= 0) //No tokens left available -> power can't be used
             {
                 return false;
@@ -165,6 +160,7 @@ public class powerManager : MonoBehaviour
                 }
             }
         }
+
     }
 
     public void updateOneToken(int tokenID, int increment)
@@ -213,7 +209,7 @@ public class powerManager : MonoBehaviour
             }
             catch(Exception e)
             {
-                Debug.LogWarning("WARNING: Impossible to load color or text for token object " + id);
+                Debug.LogWarning("WARNING: Impossible to load color or text for token object " + id + "\n" + e);
             }
         }
     }
