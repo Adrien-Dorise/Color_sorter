@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.SceneManagement;
@@ -17,7 +18,11 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
    // [SerializeField] ad_reward rewardScript;
     ad_video videoScript;
     ad_banner bannerScript;
- 
+    ad_reward reward_script;
+
+    powerManager powerScript;
+
+
     void Awake()
     {
         InitializeAds();
@@ -25,9 +30,15 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
 
     private void Start()
     {
-        //this.rewardScript = this.GetComponent<ad_reward>();
-        this.videoScript = this.GetComponent<ad_video>();
-        this.bannerScript = this.GetComponent<ad_banner>();
+        videoScript = this.GetComponent<ad_video>();
+        bannerScript = this.GetComponent<ad_banner>();
+        reward_script = this.GetComponent<ad_reward>();
+        
+        if(SceneManager.GetActiveScene().name == "Level")
+        {
+            powerScript = GameObject.Find("Power Manager").transform.GetComponent<powerManager>();
+        }
+
         adSelection();
     }
  
@@ -42,11 +53,18 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
                 bannerScript.LoadAd();
                 bannerScript.ShowBannerAd();
             }
+            
             if(currentScene == "Level")
             {
-                videoScript.LoadAd();
-                videoScript.ShowAd();
+                if(Random.Range(0,10) >= 6)
+                {
+                    Debug.Log("Vidoe ad is on");
+                    videoScript.LoadAd();
+                    videoScript.ShowAd();
+                }
             }
+
+            reward_script.LoadAd();
         }
     }
 
@@ -74,10 +92,6 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
 
     }
 
-    public void launchReward()
-    {
-        //rewardScript.ShowAd();
-    }
 
     public void launchVideo()
     {
@@ -87,6 +101,12 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
     public void launchBanner()
     {
         bannerScript.ShowBannerAd();
+    }
+
+    public  void launchReward(int tokenID)
+    {
+        reward_script.ShowAd();
+        powerScript.updateOneToken(tokenID, 3);
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)

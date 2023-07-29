@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6311998489247890162}
   - component: {fileID: 6311998489247890175}
   - component: {fileID: 6311998489247890160}
+  - component: {fileID: 3862422112185494616}
   m_Layer: 0
   m_Name: Ads Manager
   m_TagString: Untagged
@@ -49,6 +50,7 @@ MonoBehaviour:
   _androidGameId: 5360861
   _iOSGameId: 5360860
   _testMode: 1
+  rewardButtons: []
 --- !u!114 &6311998489247890175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,3 +80,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _androidAdUnitId: Interstitial_Android
   _iOsAdUnitId: Interstitial_iOS
+--- !u!114 &3862422112185494616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6311998489247890163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7466097f9d61d494e8b332b176a4180b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _androidAdUnitId: Rewarded_Android
+  _iOSAdUnitId: Rewarded_iOS

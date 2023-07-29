@@ -39,7 +39,6 @@ public class ad_banner : MonoBehaviour
 
     void OnBannerLoaded()
     {
-        Debug.Log("Banner loaded");
         ShowBannerAd();
     }
 
