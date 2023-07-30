@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class mainMenu : MonoBehaviour
 {
 
-    [SerializeField] private GameObject mainCanvas, optionsCanvas, colorBlindCanvas, wheelCanvas, musicCanvas;
+    [SerializeField] private GameObject mainCanvas, colorBlindCanvas, wheelCanvas, musicCanvas;
 
     //ColorBlind
     private int colorInSelection;
@@ -41,7 +41,6 @@ public class mainMenu : MonoBehaviour
 
 
         mainCanvas.SetActive(true);
-        optionsCanvas.SetActive(false);
         colorBlindCanvas.SetActive(false);
         musicCanvas.SetActive(false);
         wheelCanvas.SetActive(false);
@@ -72,16 +71,6 @@ public class mainMenu : MonoBehaviour
     }
 
 
-    //Option button
-    public void optionsButton()
-    {
-        mainCanvas.SetActive(false);
-        optionsCanvas.SetActive(true);
-        colorBlindCanvas.SetActive(false);
-        wheelCanvas.SetActive(false);
-        musicCanvas.SetActive(false);
-    }
-
 
     public void setColorForColorBlindSettings()
     {
@@ -104,7 +93,6 @@ public class mainMenu : MonoBehaviour
     {
         setColorForColorBlindSettings();
         mainCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
         colorBlindCanvas.SetActive(true);
         wheelCanvas.SetActive(false);
         musicCanvas.SetActive(false);
@@ -113,7 +101,6 @@ public class mainMenu : MonoBehaviour
     public void musicButton()
     {
         mainCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
         colorBlindCanvas.SetActive(false);
         wheelCanvas.SetActive(false);
         musicCanvas.SetActive(true);
@@ -303,18 +290,9 @@ public class mainMenu : MonoBehaviour
 
     public void backButton(string currentCanvas)
     {
-        if (currentCanvas == "options")
+        if (currentCanvas == "colorblind")
         {
             mainCanvas.SetActive(true);
-            optionsCanvas.SetActive(false);
-            colorBlindCanvas.SetActive(false);
-            wheelCanvas.SetActive(false);
-            musicCanvas.SetActive(false);
-        } 
-        else if (currentCanvas == "colorblind")
-        {
-            mainCanvas.SetActive(false);
-            optionsCanvas.SetActive(true);
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
@@ -324,15 +302,13 @@ public class mainMenu : MonoBehaviour
             colorBlindSettings.switchSavedColor(colorInSelection, saveColor);
             setColorForColorBlindSettings();
             mainCanvas.SetActive(false);
-            optionsCanvas.SetActive(false);
             colorBlindCanvas.SetActive(true);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
         }
         else if(currentCanvas == "music")
         {
-            mainCanvas.SetActive(false);
-            optionsCanvas.SetActive(true);
+            mainCanvas.SetActive(true);
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
@@ -340,7 +316,6 @@ public class mainMenu : MonoBehaviour
         else
         {
             mainCanvas.SetActive(true);
-            optionsCanvas.SetActive(false);
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
