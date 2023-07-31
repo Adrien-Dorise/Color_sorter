@@ -384,7 +384,6 @@ public class gameManager : MonoBehaviour
                     powerManagerScript.setInteractablePowerButtons();
                     foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
                     {
-                        
                         tokenButton.interactable = true;
                     }
                     powerCanvas.GetComponent<Canvas>().enabled = true;
@@ -437,7 +436,6 @@ public class gameManager : MonoBehaviour
                         powerManagerScript.setInteractablePowerButtons();
                         foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
                         {
-                            
                             tokenButton.interactable = true;
                         }
                         powerCanvas.GetComponent<Canvas>().enabled = true;
