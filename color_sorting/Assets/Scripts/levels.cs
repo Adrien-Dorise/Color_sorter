@@ -16,6 +16,26 @@ public class levels
     
     static public List<Color> robotColorPerLevel = new List<Color>();
 
+    /// <summary>
+    /// LevelGenerator procedurally created a new level based on specificied parameters. 
+    /// When laoding a level, the generator is setup to create the required tubes with color layer.
+    /// When creating a new level, specify the wanted paramters, and reload the level until desired setup is found.
+    /// When done, freeze the current seed to recover the exact same setup.
+    /// </summary>
+    /// <param name="seed"> Seed selected to create the level. Set seed=0 for random generation </param>
+    /// <param name="numberTube"> Number of total tubes desired for the level (totalTube = colorTube + emptyTube) </param>
+    /// <param name="numberEmptyTube"> Number of empty tupe (aka bonus tube) desired for the level </param>
+    /// <param name="numberInitLayers"> Number of color layers inside each tubes when strating the level </param>
+    /// <param name="numberMaxLayers"> Maximum number of layers required to fill a tube </param>
+    /// <param name="tubeToWin"> Number of sorted tubes required to win the level </param>
+    /// <param name="maxLevelColor"> Maximum number of different colors in the level </param>
+    /// <param name="generatorVersion"> Generator version used to create the level 
+    /// v1: Fully randomize generation
+    /// v2: Occasionally reuse same tube to poor same color, creating easier to setup levels. The probability to reuse a tube is set by "rewindPercentage"
+    /// v3: Authorises the use if the same color multiple time in the level </param>
+    /// <param name="rewindPercentage">When the v2 generator is selected with "generatorVersion", defines the probability to reuse a tube with same color + version 1</param>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
     static public List<List<Color>> levelGenerator(int seed, int numberTube, int numberEmptyTube, int numberInitLayers, int numberMaxLayers, int tubeToWin, int maxLevelColor, int generatorVersion, float rewindPercentage=0.4f)
     {
         if(seed == 0)
@@ -50,7 +70,7 @@ public class levels
             while(colorsUsed.Count < maxLevelColor)
             {
                 randColor = UnityEngine.Random.Range(0,gameManager.colors.Count);
-                if(!colorsUsed.Contains(randColor))
+                if(!colorsUsed.Contains(randColor) || generatorVersion == 3)
                 {
                     colorsUsed.Add(randColor);
                     availableColors.Add(0);
@@ -66,6 +86,7 @@ public class levels
         switch(generatorVersion)
         {
             case 1:
+            case 3:
                 for(int lay = 0; lay < totalLayers; lay++)
                 {
                     foundLayer = false;
@@ -1295,12 +1316,12 @@ public class levels
 
             case 78:
                 
-                numberTube = 5;
+                numberTube = 11;
                 numberEmptyTube = 1;
                 numberInitLayers = 4;
-                numberMaxLayers = 4;
-                tubeToWin = 4;
-                maxLevelColor = 4;
+                numberMaxLayers = 5;
+                tubeToWin = 8;
+                maxLevelColor = tubeToWin;
                 seed = 0;
                 generatorVersion = 1;
 

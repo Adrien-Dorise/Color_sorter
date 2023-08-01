@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.SceneManagement;
@@ -13,6 +14,7 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
     [SerializeField] string _androidGameId;
     [SerializeField] string _iOSGameId;
     [SerializeField] bool _testMode = true;
+    private bool display_ads = false; //Set false to remove ads from game  
     private string _gameId;
 
    // [SerializeField] ad_reward rewardScript;
@@ -25,7 +27,10 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
 
     void Awake()
     {
-        InitializeAds();
+        if(display_ads)
+        {
+            InitializeAds();
+        }
     }
 
     private void Start()
@@ -39,7 +44,10 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
             powerScript = GameObject.Find("Power Manager").transform.GetComponent<powerManager>();
         }
 
-        adSelection();
+        if(display_ads)
+        {
+            adSelection();
+        }
     }
  
     private void adSelection()
@@ -95,17 +103,26 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
 
     public void launchVideo()
     {
-        videoScript.ShowAd();
+        if(display_ads)
+        {
+            videoScript.ShowAd();
+        }
     }
  
     public void launchBanner()
     {
-        bannerScript.ShowBannerAd();
+        if(display_ads)
+        {
+            bannerScript.ShowBannerAd();
+        }
     }
 
     public  void launchReward(int tokenID)
     {
-        reward_script.ShowAd();
+        if(display_ads)
+        {
+            reward_script.ShowAd();
+        }
         powerScript.updateOneToken(tokenID, 3);
         powerScript.setInteractablePowerButtons();
     }
