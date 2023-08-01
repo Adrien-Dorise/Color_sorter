@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class mainMenu : MonoBehaviour
 {
 
-    [SerializeField] private GameObject mainCanvas, optionsCanvas, colorBlindCanvas, wheelCanvas, musicCanvas;
+    [SerializeField] private GameObject mainCanvas, colorBlindCanvas, wheelCanvas, musicCanvas, tutorialCanvas;
 
     //ColorBlind
     private int colorInSelection;
@@ -41,10 +41,14 @@ public class mainMenu : MonoBehaviour
 
 
         mainCanvas.SetActive(true);
-        optionsCanvas.SetActive(false);
         colorBlindCanvas.SetActive(false);
         musicCanvas.SetActive(false);
         wheelCanvas.SetActive(false);
+        tutorialCanvas.SetActive(false);
+        foreach(Transform panel in tutorialCanvas.GetComponentsInChildren<Transform>())
+        {
+            panel.gameObject.SetActive(false);
+        }
 
         colorButtonsParent.SetActive(true);
         resetButton.SetActive(true);
@@ -72,16 +76,6 @@ public class mainMenu : MonoBehaviour
     }
 
 
-    //Option button
-    public void optionsButton()
-    {
-        mainCanvas.SetActive(false);
-        optionsCanvas.SetActive(true);
-        colorBlindCanvas.SetActive(false);
-        wheelCanvas.SetActive(false);
-        musicCanvas.SetActive(false);
-    }
-
 
     public void setColorForColorBlindSettings()
     {
@@ -104,20 +98,48 @@ public class mainMenu : MonoBehaviour
     {
         setColorForColorBlindSettings();
         mainCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
         colorBlindCanvas.SetActive(true);
         wheelCanvas.SetActive(false);
         musicCanvas.SetActive(false);
+        tutorialCanvas.SetActive(false);
+
     }
 
     public void musicButton()
     {
         mainCanvas.SetActive(false);
-        optionsCanvas.SetActive(false);
         colorBlindCanvas.SetActive(false);
         wheelCanvas.SetActive(false);
         musicCanvas.SetActive(true);
+        tutorialCanvas.SetActive(false);
     }
+
+    public void tutorialButton()
+    {
+        mainCanvas.SetActive(false);
+        colorBlindCanvas.SetActive(false);
+        wheelCanvas.SetActive(false);
+        musicCanvas.SetActive(false);
+        tutorialCanvas.SetActive(true);
+        tutorialCanvas.transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    public void nextTutorialPanel(int idx)
+    {
+        int panelCount = tutorialCanvas.transform.childCount;
+        if(idx+1 < panelCount)
+        {
+            tutorialCanvas.transform.GetChild(idx).gameObject.SetActive(false);
+            tutorialCanvas.transform.GetChild(idx+1).gameObject.SetActive(true);
+        }
+        else
+        {
+            tutorialCanvas.transform.GetChild(idx).gameObject.SetActive(false);
+            tutorialCanvas.SetActive(false);
+            mainCanvas.SetActive(true);
+        }
+    }
+
 
     //Colorblind settings
     public void resetColorblind()
@@ -303,47 +325,40 @@ public class mainMenu : MonoBehaviour
 
     public void backButton(string currentCanvas)
     {
-        if (currentCanvas == "options")
+        if (currentCanvas == "colorblind")
         {
             mainCanvas.SetActive(true);
-            optionsCanvas.SetActive(false);
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
-        } 
-        else if (currentCanvas == "colorblind")
-        {
-            mainCanvas.SetActive(false);
-            optionsCanvas.SetActive(true);
-            colorBlindCanvas.SetActive(false);
-            wheelCanvas.SetActive(false);
-            musicCanvas.SetActive(false);
+            tutorialCanvas.SetActive(false);
+
         }
         else if (currentCanvas == "colorWheel")
         {
             colorBlindSettings.switchSavedColor(colorInSelection, saveColor);
             setColorForColorBlindSettings();
             mainCanvas.SetActive(false);
-            optionsCanvas.SetActive(false);
             colorBlindCanvas.SetActive(true);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
+            tutorialCanvas.SetActive(false);
         }
         else if(currentCanvas == "music")
         {
-            mainCanvas.SetActive(false);
-            optionsCanvas.SetActive(true);
+            mainCanvas.SetActive(true);
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
+            tutorialCanvas.SetActive(false);
         }
         else
         {
             mainCanvas.SetActive(true);
-            optionsCanvas.SetActive(false);
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
+            tutorialCanvas.SetActive(false);
         }
     }
 }

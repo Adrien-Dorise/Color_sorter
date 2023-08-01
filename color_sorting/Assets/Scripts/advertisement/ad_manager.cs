@@ -107,6 +107,7 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
     {
         reward_script.ShowAd();
         powerScript.updateOneToken(tokenID, 3);
+        powerScript.setInteractablePowerButtons();
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)

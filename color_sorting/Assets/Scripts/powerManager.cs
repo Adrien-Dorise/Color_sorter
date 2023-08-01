@@ -10,11 +10,11 @@ public class powerManager : MonoBehaviour
     private List<List<int>> powersNeededTokens; //List containing the tokens needed for each power to be activated
     private robotPower powerScript;
     private gameManager managerScript;
-    private int powerAvailables = 4;
     private List<GameObject> tokensObjects; // List containing the tokens object in the <Token Canvas> GameObject. It is possible to access image (child(0)) and text (child(1))
 
     private GameObject powerButtonsCanvas;
 
+    private bool deleteColorUsed;
 
     
 
@@ -35,6 +35,7 @@ public class powerManager : MonoBehaviour
         }
 
         debug_check = false;
+        deleteColorUsed = false;
         powerScript = this.GetComponent<robotPower>();
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
         powerButtonsCanvas = GameObject.Find("Power Buttons");
@@ -49,19 +50,19 @@ public class powerManager : MonoBehaviour
         maxlevelTokenIdxPerPower = new List<int>();
         powersNeededTokens = new List<List<int>>();
         
-        for(int i=0; i<powerAvailables; i++)
+        powersNeededTokens = new List<List<int>>{
+            new List<int>{0}, //rollBack
+            new List<int>{1}, //nextMove
+            new List<int>{0}, //isWind
+            new List<int>{0} //deleteColor
+        };
+        for(int i=0; i<powersNeededTokens.Count; i++)
         {
             maxlevelTokenIdxPerPower.Add(0);   
             
             //powersNeededTokens.Add(new List<int>());
             //setPowerToken(i, 5);
         }
-        powersNeededTokens = new List<List<int>>{
-            new List<int>{0}, //rollBack
-            new List<int>{1}, //isWin
-            new List<int>{0}, //nextMove
-            new List<int>{0} //deleteColor
-        };
     }
 
 
@@ -74,6 +75,7 @@ public class powerManager : MonoBehaviour
     {
         managerScript.gameState(gameManager.actions.usePower,null,selection);
     }
+
     public IEnumerator powerButtonRoutine(string selection)
     {        
         if(selection == "rollBack")
@@ -85,22 +87,23 @@ public class powerManager : MonoBehaviour
             powerScript.rollBackOne();
         }
         
-        else if(selection == "isWin")
+            
+        else if(selection == "nextMove")
         {
             foreach(int token in powersNeededTokens[1])
             {
                 updateOneToken(token,-1);
             }
-            yield return StartCoroutine(powerScript.isWinnable());
+            yield return StartCoroutine(powerScript.findNextMove());
         }
-            
-        else if(selection == "nextMove")
+        
+        else if(selection == "isWin")
         {
             foreach(int token in powersNeededTokens[2])
             {
                 updateOneToken(token,-1);
             }
-            yield return StartCoroutine(powerScript.findNextMove());
+            yield return StartCoroutine(powerScript.isWinnable());
         }
 
         else if (selection == "deleteColor")
@@ -110,6 +113,7 @@ public class powerManager : MonoBehaviour
                 updateOneToken(token,-1);
             }
             powerScript.deleteColor();
+            deleteColorUsed = true;
         }
         managerScript.gameState(gameManager.actions.finishAction);
     }
@@ -124,6 +128,12 @@ public class powerManager : MonoBehaviour
     private bool checkPowerAvailable(int powerID)
     {
         List<int> availableTokens = loadTokens(); 
+
+        if(powerID == 3 && deleteColorUsed) //Player can only used the delete color power once in a game.
+        {
+            return false;
+        }
+        
         foreach(int neededToken in powersNeededTokens[powerID])
         {
             if(availableTokens[neededToken] <= 0) //No tokens left available -> power can't be used
@@ -147,9 +157,9 @@ public class powerManager : MonoBehaviour
     {
         if(!save.debugPower)
         {
-            for(int childID=1; childID < powerButtonsCanvas.transform.childCount; childID++)
+            for(int childID=2; childID < powerButtonsCanvas.transform.childCount; childID++)
             {
-                int powerID = childID-1; //We remove first iteration to consider the background object as it is child(0) of the power canvas.
+                int powerID = childID-2; //We remove first iteration to consider the background object as it is child(0) of the power canvas, and second for txt panel.
                 if(checkPowerAvailable(powerID))
                 {
                     powerButtonsCanvas.transform.GetChild(childID).GetComponent<Button>().interactable = true;
@@ -263,7 +273,7 @@ public class powerManager : MonoBehaviour
     {
         List<int> tmpTokenStrike = new List<int>();
         List<int> maxTokenStrikePerPower = new List<int>();
-        for(int i=0; i<powerAvailables; i++)
+        for(int i=0; i<powersNeededTokens.Count; i++)
         {
             maxTokenStrikePerPower.Add(0);   
             tmpTokenStrike.Add(0);
@@ -311,7 +321,7 @@ public class powerManager : MonoBehaviour
         Debug.Log(strColor);
 
         Debug.Log("Power tokens:");
-        for(int i=0; i<powerAvailables; i++)
+        for(int i=0; i<powersNeededTokens.Count; i++)
         {
             string str1 = ""; 
             foreach(int token in powersNeededTokens[i])
