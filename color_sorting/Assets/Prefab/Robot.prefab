@@ -325,7 +325,7 @@ RectTransform:
   m_GameObject: {fileID: 7831395626130834980}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7831395624815697582}
@@ -368,6 +368,7 @@ MonoBehaviour:
   eyesSpeed: 0
   eyeTempo: 0
   eyePos: {x: 0, y: 0, z: 0}
+  isIdling: 0
   scalingTempo: 0.005
   scalingSpeed: 0.025
   endScale: 9.5
