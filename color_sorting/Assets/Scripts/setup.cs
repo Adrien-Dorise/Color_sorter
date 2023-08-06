@@ -78,7 +78,7 @@ public class setup : MonoBehaviour
 
             case gameManager.states.idleNoTube:
                 //Tube positions
-                int x1 = -833, x2 = 833, x3 = -2500, x4 = 2500;
+                int x1 = -2000, x2 = -666, x3 = 666, x4 = 2000;
                 int y1 = 1500, y2 = -1200, y3 = 3800; 
                 posTubes.Add(new Vector3(x1, y1, 0f));
                 posTubes.Add(new Vector3(x2, y1, 0f));

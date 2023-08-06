@@ -473,8 +473,11 @@ public class gameManager : MonoBehaviour
                         {
                             currentState = states.idleNoTube;
                             audioManager.GetComponent<audio>().tubeCompleteSound();
-                            musicManagerScript.currentLevelMusicSection++;
-                            musicManagerScript.switchAudio(musicManagerScript.levelMusicParts[musicManagerScript.currentLevelMusicSection]);
+                            if(musicManagerScript.currentLevelMusicSection + 1 < musicManagerScript.levelMusicParts.Count)
+                            {
+                                musicManagerScript.currentLevelMusicSection++;
+                                musicManagerScript.switchAudio(musicManagerScript.levelMusicParts[musicManagerScript.currentLevelMusicSection]);
+                            }
                             robotScript.eyesStateMachine(robot.eyesActions.animate, robot.avalaibleAnim.happy);
                         }
                     }
