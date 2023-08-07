@@ -14,7 +14,6 @@ public class selection : MonoBehaviour
     private musicManager musicManagerScript;
 
     //Level selection setup
-    [SerializeField] GameObject levelIconPrefab;
     [SerializeField] private GameObject rightArrow, leftArrow;
 
 

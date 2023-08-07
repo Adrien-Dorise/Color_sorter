@@ -148,6 +148,17 @@ public class mainMenu : MonoBehaviour
         setColorForColorBlindSettings();
     }
 
+    public void switchColor()
+    {
+            colorBlindSettings.switchSavedColor(colorInSelection, saveColor);
+            setColorForColorBlindSettings();
+            mainCanvas.SetActive(false);
+            colorBlindCanvas.SetActive(true);
+            wheelCanvas.SetActive(false);
+            musicCanvas.SetActive(false);
+            tutorialCanvas.SetActive(false);
+    }
+
     //!!! Color blind menu !!!
 
     /// <summary>
@@ -336,8 +347,6 @@ public class mainMenu : MonoBehaviour
         }
         else if (currentCanvas == "colorWheel")
         {
-            colorBlindSettings.switchSavedColor(colorInSelection, saveColor);
-            setColorForColorBlindSettings();
             mainCanvas.SetActive(false);
             colorBlindCanvas.SetActive(true);
             wheelCanvas.SetActive(false);
