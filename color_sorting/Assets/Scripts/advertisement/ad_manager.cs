@@ -14,7 +14,7 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
     [SerializeField] string _androidGameId;
     [SerializeField] string _iOSGameId;
     [SerializeField] bool _testMode = true;
-    private bool display_ads = false; //Set false to remove ads from game  
+    [SerializeField] bool display_ads = true; //Set false to remove ads from game  
     private string _gameId;
 
    // [SerializeField] ad_reward rewardScript;

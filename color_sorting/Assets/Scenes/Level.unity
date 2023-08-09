@@ -3692,6 +3692,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level Solver
       objectReference: {fileID: 0}
+    - target: {fileID: 1794190021951870873, guid: d3da0be436273d94696d9a21b661e8fd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1794190021951870951, guid: d3da0be436273d94696d9a21b661e8fd, type: 3}
       propertyPath: m_RootOrder
       value: 12

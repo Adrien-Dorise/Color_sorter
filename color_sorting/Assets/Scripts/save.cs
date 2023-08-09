@@ -11,7 +11,7 @@ public class save
     static public bool debugDev = true; // Set true to have access to all levels
     static public bool debugLevel = false; // Set true to remove tube animations during levels
     static public bool debugPower = false; // Set true to always access powers
-    static public int maxAvailableLevels = 130; //Change when increase the number of levels in the game
+    static public int maxAvailableLevels = 50; //Change when increase the number of levels in the game
 
 
     static public string robotColor = "Robot Color Per Level"; //Robot colors for each cleared level. The states are represented by characters in a string. ex: " 0 3" -> means level one start with color '0' and level two starts witg color '3'
