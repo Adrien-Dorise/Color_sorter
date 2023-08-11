@@ -48,7 +48,7 @@ public class selection : MonoBehaviour
     public void rightScroll()
     {
         leftArrow.SetActive(true);
-        if(maxDisplayedLevel + levelPerScreen*2 >= PlayerPrefs.GetInt(save.availableLevels))
+        if(maxDisplayedLevel + levelPerScreen*2 > PlayerPrefs.GetInt(save.availableLevels))
         {
             maxDisplayedLevel = PlayerPrefs.GetInt(save.availableLevels);
             rightArrow.SetActive(false);

@@ -3686,7 +3686,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1794190021951870872, guid: d3da0be436273d94696d9a21b661e8fd, type: 3}
       propertyPath: debugTestLevelFeasability
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1794190021951870873, guid: d3da0be436273d94696d9a21b661e8fd, type: 3}
       propertyPath: m_Name
