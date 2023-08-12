@@ -13,6 +13,7 @@ public class powerManager : MonoBehaviour
     private List<GameObject> tokensObjects; // List containing the tokens object in the <Token Canvas> GameObject. It is possible to access image (child(0)) and text (child(1))
 
     private GameObject powerButtonsCanvas;
+    private robot robotScript;
 
     private bool deleteColorUsed;  
 
@@ -38,6 +39,7 @@ public class powerManager : MonoBehaviour
         powerScript = this.GetComponent<robotPower>();
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
         powerButtonsCanvas = GameObject.Find("Power Buttons");
+        robotScript = GameObject.Find("Robot").GetComponent<robot>();
     
         tokensObjects = new List<GameObject>();
         for(int i = 0; i < GameObject.Find("Token Canvas").transform.childCount; i++)
@@ -83,6 +85,7 @@ public class powerManager : MonoBehaviour
             {
                 updateOneToken(token,-1);
             }
+            yield return new WaitForSeconds(0.5f);
             powerScript.rollBackOne();
         }
         
@@ -93,15 +96,18 @@ public class powerManager : MonoBehaviour
             {
                 updateOneToken(token,-1);
             }
+            robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return StartCoroutine(powerScript.findNextMove());
+            robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
             if(powerScript.isStateWinnable)
             {
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.happy);
                 GameObject pooredTube = powerScript.nextPooredTube;
                 GameObject pooringTube = powerScript.nextPooringTube;
             }
             else
             {
-                
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.sad);
             }
         }
         
@@ -111,13 +117,17 @@ public class powerManager : MonoBehaviour
             {
                 updateOneToken(token,-1);
             }
+            robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return StartCoroutine(powerScript.isWinnable());
+            robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
             if(powerScript.isStateWinnable)
             {
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.happy);
                 
             }
             else
             {
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.sad);
 
             }
         }
@@ -128,9 +138,12 @@ public class powerManager : MonoBehaviour
             {
                 updateOneToken(token,-1);
             }
+            robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.rollBack);
+            yield return new WaitForSeconds(0.5f);
             powerScript.deleteColor();
             deleteColorUsed = true;
         }
+        
         managerScript.gameState(gameManager.actions.finishAction);
     }
 

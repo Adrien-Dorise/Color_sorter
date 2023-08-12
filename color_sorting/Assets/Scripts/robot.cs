@@ -12,7 +12,7 @@ public class robot : MonoBehaviour
 {
     //References
     [SerializeField] GameObject eyesObject, bodyObject; //To set in editor: References to robot components
-    [SerializeField] Sprite eyesIdle, eyesHappy, eyesSad, eyesDubious, eyesCross, eyesHeart; //To set in editor: Sprites used to animate the eyes.
+    [SerializeField] Sprite eyesIdle, eyesHappy, eyesSad, eyesDubious, eyesCross, eyesHeart, eyesRollBack, eyesSolving; //To set in editor: Sprites used to animate the eyes.
     private gameManager managerScript;
     
     //States
@@ -22,7 +22,7 @@ public class robot : MonoBehaviour
     //Eye animation (to set in Start())
     private enum eyesStates { idle, tracked, animated }
     public enum eyesActions {newIdle, animate, endAnimate, nothing}
-    public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart, solving, foundSolution, defaultPower}
+    public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart, solving, rollBack}
     private avalaibleAnim currentAnim;
     private eyesStates currentState;
     [SerializeField] private float yOffsetMax, xOffsetMax;
@@ -257,6 +257,26 @@ public class robot : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Method <c>eyeRollBack</c> switch idle sprite to roll back
+    /// </summary>
+    public IEnumerator eyeRollBack()
+    {
+        eyesObject.GetComponent<Image>().sprite = eyesRollBack;
+        yield return null;
+    }
+
+    /// <summary>
+    /// Method <c>eyeSolving</c> switch idle sprite to solving
+    /// </summary>
+    public IEnumerator eyeSolving()
+    {
+        eyesObject.GetComponent<Image>().sprite = eyesSolving;
+        yield return null;
+    }
+
+
+
     
     /// <summary>
     /// Method <c>onClick</c> call the gameManager state machine when robot is selected.
@@ -390,6 +410,18 @@ public class robot : MonoBehaviour
                         case avalaibleAnim.sarcastic:
                             currentAnim = anim;
                             eyeRoutine = eyeSarcastic(0.1f, 0, 1);
+                            StartCoroutine(eyeRoutine);
+                            break;
+
+                        case avalaibleAnim.rollBack:
+                            currentAnim = anim;
+                            eyeRoutine = eyeRollBack();
+                            StartCoroutine(eyeRoutine);
+                            break;
+
+                        case avalaibleAnim.solving:
+                            currentAnim = anim;
+                            eyeRoutine = eyeSolving();
                             StartCoroutine(eyeRoutine);
                             break;
                     }

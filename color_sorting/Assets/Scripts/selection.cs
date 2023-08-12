@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,15 +49,15 @@ public class selection : MonoBehaviour
     public void rightScroll()
     {
         leftArrow.SetActive(true);
-        if(maxDisplayedLevel + levelPerScreen*2 > PlayerPrefs.GetInt(save.availableLevels))
+        if(maxDisplayedLevel + (levelPerScreen) >= PlayerPrefs.GetInt(save.availableLevels)) //We are at the maximum available levels
         {
             maxDisplayedLevel = PlayerPrefs.GetInt(save.availableLevels);
             rightArrow.SetActive(false);
         }
-        else
+        else //We can still scroll right
         {
             rightArrow.SetActive(true); 
-            maxDisplayedLevel = maxDisplayedLevel + levelPerScreen;
+            maxDisplayedLevel = maxDisplayedLevel + (maxDisplayedLevel%levelPerScreen) + 1;
         }
 
         displayLevelButton(maxDisplayedLevel);
@@ -72,12 +73,12 @@ public class selection : MonoBehaviour
         rightArrow.SetActive(true);
         if (maxDisplayedLevel - levelPerScreen < 10)
         {
-            maxDisplayedLevel = 1;
+            maxDisplayedLevel = 9;
             leftArrow.SetActive(false);
         }
         else
         {
-            maxDisplayedLevel = maxDisplayedLevel - levelPerScreen;
+            maxDisplayedLevel = maxDisplayedLevel - (maxDisplayedLevel%levelPerScreen) - 1;
             leftArrow.SetActive(true);
         }
 
@@ -149,7 +150,7 @@ public class selection : MonoBehaviour
         int currentLevel = maxLevel;
         if(currentLevel >= 10)
         {
-            currentLevel = currentLevel - (currentLevel % 9) + 1;
+            currentLevel = currentLevel -  (currentLevel%levelPerScreen) + 1;
         }
         else
         {
@@ -174,7 +175,15 @@ public class selection : MonoBehaviour
                     }
                     else
                     {
-                        childImage.color = levels.robotColorPerLevel[currentLevel];
+                        try
+                        {
+                            childImage.color = levels.robotColorPerLevel[currentLevel];
+                        }
+                        catch(Exception e)
+                        {
+                            //Debug.LogWarning("Warning: Not enough colors saved in the playerPrefs to setup all levels. Save file might be corrupted. Non-available colors are replaced with white.");
+                            childImage.color = Color.white;
+                        }
                     }
                 }
 

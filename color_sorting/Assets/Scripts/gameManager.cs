@@ -541,6 +541,7 @@ public class gameManager : MonoBehaviour
                 if(act == actions.finishAction)
                 {
                     currentState = states.idleNoTube;
+                    robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
                 }
                 break;
 

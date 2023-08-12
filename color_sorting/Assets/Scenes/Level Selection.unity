@@ -200,12 +200,20 @@ PrefabInstance:
       value: -468.125
       objectReference: {fileID: 0}
     - target: {fileID: 393073508194943254, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 393073508194943254, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Reset
       objectReference: {fileID: 0}
     - target: {fileID: 393073508194943255, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 499.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 393073508194943256, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 393073508228226320, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_Name
