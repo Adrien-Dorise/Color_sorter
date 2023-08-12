@@ -21,7 +21,7 @@ public class levelSolver : MonoBehaviour
     [SerializeField] bool scanNewActions = false;
     [SerializeField] bool doAction = false;
     [SerializeField] bool doRewind = false;
-    [SerializeField] bool doSolveGraph = false;
+    [SerializeField] bool debugTestLevelFeasability = false;
     private node currentNode;
 
 
@@ -391,7 +391,13 @@ public class levelSolver : MonoBehaviour
 
     private IEnumerator verifyLevel()
     {
-        yield return StartCoroutine(resolveGraph(tubes, new node(tubes, null, null), nodeID));
+        List<GameObject> tmpTubes = new List<GameObject>();
+        GameObject parentTube = GameObject.Find("Tubes"); 
+        for(int i=0; i < parentTube.transform.childCount; i++)
+        {
+            tmpTubes.Add(parentTube.transform.GetChild(i).gameObject);
+        }
+        yield return (searchWinnable(tmpTubes));
         if(!currentNode.isWinnable)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -423,9 +429,9 @@ public class levelSolver : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(doSolveGraph)
+        if(debugTestLevelFeasability)
         {
-            doSolveGraph = false;
+            debugTestLevelFeasability = false;
             StartCoroutine(verifyLevel());
         }
 
