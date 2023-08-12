@@ -20,8 +20,8 @@ public class robotPower : MonoBehaviour
 
     [SerializeField] private bool do_rollBack, do_isWinnable, do_nextMove, do_deleteColor;
 
-    private GameObject nextPooringTube, nextPooredTube;
-    private bool isStateWinnable;
+    public GameObject nextPooringTube, nextPooredTube;
+    public bool isStateWinnable;
     private gameManager managerScript;
 
     private IEnumerator Start()

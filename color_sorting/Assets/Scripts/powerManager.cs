@@ -14,11 +14,10 @@ public class powerManager : MonoBehaviour
 
     private GameObject powerButtonsCanvas;
 
-    private bool deleteColorUsed;
-
-    
+    private bool deleteColorUsed;  
 
     [SerializeField] private bool debug_check;
+
 
     // Start is called before the first frame update
     void Start()
@@ -95,6 +94,15 @@ public class powerManager : MonoBehaviour
                 updateOneToken(token,-1);
             }
             yield return StartCoroutine(powerScript.findNextMove());
+            if(powerScript.isStateWinnable)
+            {
+                GameObject pooredTube = powerScript.nextPooredTube;
+                GameObject pooringTube = powerScript.nextPooringTube;
+            }
+            else
+            {
+                
+            }
         }
         
         else if(selection == "isWin")
@@ -104,6 +112,14 @@ public class powerManager : MonoBehaviour
                 updateOneToken(token,-1);
             }
             yield return StartCoroutine(powerScript.isWinnable());
+            if(powerScript.isStateWinnable)
+            {
+                
+            }
+            else
+            {
+
+            }
         }
 
         else if (selection == "deleteColor")

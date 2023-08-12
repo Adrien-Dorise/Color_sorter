@@ -275,7 +275,7 @@ public class robot : MonoBehaviour
             case eyesStates.idle:
                 if(action == eyesActions.nothing) 
                 {
-                    if(managerScript.memoryTube != null)//We verify if an boject needs to be tracked
+                    if(managerScript.memoryTube != null)//We verify if an object needs to be tracked
                     {
                         StopCoroutine(eyeRoutine);
                         currentState = eyesStates.tracked;
