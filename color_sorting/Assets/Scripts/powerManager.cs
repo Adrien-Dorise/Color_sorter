@@ -15,6 +15,7 @@ public class powerManager : MonoBehaviour
 
     private GameObject powerButtonsCanvas;
     private GameObject powerResultsCanvas;
+    private GameObject soundObject;
     private robot robotScript;
 
     private bool deleteColorUsed;  
@@ -44,6 +45,7 @@ public class powerManager : MonoBehaviour
         powerResultsCanvas = GameObject.Find("Results");
         powerResultsCanvas.SetActive(false);
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
+        soundObject = GameObject.Find("Audio Manager");
     
         tokensObjects = new List<GameObject>();
         for(int i = 0; i < GameObject.Find("Token Canvas").transform.childCount; i++)
@@ -91,6 +93,7 @@ public class powerManager : MonoBehaviour
                 updateOneToken(token,-1);
             }
             yield return new WaitForSeconds(0.5f);
+            soundObject.transform.GetChild(2).GetComponent<AudioSource>().Play();
             powerScript.rollBackOne();
         }
         
@@ -106,17 +109,27 @@ public class powerManager : MonoBehaviour
             robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
             if(powerScript.isStateWinnable)
             {
-
+                
                 int canvasOrder = powerResultsCanvas.GetComponent<Canvas>().sortingOrder;
+
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.goodSolution);
+                soundObject.transform.GetChild(2).GetComponent<AudioSource>().Play();
+
+                //Displaying the two tubes found for the next move 
+                GameObject[] nextTubes = {powerScript.nextPooringTube, powerScript.nextPooredTube};
+                nextTubes[0].GetComponent<testTube>().tubeScaling(true);
+                yield return new WaitForSeconds(0.3f);
+                nextTubes[1].GetComponent<testTube>().tubeScaling(true);
+                yield return new WaitForSeconds(1f);
+                nextTubes[0].GetComponent<testTube>().tubeScaling(false);
+                yield return new WaitForSeconds(0.3f);
+                nextTubes[1].GetComponent<testTube>().tubeScaling(false);
+
+                /*
                 powerResultsCanvas.SetActive(true);
                 powerResultsCanvas.transform.GetChild(0).gameObject.SetActive(true);
                 powerResultsCanvas.transform.GetChild(1).gameObject.SetActive(true);
                 powerResultsCanvas.transform.GetChild(2).gameObject.SetActive(true);
-
-                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.goodSolution);
-
-                //Displaying the two tubes found for the next move 
-                GameObject[] nextTubes = {powerScript.nextPooringTube, powerScript.nextPooredTube};
                 List<GameObject> tmpTubes = new List<GameObject>();
                 for(int i = 0; i < 2; i++)
                 {
@@ -128,22 +141,22 @@ public class powerManager : MonoBehaviour
                         layerCanvas.sortingOrder += canvasOrder;
                     }
                 }
-
                 yield return new WaitForSeconds(1.5f);
-                
                 foreach(GameObject tube in tmpTubes)
                 {
                     Destroy(tube);
                 }
-
                 powerResultsCanvas.SetActive(false);
                 powerResultsCanvas.transform.GetChild(0).gameObject.SetActive(false);
                 powerResultsCanvas.transform.GetChild(1).gameObject.SetActive(false);
                 powerResultsCanvas.transform.GetChild(2).gameObject.SetActive(false);
+                */
+
             }
             else
             {
                 robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.badSolution);
+                soundObject.transform.GetChild(3).GetComponent<AudioSource>().Play();
                 powerResultsCanvas.SetActive(true);
                 powerResultsCanvas.transform.GetChild(4).gameObject.SetActive(true);
                 yield return new WaitForSeconds(1.5f);
@@ -164,6 +177,7 @@ public class powerManager : MonoBehaviour
             if(powerScript.isStateWinnable)
             {
                 robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.goodSolution);
+                soundObject.transform.GetChild(2).GetComponent<AudioSource>().Play();
                 powerResultsCanvas.SetActive(true);
                 powerResultsCanvas.transform.GetChild(3).gameObject.SetActive(true);
                 yield return new WaitForSeconds(1.5f);
@@ -173,6 +187,7 @@ public class powerManager : MonoBehaviour
             else
             {
                 robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.badSolution);
+                soundObject.transform.GetChild(3).GetComponent<AudioSource>().Play();
                 powerResultsCanvas.SetActive(true);
                 powerResultsCanvas.transform.GetChild(4).gameObject.SetActive(true);
                 yield return new WaitForSeconds(1.5f);
@@ -189,6 +204,7 @@ public class powerManager : MonoBehaviour
             }
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return new WaitForSeconds(0.5f);
+            soundObject.transform.GetChild(2).GetComponent<AudioSource>().Play();
             powerScript.deleteColor();
             deleteColorUsed = true;
         }

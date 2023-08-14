@@ -135,7 +135,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        int levelsAvailable = 17; // To set manually
+        int levelsAvailable = 21; // To set manually
         PlayerPrefs.DeleteAll();
         string str = "";
 
