@@ -69,15 +69,18 @@ public class robotPower : MonoBehaviour
         yield return (tmpSolver.transform.GetComponent<levelSolver>().searchWinnable(tmpTubes));
         
         isStateWinnable = tmpSolver.transform.GetComponent<levelSolver>().isLevelWinnable;
-        foreach(Transform tube in tubeCanvas.transform.GetChild(0).GetComponentsInChildren<Transform>())
+        if(isStateWinnable)
         {
-            if(tube.name == tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooringTube.name)
+            foreach(Transform tube in tubeCanvas.transform.GetChild(0).GetComponentsInChildren<Transform>())
             {
-                nextPooringTube = tube.gameObject;
-            }
-            if(tube.name == tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooredTube.name)
-            {
-                nextPooredTube = tube.gameObject;
+                if(tube.name == tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooringTube.name)
+                {
+                    nextPooringTube = tube.gameObject;
+                }
+                if(tube.name == tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooredTube.name)
+                {
+                    nextPooredTube = tube.gameObject;
+                }
             }
         }
         yield return new WaitForSeconds(1f);

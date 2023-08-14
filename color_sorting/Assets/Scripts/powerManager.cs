@@ -85,6 +85,7 @@ public class powerManager : MonoBehaviour
     {        
         if(selection == "rollBack")
         {
+            robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             foreach(int token in powersNeededTokens[0])
             {
                 updateOneToken(token,-1);
@@ -105,29 +106,14 @@ public class powerManager : MonoBehaviour
             robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
             if(powerScript.isStateWinnable)
             {
-/*
-                for (int i = 0; i < numberOfTube; i++)
-                {
-                    GameObject tube = Instantiate(tubePrefab, tubeParent.transform);
-                    tube.transform.localPosition = posTubes[i];
-                    tube.name = "(" + i + ")"; 
-                    if(i < numberOfTube - numberOfEmptyTube)
-                    {
-                        tube.GetComponent<testTube>().initialise(numberOfMaxLayers, colorTubesList[i]);
-                    }
-                    else
-                    {
-                        tube.GetComponent<testTube>().initialise(numberOfMaxLayers, new List<Color>());
-                    }
-                }
-                GameObject tmpPooring = Instantiate(tubePrefab, powerResultsCanvas.transform.GetChild(1));
-                tmpPooring.GetComponent<testTube>().initialise(pooringTube.GetComponent<testTube>().maxLiquid, pooringTube.GetComponent<testTube>().colorList);
-*/              
+
                 int canvasOrder = powerResultsCanvas.GetComponent<Canvas>().sortingOrder;
                 powerResultsCanvas.SetActive(true);
-                
+                powerResultsCanvas.transform.GetChild(0).gameObject.SetActive(true);
+                powerResultsCanvas.transform.GetChild(1).gameObject.SetActive(true);
+                powerResultsCanvas.transform.GetChild(2).gameObject.SetActive(true);
 
-                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.happy);
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.goodSolution);
 
                 //Displaying the two tubes found for the next move 
                 GameObject[] nextTubes = {powerScript.nextPooringTube, powerScript.nextPooredTube};
@@ -151,10 +137,18 @@ public class powerManager : MonoBehaviour
                 }
 
                 powerResultsCanvas.SetActive(false);
+                powerResultsCanvas.transform.GetChild(0).gameObject.SetActive(false);
+                powerResultsCanvas.transform.GetChild(1).gameObject.SetActive(false);
+                powerResultsCanvas.transform.GetChild(2).gameObject.SetActive(false);
             }
             else
             {
-                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.sad);
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.badSolution);
+                powerResultsCanvas.SetActive(true);
+                powerResultsCanvas.transform.GetChild(4).gameObject.SetActive(true);
+                yield return new WaitForSeconds(1.5f);
+                powerResultsCanvas.SetActive(false);
+                powerResultsCanvas.transform.GetChild(4).gameObject.SetActive(false);
             }
         }
         
@@ -169,13 +163,21 @@ public class powerManager : MonoBehaviour
             robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
             if(powerScript.isStateWinnable)
             {
-                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.happy);
-                
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.goodSolution);
+                powerResultsCanvas.SetActive(true);
+                powerResultsCanvas.transform.GetChild(3).gameObject.SetActive(true);
+                yield return new WaitForSeconds(1.5f);
+                powerResultsCanvas.SetActive(false);
+                powerResultsCanvas.transform.GetChild(3).gameObject.SetActive(false);
             }
             else
             {
-                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.sad);
-
+                robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.badSolution);
+                powerResultsCanvas.SetActive(true);
+                powerResultsCanvas.transform.GetChild(4).gameObject.SetActive(true);
+                yield return new WaitForSeconds(1.5f);
+                powerResultsCanvas.SetActive(false);
+                powerResultsCanvas.transform.GetChild(4).gameObject.SetActive(false);
             }
         }
 
@@ -185,7 +187,7 @@ public class powerManager : MonoBehaviour
             {
                 updateOneToken(token,-1);
             }
-            robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.rollBack);
+            robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return new WaitForSeconds(0.5f);
             powerScript.deleteColor();
             deleteColorUsed = true;
