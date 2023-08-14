@@ -149,8 +149,6 @@ public class setup : MonoBehaviour
             {
                 tube.GetComponent<testTube>().initialise(numberOfMaxLayers, new List<Color>());
             }
-
-
         }
     }
 

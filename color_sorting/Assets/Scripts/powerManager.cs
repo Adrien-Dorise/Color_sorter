@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,12 +14,13 @@ public class powerManager : MonoBehaviour
     private List<GameObject> tokensObjects; // List containing the tokens object in the <Token Canvas> GameObject. It is possible to access image (child(0)) and text (child(1))
 
     private GameObject powerButtonsCanvas;
+    private GameObject powerResultsCanvas;
     private robot robotScript;
 
     private bool deleteColorUsed;  
 
     [SerializeField] private bool debug_check;
-
+    [SerializeField] private GameObject tubePrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +41,8 @@ public class powerManager : MonoBehaviour
         powerScript = this.GetComponent<robotPower>();
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
         powerButtonsCanvas = GameObject.Find("Power Buttons");
+        powerResultsCanvas = GameObject.Find("Results");
+        powerResultsCanvas.SetActive(false);
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
     
         tokensObjects = new List<GameObject>();
@@ -101,9 +105,52 @@ public class powerManager : MonoBehaviour
             robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
             if(powerScript.isStateWinnable)
             {
+/*
+                for (int i = 0; i < numberOfTube; i++)
+                {
+                    GameObject tube = Instantiate(tubePrefab, tubeParent.transform);
+                    tube.transform.localPosition = posTubes[i];
+                    tube.name = "(" + i + ")"; 
+                    if(i < numberOfTube - numberOfEmptyTube)
+                    {
+                        tube.GetComponent<testTube>().initialise(numberOfMaxLayers, colorTubesList[i]);
+                    }
+                    else
+                    {
+                        tube.GetComponent<testTube>().initialise(numberOfMaxLayers, new List<Color>());
+                    }
+                }
+                GameObject tmpPooring = Instantiate(tubePrefab, powerResultsCanvas.transform.GetChild(1));
+                tmpPooring.GetComponent<testTube>().initialise(pooringTube.GetComponent<testTube>().maxLiquid, pooringTube.GetComponent<testTube>().colorList);
+*/              
+                int canvasOrder = powerResultsCanvas.GetComponent<Canvas>().sortingOrder;
+                powerResultsCanvas.SetActive(true);
+                
+
                 robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.happy);
-                GameObject pooredTube = powerScript.nextPooredTube;
-                GameObject pooringTube = powerScript.nextPooringTube;
+
+                //Displaying the two tubes found for the next move 
+                GameObject[] nextTubes = {powerScript.nextPooringTube, powerScript.nextPooredTube};
+                List<GameObject> tmpTubes = new List<GameObject>();
+                for(int i = 0; i < 2; i++)
+                {
+                    tmpTubes.Add(Instantiate(nextTubes[i], powerResultsCanvas.transform.GetChild(i+1)));
+                    tmpTubes[i].transform.localPosition = UnityEngine.Vector3.zero;
+                    tmpTubes[i].transform.parent.localScale = nextTubes[i].transform.parent.localScale;
+                    foreach(Canvas layerCanvas in tmpTubes[i].GetComponentsInChildren<Canvas>())
+                    {
+                        layerCanvas.sortingOrder += canvasOrder;
+                    }
+                }
+
+                yield return new WaitForSeconds(1.5f);
+                
+                foreach(GameObject tube in tmpTubes)
+                {
+                    Destroy(tube);
+                }
+
+                powerResultsCanvas.SetActive(false);
             }
             else
             {
