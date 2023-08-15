@@ -23,6 +23,7 @@ public class gameManager : MonoBehaviour
     private Image victorySprite;
     private robot robotScript;
     private robotPower robotPowerScript;
+    private GameObject robotCanvas;
     private powerManager powerManagerScript;
     private audio audioManager;
     private GameObject powerCanvas;
@@ -104,6 +105,7 @@ public class gameManager : MonoBehaviour
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
         musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
+        robotCanvas = GameObject.Find("Robot Canvas");
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
         {
             victorySprite = GameObject.Find("Victory").GetComponent<Image>();
@@ -381,6 +383,7 @@ public class gameManager : MonoBehaviour
                 if(act == actions.clickedRobot)
                 {
                     currentState = states.powerSelection;
+                    robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
                     powerManagerScript.setInteractablePowerButtons();
                     foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
                     {
@@ -431,6 +434,7 @@ public class gameManager : MonoBehaviour
                     else if(act == actions.clickedRobot)
                     {
                         currentState = states.powerSelection;
+                        robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
                         powerManagerScript.setInteractablePowerButtons();
@@ -541,6 +545,7 @@ public class gameManager : MonoBehaviour
                 if(act == actions.finishAction)
                 {
                     currentState = states.idleNoTube;
+                    robotCanvas.transform.GetChild(1).gameObject.SetActive(true);
                     robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
                 }
                 break;

@@ -9,42 +9,54 @@ using UnityEngine;
 /// </summary>
 public class audio : MonoBehaviour
 {
-    [SerializeField] AudioClip pooring;
-    [SerializeField] AudioClip tubeComplete;
-    [SerializeField] AudioClip victory;
-    private AudioSource pooringSource, completeSource;
+    private AudioSource speakerVictory, speakerPooringSource, speakerCompleteSource, speakerPowerOK, speakerPowerNOK;
 
     private void Start()
     {
-        pooringSource = transform.GetChild(0).GetComponent<AudioSource>();
-        completeSource = transform.GetChild(1).GetComponent<AudioSource>();
+        speakerVictory = transform.GetChild(0).GetComponent<AudioSource>();
+        speakerPooringSource = transform.GetChild(1).GetComponent<AudioSource>();
+        speakerCompleteSource = transform.GetChild(2).GetComponent<AudioSource>();
+        speakerPowerOK = transform.GetChild(3).GetComponent<AudioSource>();
+        speakerPowerNOK = transform.GetChild(4).GetComponent<AudioSource>();
     }
 
     public void pooringSound()
     {
-        pooringSource.Stop();
-        pooringSource.volume = 0.450f;
-        pooringSource.clip = pooring;
-        pooringSource.loop = false;
-        pooringSource.Play();
+        speakerPooringSource.Stop();
+        speakerPooringSource.volume = 0.450f;
+        speakerPooringSource.loop = false;
+        speakerPooringSource.Play();
     }
     
     public void tubeCompleteSound()
     {
-        completeSource.Stop();
-        completeSource.volume = 1f;
-        completeSource.clip = tubeComplete;
-        completeSource.loop = false;
-        completeSource.Play();
+        speakerCompleteSource.Stop();
+        speakerCompleteSource.volume = 1f;
+        speakerCompleteSource.loop = false;
+        speakerCompleteSource.Play();
     }
     
     public void victorySound()
     {
-        completeSource.Stop();
-        completeSource.volume = 1f;
-        completeSource.clip = victory;
-        completeSource.loop = false;
-        completeSource.Play();
+        speakerVictory.Stop();
+        speakerVictory.volume = 1f;
+        speakerVictory.loop = false;
+        speakerVictory.Play();
     }
 
+    public void powerOK()
+    {
+        speakerPowerOK.Stop();
+        speakerPowerOK.volume = 0.6f;
+        speakerPowerOK.loop = false;
+        speakerPowerOK.Play();
+    }
+
+    public void powerNOK()
+    {
+        speakerPowerNOK.Stop();
+        speakerPowerNOK.volume = 0.85f;
+        speakerPowerNOK.loop = false;
+        speakerPowerNOK.Play();
+    }
 }
