@@ -15,7 +15,7 @@ public class gameManager : MonoBehaviour
 {
     
     public enum states { wait, powerSelection, robotPower, idleNoTube, idleTube, poorColor, endLevel, levelSelection, def }
-    public enum actions { noAction, clickedTube, clickedRobot, clickedBackround, finishAction, usePower }
+    public enum actions { noAction, clickedTube, clickedRobot, clickedBackground, finishAction, usePower }
     [SerializeField] public states currentState; //{ get; private set; }
     static public List<Color> colors;
     [SerializeField] public GameObject memoryTube;
@@ -24,6 +24,7 @@ public class gameManager : MonoBehaviour
     private robot robotScript;
     private robotPower robotPowerScript;
     private GameObject robotCanvas;
+    private IEnumerator inactivityRoutine;
     private powerManager powerManagerScript;
     private audio audioManager;
     private GameObject powerCanvas;
@@ -109,7 +110,6 @@ public class gameManager : MonoBehaviour
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
         {
             victorySprite = GameObject.Find("Victory Canvas").transform.GetChild(0).GetComponent<Image>();
-            Debug.Log(victorySprite);
             robotPowerScript = GameObject.Find("Power Manager").GetComponent<robotPower>();
             powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
             powerCanvas = GameObject.Find("Power Buttons");
@@ -354,6 +354,27 @@ public class gameManager : MonoBehaviour
     }
 
 
+    private IEnumerator inactivityAction()
+    {
+        robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
+        yield return new WaitForSeconds(6f);
+        robotCanvas.transform.GetChild(1).gameObject.SetActive(true);
+    }
+
+    private void startInactivity()
+    {
+        try
+        {
+            StopCoroutine("inactivityRoutine");
+            inactivityRoutine = inactivityAction();
+            StartCoroutine(inactivityRoutine);
+        }
+        catch(Exception e)
+        {
+            Debug.LogWarning("Warning: Problem related to the inactivity routine" + e);
+        }
+    }
+
     //!!! State machine !!! 
     // See diagram for state info
 
@@ -366,6 +387,7 @@ public class gameManager : MonoBehaviour
                 {
                     if(act == actions.clickedTube)
                     {
+                        startInactivity();
                         bool notEmpty = obj.GetComponent<testTube>().colorList.Count != 0;
                         if (!obj.GetComponent<testTube>().tubeComplete && notEmpty)
                         {
@@ -384,6 +406,7 @@ public class gameManager : MonoBehaviour
                 if(act == actions.clickedRobot)
                 {
                     currentState = states.powerSelection;
+                    StopCoroutine("inactivityRoutine");
                     robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
                     powerManagerScript.setInteractablePowerButtons();
                     foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
@@ -392,6 +415,10 @@ public class gameManager : MonoBehaviour
                     }
                     powerCanvas.GetComponent<Canvas>().enabled = true;
                 }
+                if(act == actions.clickedBackground)
+                {
+                    startInactivity();
+                }
                 break;
             
             case states.idleTube:
@@ -399,6 +426,7 @@ public class gameManager : MonoBehaviour
                 {
                     if(act == actions.clickedTube)
                     {
+                        startInactivity();
                         bool stillNotMax = obj.GetComponent<testTube>().colorList.Count < obj.GetComponent<testTube>().maxLiquid;
                         bool notEmpty = memoryTube.GetComponent<testTube>().colorList.Count != 0;
                         if(obj == memoryTube) //Same tube selected
@@ -435,6 +463,7 @@ public class gameManager : MonoBehaviour
                     else if(act == actions.clickedRobot)
                     {
                         currentState = states.powerSelection;
+                        StopCoroutine("inactivityRoutine");
                         robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
@@ -445,8 +474,9 @@ public class gameManager : MonoBehaviour
                         }
                         powerCanvas.GetComponent<Canvas>().enabled = true;
                     }
-                    else if(act == actions.clickedBackround)
+                    else if(act == actions.clickedBackground)
                     {
+                        startInactivity();
                         currentState = states.idleNoTube;
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
@@ -454,6 +484,7 @@ public class gameManager : MonoBehaviour
                 }
                 catch (Exception ex)
                 {
+                    startInactivity();
                     currentState = states.idleNoTube;
                     Debug.LogWarning(ex);
                     memoryTube.GetComponent<testTube>().tubeScaling(false);
@@ -465,6 +496,7 @@ public class gameManager : MonoBehaviour
             case states.poorColor:
                 if(act == actions.finishAction)
                 {
+                    startInactivity();
                     if(isNewTubeCompleted)
                     {
                         completedTube++;
@@ -488,6 +520,7 @@ public class gameManager : MonoBehaviour
                     }
                     else //Nothing new in this world
                     {
+                        startInactivity();
                         currentState = states.idleNoTube;
                     }
                 }
@@ -498,6 +531,7 @@ public class gameManager : MonoBehaviour
                 {
                     currentState = states.robotPower;
                     powerCanvas.GetComponent<Canvas>().enabled = false;
+                    StopCoroutine("inactivityRoutine");
                     StartCoroutine(powerManagerScript.powerButtonRoutine(info));
                     foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
                     {
@@ -505,8 +539,9 @@ public class gameManager : MonoBehaviour
                     }
                 }
 
-                else if(act == actions.clickedRobot || act == actions.clickedBackround)
+                else if(act == actions.clickedRobot || act == actions.clickedBackground)
                 {
+                    startInactivity();
                     currentState = states.idleNoTube;                    
                     powerCanvas.GetComponent<Canvas>().enabled = false;
                     foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
@@ -536,6 +571,7 @@ public class gameManager : MonoBehaviour
                 }
                 catch(Exception ex)
                 {
+                    startInactivity();
                     currentState = states.idleNoTube;
                     Debug.LogWarning(ex);
                 }
@@ -545,13 +581,14 @@ public class gameManager : MonoBehaviour
             case states.robotPower:
                 if(act == actions.finishAction)
                 {
+                    startInactivity();
                     currentState = states.idleNoTube;
-                    robotCanvas.transform.GetChild(1).gameObject.SetActive(true);
                     robotScript.eyesStateMachine(robot.eyesActions.endAnimate);
                 }
                 break;
 
             case states.endLevel:
+                StopCoroutine("inactivityRoutine");
                 foreach(Button butt in tubesGroupObject.GetComponentsInChildren<Button>())
                 {
                     butt.interactable = false;
