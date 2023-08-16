@@ -119,6 +119,7 @@ public class gameManager : MonoBehaviour
             {
                 tokenButton.interactable = false;
             }
+            inactivityRoutine = inactivityAction();
         }
         memoryTube = null;
     }
@@ -357,7 +358,7 @@ public class gameManager : MonoBehaviour
     private IEnumerator inactivityAction()
     {
         robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(5.5f);
         robotCanvas.transform.GetChild(1).gameObject.SetActive(true);
     }
 
@@ -365,7 +366,7 @@ public class gameManager : MonoBehaviour
     {
         try
         {
-            StopCoroutine("inactivityRoutine");
+            StopCoroutine(inactivityRoutine);
             inactivityRoutine = inactivityAction();
             StartCoroutine(inactivityRoutine);
         }
@@ -406,7 +407,7 @@ public class gameManager : MonoBehaviour
                 if(act == actions.clickedRobot)
                 {
                     currentState = states.powerSelection;
-                    StopCoroutine("inactivityRoutine");
+                    StopCoroutine(inactivityRoutine);
                     robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
                     powerManagerScript.setInteractablePowerButtons();
                     foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
@@ -463,7 +464,7 @@ public class gameManager : MonoBehaviour
                     else if(act == actions.clickedRobot)
                     {
                         currentState = states.powerSelection;
-                        StopCoroutine("inactivityRoutine");
+                        StopCoroutine(inactivityRoutine);
                         robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
                         memoryTube.GetComponent<testTube>().tubeScaling(false);
                         memoryTube = null;
@@ -531,7 +532,7 @@ public class gameManager : MonoBehaviour
                 {
                     currentState = states.robotPower;
                     powerCanvas.GetComponent<Canvas>().enabled = false;
-                    StopCoroutine("inactivityRoutine");
+                    StopCoroutine(inactivityRoutine);
                     StartCoroutine(powerManagerScript.powerButtonRoutine(info));
                     foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
                     {
@@ -588,7 +589,7 @@ public class gameManager : MonoBehaviour
                 break;
 
             case states.endLevel:
-                StopCoroutine("inactivityRoutine");
+                StopCoroutine(inactivityRoutine);
                 foreach(Button butt in tubesGroupObject.GetComponentsInChildren<Button>())
                 {
                     butt.interactable = false;
