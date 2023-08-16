@@ -20,7 +20,7 @@ public class gameManager : MonoBehaviour
     static public List<Color> colors;
     [SerializeField] public GameObject memoryTube;
     private GameObject tubesGroupObject;
-    private Image victorySprite;
+    [SerializeField] private Image victorySprite;
     private robot robotScript;
     private robotPower robotPowerScript;
     private GameObject robotCanvas;

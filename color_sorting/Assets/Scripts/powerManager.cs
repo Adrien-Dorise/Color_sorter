@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class powerManager : MonoBehaviour
 {
     public List<int> maxlevelTokenIdxPerPower; //List indicating the level creating the max token strike for each power. The list length is equal to the number of power. 
-    private List<List<int>> powersNeededTokens; //List containing the tokens needed for each power to be activated
+    private List<int> powersNeededTokens; //List containing the numbe roftokens needed for each power to be activated
     private robotPower powerScript;
     private gameManager managerScript;
     private List<GameObject> tokensObjects; // List containing the tokens object in the <Token Canvas> GameObject. It is possible to access image (child(0)) and text (child(1))
@@ -54,24 +54,37 @@ public class powerManager : MonoBehaviour
         }
         initTokenObject(gameManager.colors);
 
-        maxlevelTokenIdxPerPower = new List<int>();
-        powersNeededTokens = new List<List<int>>();
-        
-        powersNeededTokens = new List<List<int>>{
-            new List<int>{0}, //rollBack
-            new List<int>{1}, //nextMove
-            new List<int>{0}, //isWind
-            new List<int>{0} //deleteColor
+        powersNeededTokens = new List<int>{
+            1, //rollBack
+            6, //nextMove
+            3, //isWind
+            10 //deleteColor
         };
+        
+        maxlevelTokenIdxPerPower = new List<int>();
         for(int i=0; i<powersNeededTokens.Count; i++)
         {
             maxlevelTokenIdxPerPower.Add(0);   
-            
-            //powersNeededTokens.Add(new List<int>());
-            //setPowerToken(i, 5);
         }
     }
 
+    /// <summary>
+    /// Shuffles the elements of a list using the Fisher-Yates shuffle algorithm.
+    /// </summary>
+    /// <param name="list">The list to be shuffled.</param>
+    private void shuffle(List<int> list)
+    {
+        System.Random rng = new System.Random();
+        int n = list.Count;
+        
+        for (int i = n - 1; i > 0; i--)
+        {
+            int j = rng.Next(i + 1);
+            int temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
+    }
 
     /// <summary>
     /// powerButton is called by the button, that call the state machine, that then call the coroutine 
@@ -84,13 +97,25 @@ public class powerManager : MonoBehaviour
     }
 
     public IEnumerator powerButtonRoutine(string selection)
-    {        
+    {   
+        //We first set the tokens that will be consumed by using the power
+        List<int> tokenUseOrder = new List<int>();
+        List<int> possessedTokens = loadTokens();
+        for(int i=0; i<possessedTokens.Count; i++)
+        {
+            if(possessedTokens[i] > 0)
+            {
+                tokenUseOrder.Add(i);
+            }
+        }
+        shuffle(tokenUseOrder);
+
         if(selection == "rollBack")
         {
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
-            foreach(int token in powersNeededTokens[0])
+            for(int i=0; i<powersNeededTokens[0]; i++)
             {
-                updateOneToken(token,-1);
+                updateOneToken(tokenUseOrder[i],-1);
             }
             yield return new WaitForSeconds(0.5f);
             audioScript.powerOK();
@@ -100,9 +125,9 @@ public class powerManager : MonoBehaviour
             
         else if(selection == "nextMove")
         {
-            foreach(int token in powersNeededTokens[1])
+            for(int i=0; i<powersNeededTokens[1]; i++)
             {
-                updateOneToken(token,-1);
+                updateOneToken(tokenUseOrder[i],-1);
             }
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return StartCoroutine(powerScript.findNextMove());
@@ -139,9 +164,9 @@ public class powerManager : MonoBehaviour
         
         else if(selection == "isWin")
         {
-            foreach(int token in powersNeededTokens[2])
+            for(int i=0; i<powersNeededTokens[2]; i++)
             {
-                updateOneToken(token,-1);
+                updateOneToken(tokenUseOrder[i],-1);
             }
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return StartCoroutine(powerScript.isWinnable());
@@ -170,9 +195,9 @@ public class powerManager : MonoBehaviour
 
         else if (selection == "deleteColor")
         {
-            foreach(int token in powersNeededTokens[3])
+            for(int i=0; i<powersNeededTokens[3]; i++)
             {
-                updateOneToken(token,-1);
+                updateOneToken(tokenUseOrder[i],-1);
             }
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return new WaitForSeconds(0.5f);
@@ -194,24 +219,29 @@ public class powerManager : MonoBehaviour
     private bool checkPowerAvailable(int powerID)
     {
         List<int> availableTokens = loadTokens(); 
+        int numberOfUniqueTokens = 0;
 
         if(powerID == 3 && deleteColorUsed) //Player can only used the delete color power once in a game.
         {
             return false;
         }
         
-        foreach(int neededToken in powersNeededTokens[powerID])
+        foreach(int token in availableTokens)
         {
-            if(availableTokens[neededToken] <= 0) //No tokens left available -> power can't be used
+            if(token > 0)
             {
-                return false;
-            }
-            else
-            {
-                availableTokens[neededToken] --;
+                numberOfUniqueTokens++;
             }
         }
-        return true;
+
+        if(numberOfUniqueTokens >= powersNeededTokens[powerID])
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -290,93 +320,6 @@ public class powerManager : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// Create a random token list from the colors available. 
-    /// The tokens are integers representing the color in gameManager "colors" variable.
-    /// For now, the token chain is created at random, meaning a random list of integer is creating of length given by necessary token parameter
-    /// </summary>
-    /// <param name="powerIdx"></param>
-    /// <param name="necessaryTokens">Number of tokens needed for that power</param>
-    private void setPowerToken(int powerIdx, int necessaryTokens)
-    {
-        powersNeededTokens[powerIdx].Clear();
-        for(int i=0; i<necessaryTokens; i++)
-        {
-            powersNeededTokens[powerIdx].Add(UnityEngine.Random.Range(0, gameManager.colors.Count));
-        }
-    }
-
-    /// <summary>
-    /// Check the state of the token chain of the desired power.
-    /// This function uses the information gathered when calling "loadTokenChains()" method.
-    /// The info given is the first leven of the token chain, therefore this function checks the following levels' finishing color in regards to the power needed tokens.
-    /// It return the number consecutive tokens unlocked in the chain.
-    /// </summary>
-    /// <param name="powerIdx"></param>
-    public int powerTokenState(int powerIdx)
-    {
-        string[] levels = PlayerPrefs.GetString(save.robotColor).Split(' ');
-        int startIdx = maxlevelTokenIdxPerPower[powerIdx];
-        int endIdx = Mathf.Max(startIdx + powersNeededTokens[powerIdx].Count, levels.Length);
-        int strike = 0;
-        for(int i = startIdx; i<endIdx; i++)
-        {
-            if(int.Parse(levels[i]) != powersNeededTokens[powerIdx][strike])
-            {
-                break;
-            }
-            strike++;
-        }
-        return strike;
-    }
-
-    /// <summary>
-    /// Verify the current states of power tokens in regards to the levels finished by the player.
-    /// To do so, we iterate through each level and compare the finishing color with the tokens chain needed for each power.
-    /// If a power's token chain is even partially started, the level starting the chain is saved in global variable "maxlevelTokenIdxPerPower"
-    /// </summary>
-    public void loadTokenChains()
-    {
-        List<int> tmpTokenStrike = new List<int>();
-        List<int> maxTokenStrikePerPower = new List<int>();
-        for(int i=0; i<powersNeededTokens.Count; i++)
-        {
-            maxTokenStrikePerPower.Add(0);   
-            tmpTokenStrike.Add(0);
-        }
-        int levelIdx = 0;
-        foreach(string colorVal in PlayerPrefs.GetString(save.robotColor).Split(' '))
-        {
-            levelIdx++;
-            int currentPower = 0;
-            foreach(List<int> neededToken in powersNeededTokens)
-            {
-                if(tmpTokenStrike[currentPower] >= 0) //If negative number, it means we already found a token chain. And I'm too lazy to code a way to remove it from the list RN.
-                {
-                    if(neededToken[tmpTokenStrike[currentPower]] == int.Parse(colorVal)) //The token of the level contained in the actual colorVal is matching with the token needed for the current power considered
-                    {
-                        tmpTokenStrike[currentPower]++;
-                        if(tmpTokenStrike[currentPower] >= neededToken.Count)
-                        {
-                            maxTokenStrikePerPower[currentPower] = -1;
-                            maxlevelTokenIdxPerPower[currentPower] = levelIdx - neededToken.Count; 
-                        }
-                    }
-                    else
-                    {
-                        if(tmpTokenStrike[currentPower] > maxTokenStrikePerPower[currentPower])
-                        {
-                            maxTokenStrikePerPower[currentPower] = tmpTokenStrike[currentPower];
-                            maxlevelTokenIdxPerPower[currentPower] = levelIdx - tmpTokenStrike[currentPower] - 1; 
-                        }
-                    }
-                }
-                currentPower++; 
-            }
-        }
-    }
-
-
     private void debug()
     {
         string strColor = "";
@@ -390,22 +333,12 @@ public class powerManager : MonoBehaviour
         for(int i=0; i<powersNeededTokens.Count; i++)
         {
             string str1 = ""; 
-            foreach(int token in powersNeededTokens[i])
+            foreach(int tokenNeeded in powersNeededTokens)
             {
-                str1 += " " + token;
+                str1 += " " + tokenNeeded;
             }
             Debug.Log(str1);
         }
-
-        loadTokenChains();
-        string str2 = "";
-        foreach(int token in maxlevelTokenIdxPerPower)
-        {
-            str2 += " " + token;
-        }
-        Debug.Log("level starting power:" + str2);
-
-        Debug.Log(powerTokenState(0));
     }
 
     // Update is called once per frame
