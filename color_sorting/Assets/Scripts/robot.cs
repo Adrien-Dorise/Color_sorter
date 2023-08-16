@@ -22,7 +22,7 @@ public class robot : MonoBehaviour
     //Eye animation (to set in Start())
     private enum eyesStates { idle, tracked, animated }
     public enum eyesActions {newIdle, animate, endAnimate, nothing}
-    public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart, solving, foundSolution, defaultPower}
+    public enum avalaibleAnim {idle, happy, sad, dubious, sarcastic, heart, solving, goodSolution, badSolution}
     private avalaibleAnim currentAnim;
     private eyesStates currentState;
     [SerializeField] private float yOffsetMax, xOffsetMax;
@@ -205,9 +205,12 @@ public class robot : MonoBehaviour
     /// </summary>
     private IEnumerator eyeDubious(float tempo)
     {
-            eyesObject.GetComponent<Image>().sprite = eyesDubious;
+        eyesObject.GetComponent<Image>().sprite = eyesDubious;
+        if(tempo>0)
+        {
             yield return new WaitForSeconds(tempo);
             eyesStateMachine(eyesActions.endAnimate);
+        }
     }
 
 
@@ -238,25 +241,39 @@ public class robot : MonoBehaviour
     /// <summary>
     /// Method <c>happyEyes</c> switch idle sprite to happy sprite and reverse.
     /// </summary>
-    public IEnumerator happyEyes(float tempo)
+    public IEnumerator eyeHappy(float tempo)
     {
         eyesObject.GetComponent<Image>().sprite = eyesHappy;
-        yield return new WaitForSeconds(tempo);
-        eyesStateMachine(eyesActions.endAnimate);
+        if(tempo>0)
+        {
+            yield return new WaitForSeconds(tempo);
+            eyesStateMachine(eyesActions.endAnimate);
+        }
     }
 
 
     /// <summary>
-    /// Method <c>heartEyes</c> switch idle sprite to heart sprite and reverse.
+    /// Method <c>eyeHeart</c> switch idle sprite to heart sprite and reverse.
     /// </summary>
-    public IEnumerator heartEyes(float tempo)
+    public IEnumerator eyeHeart(float tempo)
     {
         eyesObject.GetComponent<Image>().sprite = eyesHeart;
-        yield return new WaitForSeconds(tempo);
-        eyesStateMachine(eyesActions.endAnimate);
+        if(tempo>0)
+        {
+            yield return new WaitForSeconds(tempo);
+            eyesStateMachine(eyesActions.endAnimate);
+        }
     }
 
-
+    public IEnumerator eyeCross(float tempo)
+    {
+        eyesObject.GetComponent<Image>().sprite = eyesCross;
+        if(tempo>0)
+        {
+            yield return new WaitForSeconds(tempo);
+            eyesStateMachine(eyesActions.endAnimate);
+        }
+    }
     
     /// <summary>
     /// Method <c>onClick</c> call the gameManager state machine when robot is selected.
@@ -275,7 +292,7 @@ public class robot : MonoBehaviour
             case eyesStates.idle:
                 if(action == eyesActions.nothing) 
                 {
-                    if(managerScript.memoryTube != null)//We verify if an boject needs to be tracked
+                    if(managerScript.memoryTube != null)//We verify if an object needs to be tracked
                     {
                         StopCoroutine(eyeRoutine);
                         currentState = eyesStates.tracked;
@@ -371,13 +388,13 @@ public class robot : MonoBehaviour
                     {
                         case avalaibleAnim.happy:
                             currentAnim = anim;
-                            eyeRoutine = happyEyes(1f);
+                            eyeRoutine = eyeHappy(1f);
                             StartCoroutine(eyeRoutine);
                             break;
 
                         case avalaibleAnim.heart:
                             currentAnim = anim;
-                            eyeRoutine = heartEyes(3f);
+                            eyeRoutine = eyeHeart(3f);
                             StartCoroutine(eyeRoutine);
                             break;
 
@@ -390,6 +407,24 @@ public class robot : MonoBehaviour
                         case avalaibleAnim.sarcastic:
                             currentAnim = anim;
                             eyeRoutine = eyeSarcastic(0.1f, 0, 1);
+                            StartCoroutine(eyeRoutine);
+                            break;
+
+                        case avalaibleAnim.solving:
+                            currentAnim = anim;
+                            eyeRoutine = eyeDubious(0f);
+                            StartCoroutine(eyeRoutine);
+                            break;
+
+                        case avalaibleAnim.goodSolution:
+                            currentAnim = anim;
+                            eyeRoutine = eyeHeart(0f);
+                            StartCoroutine(eyeRoutine);
+                            break;
+                        
+                        case avalaibleAnim.badSolution:
+                            currentAnim = anim;
+                            eyeRoutine = eyeCross(0f);
                             StartCoroutine(eyeRoutine);
                             break;
                     }

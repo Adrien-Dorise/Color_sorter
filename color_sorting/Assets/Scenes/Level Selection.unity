@@ -200,12 +200,20 @@ PrefabInstance:
       value: -468.125
       objectReference: {fileID: 0}
     - target: {fileID: 393073508194943254, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 393073508194943254, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Reset
       objectReference: {fileID: 0}
     - target: {fileID: 393073508194943255, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 499.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 393073508194943256, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 393073508228226320, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_Name
@@ -1243,7 +1251,7 @@ RectTransform:
   m_GameObject: {fileID: 5127002248711919004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
+  m_LocalScale: {x: 0.82, y: 0.82, z: 0.82}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5562355299901674753}
@@ -1251,8 +1259,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -94.22449}
-  m_SizeDelta: {x: 1314, y: 456}
+  m_AnchoredPosition: {x: 0, y: -82.59003}
+  m_SizeDelta: {x: 1270, y: 501}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &5127002248711919009
 MonoBehaviour:
@@ -1274,7 +1282,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 61c7150e5dd3521488b526b094e458b7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1364a8e625543894c8e3c61ce23ea123, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2891,6 +2899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   memoryTube: {fileID: 0}
+  victorySprite: {fileID: 0}
   completedTube: 0
   isNewTubeCompleted: 0
   pooringTime: 0.8

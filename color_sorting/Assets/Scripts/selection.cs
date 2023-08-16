@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,12 +49,12 @@ public class selection : MonoBehaviour
     public void rightScroll()
     {
         leftArrow.SetActive(true);
-        if(maxDisplayedLevel + levelPerScreen*2 > PlayerPrefs.GetInt(save.availableLevels))
+        if(maxDisplayedLevel + levelPerScreen >= PlayerPrefs.GetInt(save.availableLevels)) //We are at the maximum available levels
         {
             maxDisplayedLevel = PlayerPrefs.GetInt(save.availableLevels);
             rightArrow.SetActive(false);
         }
-        else
+        else //We can still scroll right
         {
             rightArrow.SetActive(true); 
             maxDisplayedLevel = maxDisplayedLevel + levelPerScreen;
@@ -72,12 +73,12 @@ public class selection : MonoBehaviour
         rightArrow.SetActive(true);
         if (maxDisplayedLevel - levelPerScreen < 10)
         {
-            maxDisplayedLevel = 1;
+            maxDisplayedLevel = 9;
             leftArrow.SetActive(false);
         }
         else
         {
-            maxDisplayedLevel = maxDisplayedLevel - levelPerScreen;
+            maxDisplayedLevel = maxDisplayedLevel - ((maxDisplayedLevel*1)%levelPerScreen) - 1;
             leftArrow.SetActive(true);
         }
 
@@ -133,9 +134,21 @@ public class selection : MonoBehaviour
     /// </summary>
     public void Reset()
     {
+        int levelsAvailable = 50; // To set manually
         PlayerPrefs.DeleteAll();
+        string str = "";
+
+        gameManager managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
+        PlayerPrefs.SetInt(save.availableLevels, levelsAvailable);
+        for(int i = 0; i < levelsAvailable; i++)
+        {
+            str += "5 ";
+        }
+        str = str.Remove(str.Length - 1);
+        PlayerPrefs.SetString(save.robotColor,str);
+
         musicManagerScript.setMusicState(save.mainMenuMusicState, true);
-        SceneManager.LoadScene("Level Selection");
+        SceneManager.LoadScene("Main Menu");
     }
 
 
@@ -146,27 +159,21 @@ public class selection : MonoBehaviour
     public void displayLevelButton(int maxLevel)
     {
         GameObject levelsButton = GameObject.Find("Level Buttons");
-        int currentLevel = maxLevel;
-        if(currentLevel >= 10)
-        {
-            currentLevel = currentLevel - (currentLevel % 9) + 1;
-        }
-        else
-        {
-            currentLevel = 1;
-        }
+
+        int firstScreenLevel = maxLevel - ((maxLevel-1)%levelPerScreen);
         foreach (Image childImage in levelsButton.GetComponentsInChildren<Image>(true))
         {
             
-            childImage.GetComponentInChildren<Text>(true).text = currentLevel.ToString();
-            if (PlayerPrefs.GetInt(save.availableLevels) < currentLevel || currentLevel > save.maxAvailableLevels)
+            childImage.GetComponentInChildren<Text>(true).text = firstScreenLevel.ToString();
+            childImage.color = Color.white;
+            if (PlayerPrefs.GetInt(save.availableLevels) < firstScreenLevel || firstScreenLevel > save.maxAvailableLevels)
             {
                 childImage.gameObject.SetActive(false);
             }
             else
             {
                 childImage.gameObject.SetActive(true);
-                if(currentLevel < PlayerPrefs.GetInt("Available Levels"))
+                if(firstScreenLevel < PlayerPrefs.GetInt("Available Levels"))
                 {
                     if(save.debugDev)
                     {
@@ -174,12 +181,20 @@ public class selection : MonoBehaviour
                     }
                     else
                     {
-                        childImage.color = levels.robotColorPerLevel[currentLevel];
+                        try
+                        {
+                            childImage.color = levels.robotColorPerLevel[firstScreenLevel];
+                            //Debug.Log("level " + firstScreenLevel + " / color" + levels.robotColorPerLevel[firstScreenLevel]);
+                        }
+                        catch(Exception e)
+                        {
+                            //Debug.LogWarning("Warning: Not enough colors saved in the playerPrefs to setup all levels. Save file might be corrupted. Non-available colors are replaced with white.");
+                        }
                     }
                 }
 
             }
-            currentLevel++;
+            firstScreenLevel++;
         }
     }
 

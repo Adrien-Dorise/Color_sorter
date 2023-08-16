@@ -1066,7 +1066,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &455416321
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2178,7 +2178,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8387020477886861516, guid: 00d276fbbd7f47f4482b7f19804696b9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -373.33334
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8387020477886861516, guid: 00d276fbbd7f47f4482b7f19804696b9, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4140,6 +4140,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -468.125
       objectReference: {fileID: 0}
+    - target: {fileID: 393073508194943254, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Reset
+      objectReference: {fileID: 0}
     - target: {fileID: 393073508194943255, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.5
@@ -4974,7 +4978,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 61c7150e5dd3521488b526b094e458b7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1364a8e625543894c8e3c61ce23ea123, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5001,7 +5005,7 @@ RectTransform:
   m_GameObject: {fileID: 5127002249998789926}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
+  m_LocalScale: {x: 0.82, y: 0.82, z: 0.82}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5562355300116377019}
@@ -5009,8 +5013,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -94.19971}
-  m_SizeDelta: {x: 1314, y: 456}
+  m_AnchoredPosition: {x: 0, y: -82.59009}
+  m_SizeDelta: {x: 1270, y: 501}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &5127002249998789926
 GameObject:
@@ -5493,6 +5497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   memoryTube: {fileID: 0}
+  victorySprite: {fileID: 0}
   completedTube: 0
   isNewTubeCompleted: 0
   pooringTime: 0.8

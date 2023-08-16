@@ -19,7 +19,7 @@ public class background : MonoBehaviour
 
     public void onClick()
     {
-        managerScript.gameState(gameManager.actions.clickedBackround);
+        managerScript.gameState(gameManager.actions.clickedBackground);
     }
 
 }

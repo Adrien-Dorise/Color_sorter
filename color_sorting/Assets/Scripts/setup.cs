@@ -68,12 +68,12 @@ public class setup : MonoBehaviour
 
         switch(managerScript.currentState)
         {
-            case gameManager.states.def:
+            case gameManager.states.def: //Main Menu
                 robot.GetComponent<robot>().initialise(levels.robotColorPerLevel.LastOrDefault());
                 break;
             
             case gameManager.states.levelSelection:
-                initMainMenu();
+                initLevelSelection();
                 break;    
 
             case gameManager.states.idleNoTube:
@@ -149,8 +149,6 @@ public class setup : MonoBehaviour
             {
                 tube.GetComponent<testTube>().initialise(numberOfMaxLayers, new List<Color>());
             }
-
-
         }
     }
 
@@ -160,11 +158,11 @@ public class setup : MonoBehaviour
     }
 
     /// <summary>
-    /// Method <c>initMainMeny</c> Initialise the main screen after loading.
+    /// Method <c>initLevelSelection</c> Initialise the main screen after loading.
     /// Set all level + quit + arrows buttons and colors.
     /// The menu start at the last available level. In this setup, only left arrow is available if number of availabe levels > 9
     /// </summary>
-    private void initMainMenu()
+    private void initLevelSelection()
     {
         //Find components
         colorArrow = gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];

@@ -20,8 +20,8 @@ public class robotPower : MonoBehaviour
 
     [SerializeField] private bool do_rollBack, do_isWinnable, do_nextMove, do_deleteColor;
 
-    private GameObject nextPooringTube, nextPooredTube;
-    private bool isStateWinnable;
+    public GameObject nextPooringTube, nextPooredTube;
+    public bool isStateWinnable;
     private gameManager managerScript;
 
     private IEnumerator Start()
@@ -69,8 +69,20 @@ public class robotPower : MonoBehaviour
         yield return (tmpSolver.transform.GetComponent<levelSolver>().searchWinnable(tmpTubes));
         
         isStateWinnable = tmpSolver.transform.GetComponent<levelSolver>().isLevelWinnable;
-        nextPooredTube = tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooredTube;
-        nextPooringTube = tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooringTube;
+        if(isStateWinnable)
+        {
+            foreach(Transform tube in tubeCanvas.transform.GetChild(0).GetComponentsInChildren<Transform>())
+            {
+                if(tube.name == tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooringTube.name)
+                {
+                    nextPooringTube = tube.gameObject;
+                }
+                if(tube.name == tmpSolver.transform.GetComponent<levelSolver>().nextWinnablePooredTube.name)
+                {
+                    nextPooredTube = tube.gameObject;
+                }
+            }
+        }
         yield return new WaitForSeconds(1f);
         Destroy(tubeCanvasClone);
         Destroy(tmpSolver);
