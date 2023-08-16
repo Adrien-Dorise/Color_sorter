@@ -49,8 +49,7 @@ public class selection : MonoBehaviour
     public void rightScroll()
     {
         leftArrow.SetActive(true);
-        Debug.Log(maxDisplayedLevel);
-        if(maxDisplayedLevel + (levelPerScreen) >= PlayerPrefs.GetInt(save.availableLevels)) //We are at the maximum available levels
+        if(maxDisplayedLevel + levelPerScreen >= PlayerPrefs.GetInt(save.availableLevels)) //We are at the maximum available levels
         {
             maxDisplayedLevel = PlayerPrefs.GetInt(save.availableLevels);
             rightArrow.SetActive(false);
@@ -135,7 +134,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        int levelsAvailable = 21; // To set manually
+        int levelsAvailable = 50; // To set manually
         PlayerPrefs.DeleteAll();
         string str = "";
 
@@ -162,8 +161,6 @@ public class selection : MonoBehaviour
         GameObject levelsButton = GameObject.Find("Level Buttons");
 
         int firstScreenLevel = maxLevel - ((maxLevel-1)%levelPerScreen);
-
-        Debug.Log(maxLevel + " / " + firstScreenLevel + " / " + (firstScreenLevel-1)%levelPerScreen);
         foreach (Image childImage in levelsButton.GetComponentsInChildren<Image>(true))
         {
             

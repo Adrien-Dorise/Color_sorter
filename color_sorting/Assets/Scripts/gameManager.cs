@@ -108,7 +108,8 @@ public class gameManager : MonoBehaviour
         robotCanvas = GameObject.Find("Robot Canvas");
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
         {
-            victorySprite = GameObject.Find("Victory").GetComponent<Image>();
+            victorySprite = GameObject.Find("Victory Canvas").transform.GetChild(0).GetComponent<Image>();
+            Debug.Log(victorySprite);
             robotPowerScript = GameObject.Find("Power Manager").GetComponent<robotPower>();
             powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
             powerCanvas = GameObject.Find("Power Buttons");
