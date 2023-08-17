@@ -40,7 +40,14 @@ public class setup : MonoBehaviour
 
     private GameObject musicManager;
 
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
+        musicManager = GameObject.Find("Music Manager");
+    }
+
+
     void Start()
     {
         levels.robotColorPerLevel.Clear();
@@ -63,8 +70,6 @@ public class setup : MonoBehaviour
             }
         }
 
-        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
-        musicManager = GameObject.Find("Music Manager");
 
         switch(managerScript.currentState)
         {

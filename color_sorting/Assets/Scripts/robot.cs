@@ -46,10 +46,13 @@ public class robot : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();    
+    }
+
+    void Start()
+    {
         
         //Eyes animation
         xBoost = 175f; //xBoost and yBoost are for tracked state
@@ -340,7 +343,8 @@ public class robot : MonoBehaviour
                 }
                 else if(action == eyesActions.nothing) //Continue to track 
                 {
-                    if(managerScript.memoryTube == null)
+                    GameObject tube = managerScript.memoryTube;
+                    if(tube == null)
                     {
                         eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);
                         currentState = eyesStates.idle;
@@ -348,7 +352,7 @@ public class robot : MonoBehaviour
                     }
                     else 
                     {
-                        eyeTracking(managerScript.memoryTube.transform);
+                        eyeTracking(tube.transform);
                     }
                 }
                 break;

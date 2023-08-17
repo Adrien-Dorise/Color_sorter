@@ -64,9 +64,9 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
             
             if(currentScene == "Level")
             {
-                if(Random.Range(0,10) >= 6)
+                if(Random.Range(0,10) >= 7)
                 {
-                    Debug.Log("Vidoe ad is on");
+                    //Debug.Log("Video ad is on");
                     videoScript.LoadAd();
                     videoScript.ShowAd();
                 }

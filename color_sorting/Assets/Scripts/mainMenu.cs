@@ -22,10 +22,14 @@ public class mainMenu : MonoBehaviour
     private Texture2D colorWheelTexture;
     private musicManager musicManagerScript;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
+    }
+
+    void Start()
+    {
 
         //ColorBlind
         colorInSelection = 0;

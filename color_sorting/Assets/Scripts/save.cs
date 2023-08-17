@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-
+using Unity.VisualScripting;
 
 /// <summary>
 /// Class <c>Save</c> 
@@ -22,5 +22,7 @@ public class save
     static public string powerToken = "Power token"; //Number of tokens available to the player
     static public string mainMenuMusicState = "Main menu music state";
     static public string levelMusicState = "Level music state";
+    static public string musicVolume = "Music volume"; //Set the volume of music
+    static public string soundVolume = "Sound volume"; //Set the volume of sound effects
 
 }

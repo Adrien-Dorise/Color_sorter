@@ -5,11 +5,6 @@ using UnityEngine.UI;
 
 public class robotPower : MonoBehaviour
 {
-    /*
-    On some levels, the player has a last color objective. A bonus goal and a malus color goal.
-    Each color gives a special power up detailed in this class
-    When the players finishes on either a bonus or malus color, the effect activates for the next level
-    */
 
     public enum powerEnum {neutral, powerup, powerdown};
     List<GameObject> tubes;
@@ -24,18 +19,23 @@ public class robotPower : MonoBehaviour
     public bool isStateWinnable;
     private gameManager managerScript;
 
+
+    private void Awake()
+    {
+        tubeCanvas = GameObject.Find("Tube Canvas").gameObject;
+        mainSolver = GameObject.Find("Level Solver").GetComponent<levelSolver>();
+        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
+    }
+
     private IEnumerator Start()
     {
         yield return new WaitForEndOfFrame();
-        tubeCanvas = GameObject.Find("Tube Canvas").gameObject;
         tubes = new List<GameObject>();
-        GameObject tubeParents = GameObject.Find("Tube Canvas").transform.GetChild(0).gameObject;
+        GameObject tubeParents = tubeCanvas.transform.GetChild(0).gameObject;
         for(int i=0; i < tubeParents.transform.childCount; i++)
         {
             tubes.Add(tubeParents.transform.GetChild(i).gameObject);
         }
-        mainSolver = GameObject.Find("Level Solver").GetComponent<levelSolver>();
-        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
     }
 
 

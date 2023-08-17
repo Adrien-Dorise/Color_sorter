@@ -11,8 +11,7 @@ public class background : MonoBehaviour
 {
     private gameManager managerScript;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
     }

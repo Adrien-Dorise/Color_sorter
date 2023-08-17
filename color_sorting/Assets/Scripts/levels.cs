@@ -203,18 +203,6 @@ public class levels
     
 
 
-    //Levels are done like:
-    // Tube1: Color1, color2, Color3
-    // Tube2: Color1, color2, Color3
-    static public List<List<Color>> Level1 = new List<List<Color>>()
-    {
-        new List<Color>{gameManager.colors[0], gameManager.colors[1], gameManager.colors[3], gameManager.colors[1] },
-        new List<Color>{gameManager.colors[1], gameManager.colors[0], gameManager.colors[2], gameManager.colors[3]},
-        new List<Color>{gameManager.colors[0], gameManager.colors[1], gameManager.colors[3], gameManager.colors[2]},
-        new List<Color>{gameManager.colors[2], gameManager.colors[0], gameManager.colors[2], gameManager.colors[3]},
-    };
-
-
     static public List<List<Color>> getLevelColors()
     {
         setup setupObject = GameObject.Find("Setup").GetComponent<setup>(); 
