@@ -365,7 +365,7 @@ public class gameManager : MonoBehaviour
     private IEnumerator inactivityAction()
     {
         robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
-        yield return new WaitForSeconds(5.5f);
+        yield return new WaitForSeconds(7f);
         robotCanvas.transform.GetChild(1).gameObject.SetActive(true);
     }
 

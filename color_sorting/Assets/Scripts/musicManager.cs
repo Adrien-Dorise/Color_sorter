@@ -24,8 +24,8 @@ public class musicManager : MonoBehaviour
     private AudioSource[] speakers;
 
     //Transition parameters
-    private float fadeDelay;
-    private float fadeCoeff;
+    [SerializeField] private float fadeDelay;
+    [SerializeField] private float fadeCoeff;
 
 
     private void Awake()
@@ -39,7 +39,7 @@ public class musicManager : MonoBehaviour
     void Start()
     {
         //Transition parameters
-        fadeDelay = 0.01f;
+        fadeDelay = 0.0025f;
         fadeCoeff = 0.002f;
 
         //Speakers initialisation
@@ -65,7 +65,7 @@ public class musicManager : MonoBehaviour
         {
             sliderVolume.value = volume;
         }
-        
+
         //Set up the music for current scene
         musicChoiceManager();
         currentLevelMusicSection = 0;

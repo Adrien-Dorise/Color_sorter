@@ -343,7 +343,8 @@ public class robot : MonoBehaviour
                 }
                 else if(action == eyesActions.nothing) //Continue to track 
                 {
-                    if(managerScript.memoryTube == null)
+                    GameObject tube = managerScript.memoryTube;
+                    if(tube == null)
                     {
                         eyesIdleLoopMax = UnityEngine.Random.Range(eyesIdleLoopRange[0],eyesIdleLoopRange[1]);
                         currentState = eyesStates.idle;
@@ -351,7 +352,7 @@ public class robot : MonoBehaviour
                     }
                     else 
                     {
-                        eyeTracking(managerScript.memoryTube.transform);
+                        eyeTracking(tube.transform);
                     }
                 }
                 break;
