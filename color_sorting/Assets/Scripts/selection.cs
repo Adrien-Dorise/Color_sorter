@@ -24,11 +24,15 @@ public class selection : MonoBehaviour
     [HideInInspector] public string textLevel = "1"; //"1" is for init, do not touch
     private int levelPerScreen;
 
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
+    }
+
     void Start()
     {
         levelPerScreen = 9;
-        musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
     }
 
 

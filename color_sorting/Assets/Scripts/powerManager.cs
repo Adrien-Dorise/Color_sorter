@@ -23,7 +23,16 @@ public class powerManager : MonoBehaviour
     [SerializeField] private bool debug_check;
     [SerializeField] private GameObject tubePrefab;
 
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
+        powerButtonsCanvas = GameObject.Find("Power Buttons");
+        powerResultsCanvas = GameObject.Find("Results");
+        robotScript = GameObject.Find("Robot").GetComponent<robot>();
+        audioScript = GameObject.Find("Audio Manager").GetComponent<audio>();
+    }
+
     void Start()
     {
         if(!PlayerPrefs.HasKey(save.powerToken))
@@ -40,12 +49,7 @@ public class powerManager : MonoBehaviour
         debug_check = false;
         deleteColorUsed = false;
         powerScript = this.GetComponent<robotPower>();
-        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
-        powerButtonsCanvas = GameObject.Find("Power Buttons");
-        powerResultsCanvas = GameObject.Find("Results");
         powerResultsCanvas.SetActive(false);
-        robotScript = GameObject.Find("Robot").GetComponent<robot>();
-        audioScript = GameObject.Find("Audio Manager").GetComponent<audio>();
     
         tokensObjects = new List<GameObject>();
         for(int i = 0; i < GameObject.Find("Token Canvas").transform.childCount; i++)

@@ -38,15 +38,16 @@ public class testTube : MonoBehaviour
 
         //Layer offset
         yOffset = 980f;
-
+        
+        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
+    }
+    
+    void Start()
+    {
         foreach(Image sprite in transform.GetChild(0).GetComponentsInChildren<Image>())
         {
             sprite.enabled = false;
         }
-    }
-    void Start()
-    {
-        managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
     }
 
 

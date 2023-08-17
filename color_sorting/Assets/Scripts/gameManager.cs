@@ -52,6 +52,23 @@ public class gameManager : MonoBehaviour
 
     private void Awake()
     {
+        tubesGroupObject = GameObject.Find("Tubes");
+        robotScript = GameObject.Find("Robot").GetComponent<robot>();
+        audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
+        setupScript = GameObject.Find("Setup").GetComponent<setup>();
+        musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
+        robotCanvas = GameObject.Find("Robot Canvas");
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
+        {
+            victorySprite = GameObject.Find("Victory Canvas").transform.GetChild(0).GetComponent<Image>();
+            robotPowerScript = GameObject.Find("Power Manager").GetComponent<robotPower>();
+            powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
+            powerCanvas = GameObject.Find("Power Buttons");
+            tokenCanvas = GameObject.Find("Token Canvas");
+        }
+
+
+        //These parts have to be done in Awake so it can be used by other scripts in during their Start initialisation
         currentScene = "Level Selection";
         completedTube = 0;
         isNewTubeCompleted = false;
@@ -101,20 +118,10 @@ public class gameManager : MonoBehaviour
         xOffset = 1500f;
         yOffset = 1250f;
 
-        tubesGroupObject = GameObject.Find("Tubes");
-        robotScript = GameObject.Find("Robot").GetComponent<robot>();
-        audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
-        setupScript = GameObject.Find("Setup").GetComponent<setup>();
-        musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
-        robotCanvas = GameObject.Find("Robot Canvas");
+        
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
         {
-            victorySprite = GameObject.Find("Victory Canvas").transform.GetChild(0).GetComponent<Image>();
-            robotPowerScript = GameObject.Find("Power Manager").GetComponent<robotPower>();
-            powerManagerScript = GameObject.Find("Power Manager").GetComponent<powerManager>();
-            powerCanvas = GameObject.Find("Power Buttons");
             powerCanvas.GetComponent<Canvas>().enabled = false;
-            tokenCanvas = GameObject.Find("Token Canvas");
             foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())
             {
                 tokenButton.interactable = false;

@@ -46,10 +46,13 @@ public class robot : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();    
+    }
+
+    void Start()
+    {
         
         //Eyes animation
         xBoost = 175f; //xBoost and yBoost are for tracked state

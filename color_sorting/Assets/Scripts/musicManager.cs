@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
+using UnityEngine.UI;
 
 public class musicManager : MonoBehaviour
 {
@@ -13,8 +14,11 @@ public class musicManager : MonoBehaviour
     [SerializeField] public List<AudioClip> levelMusicParts;
     [HideInInspector] public int currentLevelMusicSection;
     
-    //User parameters
-    [SerializeField][Range(0.0f, 1.0f)] float maxVolume = 1.0f;
+    //Player parameters
+    private Slider sliderVolume; 
+    private float volume;
+
+    //Save
 
     //Speakers for main musics + transitions
     private AudioSource[] speakers;
@@ -23,7 +27,15 @@ public class musicManager : MonoBehaviour
     private float fadeDelay;
     private float fadeCoeff;
 
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
+        {
+            sliderVolume = GameObject.Find("Music Slider").GetComponent<Slider>();
+        }
+    }
+
     void Start()
     {
         //Transition parameters
@@ -39,11 +51,40 @@ public class musicManager : MonoBehaviour
         speakers[1].loop = true;
         speakers[1].playOnAwake = false;
 
+        
+        if(!PlayerPrefs.HasKey(save.musicVolume))
+        {
+            PlayerPrefs.SetFloat(save.musicVolume, 1.0f);
+            volume = 1f;
+        }
+        else
+        {
+            volume = PlayerPrefs.GetFloat(save.musicVolume);
+        }
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
+        {
+            sliderVolume.value = volume;
+        }
+        
         //Set up the music for current scene
         musicChoiceManager();
         currentLevelMusicSection = 0;
 
     }
+
+
+    /// <summary>
+    /// Set the volume for all sound design by using the connected slider.
+    /// This function must be linked to a slider gameobject in the editor.
+    /// </summary>
+    public void setVolume()
+    {
+        Debug.Log("hello");
+        volume = sliderVolume.value;
+        speakers[0].volume = volume;
+        PlayerPrefs.SetFloat(save.musicVolume, volume); 
+    }
+
 
     /// <summary>
     ///musicChoiceManager setup the music to be played depending on the level.
@@ -53,7 +94,7 @@ public class musicManager : MonoBehaviour
     private void musicChoiceManager()
     {
         string currentScene = SceneManager.GetActiveScene().name;
-        speakers[0].volume = maxVolume;
+        speakers[0].volume = volume;
         
         if(currentScene == "Main Menu" || currentScene == "Level Selection")
         {
@@ -120,7 +161,7 @@ public class musicManager : MonoBehaviour
             //Switch old audio to speaker 1
             speakers[1].clip = speakers[0].clip;
             speakers[1].timeSamples = currentSample;
-            speakers[1].volume = maxVolume;
+            speakers[1].volume = volume;
             speakers[1].Play();
 
             //Switch new audio to speaker 0
@@ -152,7 +193,7 @@ public class musicManager : MonoBehaviour
     private IEnumerator crossFade(float delay, float fadeCoeff)
     {
         speakers[0].volume = 0f;
-        speakers[1].volume = maxVolume;
+        speakers[1].volume = volume;
         speakers[0].Play();
         speakers[1].Play();
 
@@ -163,7 +204,7 @@ public class musicManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(delay);
         }
 
-        speakers[0].volume = maxVolume;
+        speakers[0].volume = volume;
         speakers[1].Stop();
 
     }

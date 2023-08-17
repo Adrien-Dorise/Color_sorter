@@ -11,7 +11,7 @@ public class button : MonoBehaviour
 
     [SerializeField] selection selectScript;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         selectScript = GameObject.Find("Buttons Canvas").GetComponent<selection>();
     }
