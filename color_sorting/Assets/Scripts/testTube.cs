@@ -23,16 +23,14 @@ public class testTube : MonoBehaviour
 
 
     //Tube animation
-    [SerializeField] private float scalingTempo; //Time taking to up or down scale a tube
-    [SerializeField] private float scalingSpeed; //Speed at which a u=tube is up or down scaled
+    [SerializeField] private float scalingSpeed; //Speed at which a tube is up or down scaled
     [SerializeField] private float endScale; //Max scale threshold when animating
     private Coroutine scalingRoutine; //Variable used to ensure that the tube is not tryinng to scale up and down simultaneously
 
 
     private void Awake()
     {
-        scalingTempo = 0.005f;
-        scalingSpeed = 0.025f;
+        scalingSpeed = 2.4f;
         endScale = 1.3f;
         tubeComplete = false;
 
@@ -130,8 +128,8 @@ public class testTube : MonoBehaviour
             {
                 while (this.transform.localScale.x < endScale)
                 {
-                    this.transform.localScale = new Vector3(this.transform.localScale.x + scalingSpeed, this.transform.localScale.y + scalingSpeed, 1);
-                    yield return new WaitForSeconds(scalingTempo);
+                    this.transform.localScale = new Vector3(this.transform.localScale.x + (scalingSpeed * Time.deltaTime), this.transform.localScale.y + (scalingSpeed * Time.deltaTime), 1);
+                    yield return new WaitForEndOfFrame();
                 }
             }
             else
@@ -147,8 +145,8 @@ public class testTube : MonoBehaviour
                 this.transform.localScale = new Vector3(endScale, endScale, 1);
                 while (this.transform.localScale.x > 1)
                 {
-                    this.transform.localScale = new Vector3(this.transform.localScale.x - scalingSpeed, this.transform.localScale.y - scalingSpeed, 1);
-                    yield return new WaitForSeconds(scalingTempo);
+                    this.transform.localScale = new Vector3(this.transform.localScale.x - (scalingSpeed * Time.deltaTime), this.transform.localScale.y - (scalingSpeed * Time.deltaTime), 1);
+                    yield return new WaitForEndOfFrame();
                 }
             }
             else
@@ -175,15 +173,15 @@ public class testTube : MonoBehaviour
         while(Mathf.Abs((destination - this.transform.localPosition).magnitude) >= translationOffset || (Mathf.Abs(rotation - this.transform.localEulerAngles.z) >= rotationOffset && Mathf.Abs(rotation - this.transform.localEulerAngles.z) <= 360.0f - rotationOffset))
         {
 
-            this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, destination,translationSpeed * Time.fixedDeltaTime);
-            this.transform.localRotation = Quaternion.RotateTowards(this.transform.localRotation, Quaternion.Euler(0f,0f,rotation), rotationSpeed * Time.fixedDeltaTime);
+            this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, destination,translationSpeed * Time.deltaTime);
+            this.transform.localRotation = Quaternion.RotateTowards(this.transform.localRotation, Quaternion.Euler(0f,0f,rotation), rotationSpeed * Time.deltaTime);
 
             if(Time.realtimeSinceStartupAsDouble - startTime >= time*1.1) //SafeGuard
             {
                 Debug.LogWarning("moveTube animation taking too long: Force break");
                 break;
             }
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForEndOfFrame();
         }
     }
 

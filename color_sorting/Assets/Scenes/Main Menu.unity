@@ -318,16 +318,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6311998489247890162, guid: e9de851d4b46fba428e39d6583bd29dd, type: 3}
+      propertyPath: display_ads
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6311998489247890163, guid: e9de851d4b46fba428e39d6583bd29dd, type: 3}
       propertyPath: m_Name
       value: Ads Manager
       objectReference: {fileID: 0}
     - target: {fileID: 6311998489247890163, guid: e9de851d4b46fba428e39d6583bd29dd, type: 3}
       propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6311998489247890175, guid: e9de851d4b46fba428e39d6583bd29dd, type: 3}
-      propertyPath: _bannerPosition
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4621,7 +4621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 393073508194943255, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -19.500061
+      value: -19.5
       objectReference: {fileID: 0}
     - target: {fileID: 393073508228226320, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_Name
@@ -5386,7 +5386,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 1000
   m_TargetDisplay: 0
 --- !u!114 &5127002249725917292
 MonoBehaviour:

@@ -50,7 +50,7 @@ MonoBehaviour:
   _androidGameId: 5360861
   _iOSGameId: 5360860
   _testMode: 0
-  display_ads: 0
+  display_ads: 1
 --- !u!114 &6311998489247890175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b2937f4392aa964ea7efade5c560489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bannerPosition: 5
+  _bannerPosition: 4
   _androidAdUnitId: Banner_Android
   _iOSAdUnitId: Banner_iOS
 --- !u!114 &6311998489247890160

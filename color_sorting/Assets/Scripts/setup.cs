@@ -170,8 +170,8 @@ public class setup : MonoBehaviour
     private void initLevelSelection()
     {
         //Find components
-        colorArrow = gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
-        colorButtons = gameManager.colors[UnityEngine.Random.Range(0, gameManager.colors.Count())];
+        colorArrow = levels.robotColorPerLevel.LastOrDefault();
+        colorButtons = levels.robotColorPerLevel.LastOrDefault();
         GameObject buttons = GameObject.Find("Level Buttons");
         selection selectScript = GameObject.Find("Buttons Canvas").GetComponent<selection>();
         GameObject levelsButton = GameObject.Find("Level Buttons");

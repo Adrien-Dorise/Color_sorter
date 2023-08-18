@@ -138,7 +138,7 @@ public class selection : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        int levelsAvailable = 50; // To set manually
+        int levelsAvailable = 200; // To set manually
         PlayerPrefs.DeleteAll();
         string str = "";
 
@@ -146,7 +146,8 @@ public class selection : MonoBehaviour
         PlayerPrefs.SetInt(save.availableLevels, levelsAvailable);
         for(int i = 0; i < levelsAvailable; i++)
         {
-            str += "5 ";
+            
+            str += UnityEngine.Random.Range(0,9) + " ";
         }
         str = str.Remove(str.Length - 1);
         PlayerPrefs.SetString(save.robotColor,str);

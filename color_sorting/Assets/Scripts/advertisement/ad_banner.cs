@@ -7,7 +7,7 @@ using UnityEngine.Advertisements;
 public class ad_banner : MonoBehaviour
 {
 
-    [SerializeField] BannerPosition _bannerPosition = BannerPosition.BOTTOM_CENTER;
+    [SerializeField] UnityEngine.Advertisements.BannerPosition _bannerPosition = UnityEngine.Advertisements.BannerPosition.BOTTOM_CENTER;
 
     [SerializeField] string _androidAdUnitId = "Banner_Android";
     [SerializeField] string _iOSAdUnitId = "Banner_iOS";
