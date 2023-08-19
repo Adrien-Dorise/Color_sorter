@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AdSettingsData
   m_EditorClassIdentifier: 
   mediationSettings:
-  - advertiser: 4
-    advertiserName: Unity
+  - advertiser: 0
+    advertiserName: Admob
     bannerSettings:
       adType: 1
       orderAndroid: 1
@@ -90,26 +90,26 @@ MonoBehaviour:
       hasRewarded: 1
       directedForChildren: 0
   - advertiser: 0
-    useSDK: 0
+    useSDK: 1
     preprocessorDirective: USE_ADMOB
     sdkLink: https://github.com/googleads/googleads-mobile-unity/releases
     platformSettings:
     - platform: 0
-      enabled: 0
+      enabled: 1
       appId:
-        id: 
+        id: ca-app-pub-9880668441004279~8774632775
         displayName: App ID
         notRequired: 0
       idBanner:
-        id: 
+        id: ca-app-pub-9880668441004279/4177746365
         displayName: Banner ID
         notRequired: 0
       idInterstitial:
-        id: 
+        id: ca-app-pub-9880668441004279/3798719832
         displayName: Interstitial ID
         notRequired: 0
       idRewarded:
-        id: 
+        id: ca-app-pub-9880668441004279/8335649079
         displayName: Rewarded Video ID
         notRequired: 0
       hasBanner: 1
@@ -237,7 +237,7 @@ MonoBehaviour:
       hasRewarded: 1
       directedForChildren: 0
   - advertiser: 4
-    useSDK: 1
+    useSDK: 0
     preprocessorDirective: USE_UNITYADS
     sdkLink: https://assetstore.unity.com/packages/add-ons/services/unity-monetization-66123
     platformSettings:
