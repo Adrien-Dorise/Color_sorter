@@ -191,6 +191,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 393073508009416151, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 393073508009416152, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: onQuitApp
@@ -198,6 +202,10 @@ PrefabInstance:
     - target: {fileID: 393073508009416153, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -468.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 393073508009416154, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 393073508194943254, guid: e6397face40959648934941af035c18c, type: 3}
       propertyPath: m_Enabled
@@ -307,6 +315,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 9115938983339120412}
+    - target: {fileID: 393073508228226412, guid: e6397face40959648934941af035c18c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6397face40959648934941af035c18c, type: 3}
 --- !u!1001 &1309675446536240697

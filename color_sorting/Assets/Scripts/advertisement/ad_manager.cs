@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Advertisements;
 using UnityEngine.SceneManagement;
 
 //https://docs.unity.com/ads/en-us/manual/UnityDeveloperIntegrations
@@ -9,19 +8,12 @@ using UnityEngine.SceneManagement;
 //https://www.youtube.com/watch?v=SBtfuWEN5qk
 //https://www.youtube.com/watch?v=tzgOTVPXC-I
 
-public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
+public class ad_manager : MonoBehaviour
 {
-    [SerializeField] string _androidGameId;
-    [SerializeField] string _iOSGameId;
-    [SerializeField] bool _testMode = true;
     [SerializeField] bool display_ads = true; //Set false to remove ads from game  
-    private string _gameId;
+    [SerializeField] BannerPosition bannerPos = BannerPosition.BOTTOM;
 
-   // [SerializeField] ad_reward rewardScript;
-    ad_video videoScript;
-    ad_banner bannerScript;
-    ad_reward reward_script;
-
+    private int tokenID;
     powerManager powerScript;
 
 
@@ -29,16 +21,13 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
     {
         if(display_ads)
         {
-            InitializeAds();
+            Advertisements.Instance.Initialize();
         }
     }
 
     private void Start()
     {
-        videoScript = this.GetComponent<ad_video>();
-        bannerScript = this.GetComponent<ad_banner>();
-        reward_script = this.GetComponent<ad_reward>();
-        
+        tokenID = 0;
         if(SceneManager.GetActiveScene().name == "Level")
         {
             powerScript = GameObject.Find("Power Manager").transform.GetComponent<powerManager>();
@@ -54,58 +43,32 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
     {
         string currentScene = SceneManager.GetActiveScene().name;
 
-        if(Advertisement.isInitialized)
+        if(currentScene == "Main Menu")
         {
-            if(currentScene == "Level Selection")
-            {
-                bannerScript.LoadAd();
-                bannerScript.ShowBannerAd();
-            }
-            
-            if(currentScene == "Level")
-            {
-                if(Random.Range(0,10) >= 7)
-                {
-                    //Debug.Log("Video ad is on");
-                    videoScript.LoadAd();
-                    videoScript.ShowAd();
-                }
-            }
-
-            reward_script.LoadAd();
+            launchBanner();
         }
-    }
+        
 
-    public void InitializeAds()
-    {
-    #if UNITY_IOS
-            _gameId = _iOSGameId;
-    #elif UNITY_ANDROID
-            _gameId = _androidGameId;
-    #elif UNITY_EDITOR
-            _gameId = _androidGameId; //Only for testing the functionality in the Editor
-    #endif
-        if (!Advertisement.isInitialized && Advertisement.isSupported)
+        if(currentScene == "Level Selection")
         {
-            Advertisement.Initialize(_gameId, _testMode, this);
+            launchBanner();
         }
+        
+        if(currentScene == "Level")
+        {
+            HideBanner();
+            if(Random.Range(0,10) >= 7)
+            {
+                launchVideo();
+            }
+        }       
     }
-
- 
-    public void OnInitializationComplete()
-    {
-        Debug.Log("Unity Ads initialization complete.");
-        //videoScript.LoadAd();
-        //bannerScript.LoadAd();
-
-    }
-
 
     public void launchVideo()
     {
         if(display_ads)
         {
-            videoScript.ShowAd();
+            Advertisements.Instance.ShowInterstitial();
         }
     }
  
@@ -113,22 +76,33 @@ public class ad_manager : MonoBehaviour, IUnityAdsInitializationListener
     {
         if(display_ads)
         {
-            bannerScript.ShowBannerAd();
+            Advertisements.Instance.ShowBanner(bannerPos);
         }
     }
 
-    public  void launchReward(int tokenID)
+    public void HideBanner()
+    {
+        Advertisements.Instance.HideBanner();
+    }
+
+
+    public void launchReward(int ID)
     {
         if(display_ads)
         {
-            reward_script.ShowAd();
+            tokenID = ID;
+            Advertisements.Instance.ShowRewardedVideo(CompleteMethod);
         }
-        powerScript.updateOneToken(tokenID, 3);
-        powerScript.setInteractablePowerButtons();
+        
     }
 
-    public void OnInitializationFailed(UnityAdsInitializationError error, string message)
+    private void CompleteMethod(bool completed)
     {
-        Debug.Log($"Unity Ads Initialization Failed: {error.ToString()} - {message}");
+        if (completed)
+        {
+            powerScript.updateOneToken(tokenID, 3);
+            powerScript.setInteractablePowerButtons();
+        }
     }
+
 }
