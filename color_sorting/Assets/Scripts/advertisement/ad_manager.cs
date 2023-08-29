@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Advertisements;
 using UnityEngine.SceneManagement;
 
 //https://docs.unity.com/ads/en-us/manual/UnityDeveloperIntegrations
@@ -15,6 +16,7 @@ public class ad_manager : MonoBehaviour
 
     private int tokenID;
     powerManager powerScript;
+
 
 
     void Awake()
@@ -45,13 +47,23 @@ public class ad_manager : MonoBehaviour
 
         if(currentScene == "Main Menu")
         {
-            launchBanner();
+            HideBanner();
+            PlayerPrefs.SetInt(save.bannerClick,0);
         }
         
 
         if(currentScene == "Level Selection")
         {
-            launchBanner();
+            int bannerClick = PlayerPrefs.GetInt(save.bannerClick); 
+            if(bannerClick < 100)
+            {
+                launchBanner();
+                PlayerPrefs.SetInt(save.bannerClick, bannerClick+1);
+            }
+            else
+            {
+                HideBanner();
+            }
         }
         
         if(currentScene == "Level")
@@ -80,6 +92,7 @@ public class ad_manager : MonoBehaviour
         }
     }
 
+
     public void HideBanner()
     {
         Advertisements.Instance.HideBanner();
@@ -100,7 +113,7 @@ public class ad_manager : MonoBehaviour
     {
         if (completed)
         {
-            powerScript.updateOneToken(tokenID, 3);
+            powerScript.updateOneToken(tokenID, 5);
             powerScript.setInteractablePowerButtons();
         }
     }

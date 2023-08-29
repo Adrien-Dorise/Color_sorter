@@ -248,7 +248,7 @@ MonoBehaviour:
         displayName: Game ID
         notRequired: 0
       idBanner:
-        id: Banner_iOS
+        id: Banner_Android
         displayName: Placement ID Banner
         notRequired: 0
       idInterstitial:
@@ -264,7 +264,7 @@ MonoBehaviour:
       hasRewarded: 1
       directedForChildren: 0
     - platform: 1
-      enabled: 1
+      enabled: 0
       appId:
         id: 5360860
         displayName: Game ID
@@ -509,21 +509,21 @@ MonoBehaviour:
     sdkLink: https://developers.ironsrc.com/ironsource-mobile-unity/unity-plugin/
     platformSettings:
     - platform: 0
-      enabled: 0
+      enabled: 1
       appId:
-        id: 
+        id: 1b6a9da95
         displayName: App Key
         notRequired: 0
       idBanner:
-        id: 
+        id: DefaultBanner
         displayName: Banner Placement
         notRequired: 0
       idInterstitial:
-        id: 
+        id: DefaultInterstitial
         displayName: Interstitial Placement
         notRequired: 0
       idRewarded:
-        id: 
+        id: DefaultRewardedVideo
         displayName: Rewarded Placement
         notRequired: 0
       hasBanner: 1
