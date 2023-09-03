@@ -79,7 +79,6 @@ public class musicManager : MonoBehaviour
     /// </summary>
     public void setVolume()
     {
-        Debug.Log("hello");
         volume = sliderVolume.value;
         speakers[0].volume = volume;
         PlayerPrefs.SetFloat(save.musicVolume, volume); 

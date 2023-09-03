@@ -52,6 +52,7 @@ public class gameManager : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
         tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
@@ -127,6 +128,7 @@ public class gameManager : MonoBehaviour
                 tokenButton.interactable = false;
             }
             inactivityRoutine = inactivityAction();
+            robotCanvas.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = PlayerPrefs.GetInt(save.currentLevel).ToString();
         }
         memoryTube = null;
     }

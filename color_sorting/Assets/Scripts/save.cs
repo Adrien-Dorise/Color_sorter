@@ -24,5 +24,6 @@ public class save
     static public string levelMusicState = "Level music state";
     static public string musicVolume = "Music volume"; //Set the volume of music
     static public string soundVolume = "Sound volume"; //Set the volume of sound effects
+    static public string bannerClick = "Banner click";
 
 }
