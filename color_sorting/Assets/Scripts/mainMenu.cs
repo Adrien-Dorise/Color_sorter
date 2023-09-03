@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class mainMenu : MonoBehaviour
 {
 
-    [SerializeField] private GameObject mainCanvas, colorBlindCanvas, wheelCanvas, musicCanvas, tutorialCanvas;
+    [SerializeField] private GameObject mainCanvas, colorBlindCanvas, wheelCanvas, musicCanvas, localisationCanvas, tutorialCanvas;
 
     //ColorBlind
     private int colorInSelection;
@@ -43,16 +43,18 @@ public class mainMenu : MonoBehaviour
         isLoadingWheelComplete = false;
         StartCoroutine(initWheelColors());
 
-
+        localisation.displayCorrectLocalisation(mainCanvas.transform.GetChild(0).gameObject);
         mainCanvas.SetActive(true);
         colorBlindCanvas.SetActive(false);
         musicCanvas.SetActive(false);
         wheelCanvas.SetActive(false);
+        localisationCanvas.SetActive(false);
         tutorialCanvas.SetActive(false);
         foreach(Transform panel in tutorialCanvas.GetComponentsInChildren<Transform>())
         {
             panel.gameObject.SetActive(false);
         }
+        tutorialCanvas.transform.GetChild(0).gameObject.SetActive(true);
 
         colorButtonsParent.SetActive(true);
         resetButton.SetActive(true);
@@ -105,6 +107,7 @@ public class mainMenu : MonoBehaviour
         colorBlindCanvas.SetActive(true);
         wheelCanvas.SetActive(false);
         musicCanvas.SetActive(false);
+        localisationCanvas.SetActive(false);
         tutorialCanvas.SetActive(false);
 
     }
@@ -114,7 +117,19 @@ public class mainMenu : MonoBehaviour
         mainCanvas.SetActive(false);
         colorBlindCanvas.SetActive(false);
         wheelCanvas.SetActive(false);
+        localisation.displayCorrectLocalisation(musicCanvas.transform.GetChild(0).gameObject);
         musicCanvas.SetActive(true);
+        localisationCanvas.SetActive(false);
+        tutorialCanvas.SetActive(false);
+    }
+
+    public void localisationButton()
+    {
+        mainCanvas.SetActive(false);
+        colorBlindCanvas.SetActive(false);
+        wheelCanvas.SetActive(false);
+        musicCanvas.SetActive(false);
+        localisationCanvas.SetActive(true);
         tutorialCanvas.SetActive(false);
     }
 
@@ -124,26 +139,34 @@ public class mainMenu : MonoBehaviour
         colorBlindCanvas.SetActive(false);
         wheelCanvas.SetActive(false);
         musicCanvas.SetActive(false);
+        localisationCanvas.SetActive(false);
+        localisation.displayCorrectLocalisation(tutorialCanvas.transform.GetChild(0).gameObject);
         tutorialCanvas.SetActive(true);
-        tutorialCanvas.transform.GetChild(0).gameObject.SetActive(true);
+        tutorialCanvas.transform.GetChild(0).GetChild(localisation.getLocalisation()).GetChild(0).gameObject.SetActive(true);
     }
 
     public void nextTutorialPanel(int idx)
     {
-        int panelCount = tutorialCanvas.transform.childCount;
+        GameObject currentPanel = tutorialCanvas.transform.GetChild(0).GetChild(localisation.getLocalisation()).gameObject;
+        int panelCount = currentPanel.transform.childCount;
         if(idx+1 < panelCount)
         {
-            tutorialCanvas.transform.GetChild(idx).gameObject.SetActive(false);
-            tutorialCanvas.transform.GetChild(idx+1).gameObject.SetActive(true);
+            currentPanel.transform.GetChild(idx).gameObject.SetActive(false);
+            currentPanel.transform.GetChild(idx+1).gameObject.SetActive(true);
         }
         else
         {
-            tutorialCanvas.transform.GetChild(idx).gameObject.SetActive(false);
+            currentPanel.transform.GetChild(idx).gameObject.SetActive(false);
             tutorialCanvas.SetActive(false);
             mainCanvas.SetActive(true);
         }
     }
 
+    public void flagButton(string language)
+    {
+        PlayerPrefs.SetString(save.localisation, language);
+        SceneManager.LoadScene("Main Menu");
+    }
 
     //Colorblind settings
     public void resetColorblind()
@@ -160,6 +183,7 @@ public class mainMenu : MonoBehaviour
             colorBlindCanvas.SetActive(true);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
+            localisationCanvas.SetActive(false);
             tutorialCanvas.SetActive(false);
     }
 
@@ -346,6 +370,7 @@ public class mainMenu : MonoBehaviour
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
+            localisationCanvas.SetActive(false);
             tutorialCanvas.SetActive(false);
 
         }
@@ -355,14 +380,7 @@ public class mainMenu : MonoBehaviour
             colorBlindCanvas.SetActive(true);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
-            tutorialCanvas.SetActive(false);
-        }
-        else if(currentCanvas == "music")
-        {
-            mainCanvas.SetActive(true);
-            colorBlindCanvas.SetActive(false);
-            wheelCanvas.SetActive(false);
-            musicCanvas.SetActive(false);
+            localisationCanvas.SetActive(false);
             tutorialCanvas.SetActive(false);
         }
         else
@@ -371,6 +389,7 @@ public class mainMenu : MonoBehaviour
             colorBlindCanvas.SetActive(false);
             wheelCanvas.SetActive(false);
             musicCanvas.SetActive(false);
+            localisationCanvas.SetActive(false);
             tutorialCanvas.SetActive(false);
         }
     }

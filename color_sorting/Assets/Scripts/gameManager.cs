@@ -90,6 +90,7 @@ public class gameManager : MonoBehaviour
 
         if (!PlayerPrefs.HasKey(save.availableLevels)) //First play ! 
         {
+            PlayerPrefs.SetString(save.localisation, "English");
             if(save.debugDev)
             {
                 string str = "";
