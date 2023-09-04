@@ -43,7 +43,7 @@ public class mainMenu : MonoBehaviour
         isLoadingWheelComplete = false;
         StartCoroutine(initWheelColors());
 
-        localisation.displayCorrectLocalisation(mainCanvas.transform.GetChild(0).gameObject);
+        localisation.displayCorrectLocalisation(mainCanvas.transform.GetChild(1).gameObject);
         mainCanvas.SetActive(true);
         colorBlindCanvas.SetActive(false);
         musicCanvas.SetActive(false);
@@ -104,6 +104,7 @@ public class mainMenu : MonoBehaviour
     {
         setColorForColorBlindSettings();
         mainCanvas.SetActive(false);
+        localisation.displayCorrectLocalisation(colorBlindCanvas.transform.GetChild(3).gameObject);
         colorBlindCanvas.SetActive(true);
         wheelCanvas.SetActive(false);
         musicCanvas.SetActive(false);
@@ -165,6 +166,7 @@ public class mainMenu : MonoBehaviour
     public void flagButton(string language)
     {
         PlayerPrefs.SetString(save.localisation, language);
+        musicManagerScript.setMusicState(save.mainMenuMusicState, true);
         SceneManager.LoadScene("Main Menu");
     }
 
