@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class localisation
 {
+    /// <summary>
+    /// Display the current language depending of the player prefs setting
+    /// </summary>
+    /// <param name="localisationObject">Game Object containing the text in different languages</param>
     static public void displayCorrectLocalisation(GameObject localisationObject)
     {
         int localisationChoice = getLocalisation();
@@ -21,6 +25,10 @@ public class localisation
         }   
     }
 
+    /// <summary>
+    /// Get the player setting for localisation
+    /// </summary>
+    /// <returns></returns>
     static public int getLocalisation()
     {
         int language = 0;
