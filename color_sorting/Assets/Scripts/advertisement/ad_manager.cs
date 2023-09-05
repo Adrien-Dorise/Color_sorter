@@ -41,6 +41,9 @@ public class ad_manager : MonoBehaviour
         }
     }
  
+    /// <summary>
+    /// adSelection is where ads' behavior is set throughout each scene.
+    /// </summary>
     private void adSelection()
     {
         string currentScene = SceneManager.GetActiveScene().name;
@@ -76,6 +79,9 @@ public class ad_manager : MonoBehaviour
         }       
     }
 
+    /// <summary>
+    /// Video ad behavior
+    /// </summary>
     public void launchVideo()
     {
         if(display_ads)
@@ -84,6 +90,9 @@ public class ad_manager : MonoBehaviour
         }
     }
  
+    /// <summary>
+    /// Banner ad behavior
+    /// </summary>
     public void launchBanner()
     {
         if(display_ads)
@@ -92,13 +101,19 @@ public class ad_manager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Remove displayed banner ad
+    /// </summary>
     public void HideBanner()
     {
         Advertisements.Instance.HideBanner();
     }
 
-
+    /// <summary>
+    /// Reward ad beahvior.
+    /// Tokens are given to the player when ad is watched entirely
+    /// </summary>
+    /// <param name="ID">Token ID to increase</param>
     public void launchReward(int ID)
     {
         if(display_ads)
@@ -109,6 +124,10 @@ public class ad_manager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Give token to player when ad is whatched
+    /// </summary>
+    /// <param name="completed">Token ID to increase</param>
     private void CompleteMethod(bool completed)
     {
         if (completed)
