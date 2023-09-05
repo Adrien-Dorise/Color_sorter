@@ -176,7 +176,7 @@ public class testTube : MonoBehaviour
             this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, destination,translationSpeed * Time.deltaTime);
             this.transform.localRotation = Quaternion.RotateTowards(this.transform.localRotation, Quaternion.Euler(0f,0f,rotation), rotationSpeed * Time.deltaTime);
 
-            if(Time.realtimeSinceStartupAsDouble - startTime >= time*1.1) //SafeGuard
+            if(Time.realtimeSinceStartupAsDouble - startTime >= time*4) //SafeGuard
             {
                 Debug.LogWarning("moveTube animation taking too long: Force break");
                 break;

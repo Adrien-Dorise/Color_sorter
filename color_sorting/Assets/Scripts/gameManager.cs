@@ -90,6 +90,7 @@ public class gameManager : MonoBehaviour
 
         if (!PlayerPrefs.HasKey(save.availableLevels)) //First play ! 
         {
+            PlayerPrefs.SetString(save.localisation, "English");
             if(save.debugDev)
             {
                 string str = "";
@@ -129,6 +130,7 @@ public class gameManager : MonoBehaviour
             }
             inactivityRoutine = inactivityAction();
             robotCanvas.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = PlayerPrefs.GetInt(save.currentLevel).ToString();
+            localisation.displayCorrectLocalisation(robotCanvas.transform.GetChild(1).gameObject);
         }
         memoryTube = null;
     }
@@ -368,6 +370,7 @@ public class gameManager : MonoBehaviour
     {
         robotCanvas.transform.GetChild(1).gameObject.SetActive(false);
         yield return new WaitForSeconds(7f);
+        localisation.displayCorrectLocalisation(robotCanvas.transform.GetChild(1).gameObject);
         robotCanvas.transform.GetChild(1).gameObject.SetActive(true);
     }
 
@@ -423,6 +426,7 @@ public class gameManager : MonoBehaviour
                     {
                         tokenButton.interactable = true;
                     }
+                    localisation.displayCorrectLocalisation(powerCanvas.transform.GetChild(1).gameObject);
                     powerCanvas.GetComponent<Canvas>().enabled = true;
                 }
                 if(act == actions.clickedBackground)
