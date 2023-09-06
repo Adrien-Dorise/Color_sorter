@@ -129,7 +129,7 @@ public class testTube : MonoBehaviour
                 while (this.transform.localScale.x < endScale)
                 {
                     this.transform.localScale = new Vector3(this.transform.localScale.x + (scalingSpeed * Time.deltaTime), this.transform.localScale.y + (scalingSpeed * Time.deltaTime), 1);
-                    yield return new WaitForEndOfFrame();
+                    yield return null;
                 }
             }
             else
@@ -146,7 +146,7 @@ public class testTube : MonoBehaviour
                 while (this.transform.localScale.x > 1)
                 {
                     this.transform.localScale = new Vector3(this.transform.localScale.x - (scalingSpeed * Time.deltaTime), this.transform.localScale.y - (scalingSpeed * Time.deltaTime), 1);
-                    yield return new WaitForEndOfFrame();
+                    yield return null;
                 }
             }
             else
@@ -181,7 +181,7 @@ public class testTube : MonoBehaviour
                 Debug.LogWarning("moveTube animation taking too long: Force break");
                 break;
             }
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
     }
 

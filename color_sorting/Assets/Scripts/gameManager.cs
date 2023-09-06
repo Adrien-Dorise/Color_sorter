@@ -52,7 +52,7 @@ public class gameManager : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 240;
         tubesGroupObject = GameObject.Find("Tubes");
         robotScript = GameObject.Find("Robot").GetComponent<robot>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<audio>();
@@ -324,7 +324,10 @@ public class gameManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Increment the number of completed tube of the current level.
+    /// This information is used to evaluate the state of the game (is it a victory?)
+    /// </summary>
     public void updateCompletedTubes()
     {
         completedTube = 0;
@@ -337,6 +340,10 @@ public class gameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Victory animation when player finishes a level.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator victory()
     {
         audioManager.GetComponent<audio>().victorySound();
@@ -365,7 +372,11 @@ public class gameManager : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// Animation happening when the player does not touch the screen for a certain amount of time.
+    /// Right now, a new panel is displayed asking if the player needs help.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator inactivityAction()
     {
         robotCanvas.transform.GetChild(1).gameObject.SetActive(false);

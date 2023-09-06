@@ -5,6 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// LevelSolver class is responsible of the algorithm used solve a level form a given state.
+/// The solver is thought as a tree search, where each node is evaluated from the available actions.
+/// </summary>
 public class levelSolver : MonoBehaviour
 {
     public bool debugLog = false;
@@ -25,6 +29,10 @@ public class levelSolver : MonoBehaviour
     private node currentNode;
 
 
+    /// <summary>
+    /// A node corresponds of a define state of the level.
+    /// It is defined by the previous action, and possible actions of this state
+    /// </summary>
     private class node
     {
         public node previousNode {get;private set;}
@@ -47,7 +55,11 @@ public class levelSolver : MonoBehaviour
             findActions(tubesAvailable);
         }
 
-
+        /// <summary>
+        /// Find actions list all the possible actions at the current state.
+        /// Some trickery is used to eliminate useless actions (futur state already visited, all colors are poored...)
+        /// </summary>
+        /// <param name="tubesAvailable">GameObject containing the level tube setup</param>
         private void findActions(List<GameObject> tubesAvailable)
         {
             int pooringID=1, pooredID=1;
@@ -113,7 +125,12 @@ public class levelSolver : MonoBehaviour
             } 
         }
 
-
+        /// <summary>
+        /// Perform an action, switching to a new node
+        /// </summary>
+        /// <param name="tubesAvailable">GameObject containing the level tube setup</param>
+        /// <param name="actionID">ID of the action to perform at the current state</param>
+        /// <returns></returns>
         public node performAction(List<GameObject> tubesAvailable, int actionID)
         {
             int pooredLayers = gameManager.pooringAction(nextActions[actionID].pooringTube, nextActions[actionID].pooredTube);
@@ -124,6 +141,11 @@ public class levelSolver : MonoBehaviour
             return nextNode;
         }
 
+        /// <summary>
+        /// Go back to the previous state
+        /// </summary>
+        /// <param name="tubesAvailable">GameObject containing the level tube setup</param>
+        /// <returns></returns>
         public node rewindAction(List<GameObject> tubesAvailable)
         {    
             if(previousAction == null)
@@ -154,6 +176,10 @@ public class levelSolver : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// An action is a possibility to switch from a state to another state. 
+    /// In the game, it is translated as pooring a tube into another one.
+    /// </summary>
     private class action
     {
         public GameObject pooringTube {get; private set;}
@@ -164,6 +190,9 @@ public class levelSolver : MonoBehaviour
             layersPoored = num;
         }
 
+        /// <summary>
+        /// Display the tubes involved in the action
+        /// </summary>
         public void printAction()
         {
             Debug.Log("Action: " + pooringTube.name + " -> " + pooredTube.name);
@@ -184,7 +213,11 @@ public class levelSolver : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Explore the graph until a solution is found. Stops if all states are evaluated
+    /// </summary>
+    /// <param name="availableTubes">GameObject containing the level tube setup</param>
+    /// <returns>bool: Indicated if the level can still be finished successfully</returns>
     private bool isWin(List<GameObject> availableTubes)
     {
         foreach(GameObject tube in availableTubes)
@@ -197,6 +230,12 @@ public class levelSolver : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Evaluate the possibility of an action between two tubes
+    /// </summary>
+    /// <param name="pooringTube"></param>
+    /// <param name="pooredTube"></param>
+    /// <returns></returns>
     static public bool isPooringPossible(GameObject pooringTube, GameObject pooredTube)
     {
         bool stillNotMax = pooredTube.GetComponent<testTube>().colorList.Count < pooredTube.GetComponent<testTube>().maxLiquid;
@@ -230,6 +269,11 @@ public class levelSolver : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Evaluate if the current state as already been seen in the graph.
+    /// </summary>
+    /// <param name="tubes">GameObject containing the level tube setup</param>
+    /// <returns>True if state already visited. False otherwise</returns>
     private bool isVisitedState(List<GameObject> tubes)
     {
         List<string> currentState = new List<string>();
@@ -274,6 +318,15 @@ public class levelSolver : MonoBehaviour
 
 
     bool isWinnable = false;
+    /// <summary>
+    /// Explore all nodes of the graph.
+    /// Indicated which nodes are winnable.
+    /// Can be stopped at first win with the "stopAtWin" global parameter".
+    /// </summary>
+    /// <param name="availableTubes">GameObject containing the level tube setup</param>
+    /// <param name="initialNode"></param>
+    /// <param name="nodeIdx"></param>
+    /// <returns></returns>
     private IEnumerator resolveGraph(List<GameObject> availableTubes, node initialNode, int nodeIdx)
     {
 
@@ -343,14 +396,18 @@ public class levelSolver : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
     }
 
-    
 
 
+
+    /* !!! Debug functions !!! */    
+
+   
     public void advanceNode(GameObject pooringTube, GameObject pooredTube, int layerPoored)
     {
         action act = new action(pooringTube, pooredTube, layerPoored);
         currentNode = new node(tubes, act, currentNode);
     }
+
 
     public void rewindNode()
     {
