@@ -138,13 +138,12 @@ public class selection : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        int levelsAvailable = 200; // To set manually
         PlayerPrefs.DeleteAll();
         string str = "";
 
         gameManager managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
-        PlayerPrefs.SetInt(save.availableLevels, levelsAvailable);
-        for(int i = 0; i < levelsAvailable; i++)
+        PlayerPrefs.SetInt(save.availableLevels, save.resetLevel);
+        for(int i = 0; i < save.resetLevel; i++)
         {
             
             str += UnityEngine.Random.Range(0,9) + " ";
