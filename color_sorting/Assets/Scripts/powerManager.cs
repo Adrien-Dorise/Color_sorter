@@ -117,9 +117,12 @@ public class powerManager : MonoBehaviour
         if(selection == "rollBack")
         {
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
-            for(int i=0; i<powersNeededTokens[0]; i++)
+            if(!save.debugPower)
             {
-                updateOneToken(tokenUseOrder[i],-1);
+                for(int i=0; i<powersNeededTokens[0]; i++)
+                {
+                    updateOneToken(tokenUseOrder[i],-1);
+                }
             }
             yield return new WaitForSeconds(0.5f);
             audioScript.powerOK();
@@ -129,9 +132,12 @@ public class powerManager : MonoBehaviour
             
         else if(selection == "nextMove")
         {
-            for(int i=0; i<powersNeededTokens[1]; i++)
+            if(!save.debugPower)
             {
-                updateOneToken(tokenUseOrder[i],-1);
+                for(int i=0; i<powersNeededTokens[1]; i++)
+                {
+                    updateOneToken(tokenUseOrder[i],-1);
+                }
             }
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return StartCoroutine(powerScript.findNextMove());
@@ -168,9 +174,12 @@ public class powerManager : MonoBehaviour
         
         else if(selection == "isWin")
         {
-            for(int i=0; i<powersNeededTokens[2]; i++)
+            if(!save.debugPower)
             {
-                updateOneToken(tokenUseOrder[i],-1);
+                for(int i=0; i<powersNeededTokens[2]; i++)
+                {
+                    updateOneToken(tokenUseOrder[i],-1);
+                }
             }
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return StartCoroutine(powerScript.isWinnable());
@@ -199,9 +208,12 @@ public class powerManager : MonoBehaviour
 
         else if (selection == "deleteColor")
         {
-            for(int i=0; i<powersNeededTokens[3]; i++)
+            if(!save.debugPower)
             {
-                updateOneToken(tokenUseOrder[i],-1);
+                for(int i=0; i<powersNeededTokens[3]; i++)
+                {
+                    updateOneToken(tokenUseOrder[i],-1);
+                }
             }
             robotScript.eyesStateMachine(robot.eyesActions.animate,robot.avalaibleAnim.solving);
             yield return new WaitForSeconds(0.5f);

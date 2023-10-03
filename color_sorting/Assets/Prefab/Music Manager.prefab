@@ -46,13 +46,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenuMusic: {fileID: 8300000, guid: 793af78214f0c834dbfb4546dcc80925, type: 3}
   levelMusicParts:
-  - {fileID: 8300000, guid: f67dbd5cc4f11fe4591a1eda4394a9da, type: 3}
-  - {fileID: 8300000, guid: 510503523fc71e846ac21fec4280aa86, type: 3}
-  - {fileID: 8300000, guid: 06c08663417dbef418f366d40713cb42, type: 3}
-  - {fileID: 8300000, guid: 4f4d7154eeb8dfb4b9682f5b9dfc5b57, type: 3}
-  - {fileID: 8300000, guid: 5da87ae3a396048428e0632ab79a6e27, type: 3}
-  - {fileID: 8300000, guid: 58176a56d246e734592b2c587f87956b, type: 3}
-  - {fileID: 8300000, guid: 5da87ae3a396048428e0632ab79a6e27, type: 3}
-  - {fileID: 8300000, guid: 9be1bd9db4b03934eb9e6e79c17a9ca9, type: 3}
+  - {fileID: 8300000, guid: 9bcc114a1c452d4459af6ecb2e71035b, type: 3}
+  - {fileID: 8300000, guid: ff1b84e66ba02f44ebb68c0f5f222a94, type: 3}
+  - {fileID: 8300000, guid: d3e7e5b09c6361e469b8906752704d25, type: 3}
+  - {fileID: 8300000, guid: 15a5541eb10ad3748bff202dd4e9f775, type: 3}
+  - {fileID: 8300000, guid: caca42a60d8689c42898019cd87cabbe, type: 3}
+  - {fileID: 8300000, guid: c8a3e04616225024db603bf9a8d065d0, type: 3}
+  - {fileID: 8300000, guid: caca42a60d8689c42898019cd87cabbe, type: 3}
+  - {fileID: 8300000, guid: 3b1e061d780c4484fab760d1860b3a60, type: 3}
   currentLevelMusicSection: 0
-  maxVolume: 1
+  fadeDelay: 0
+  fadeCoeff: 0

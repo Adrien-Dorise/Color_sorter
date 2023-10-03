@@ -52,6 +52,7 @@ public class ad_manager : MonoBehaviour
         {
             HideBanner();
             PlayerPrefs.SetInt(save.bannerClick,0);
+            PlayerPrefs.SetInt(save.ad_strike, 0);
         }
         
 
@@ -71,10 +72,29 @@ public class ad_manager : MonoBehaviour
         
         if(currentScene == "Level")
         {
-            HideBanner();
-            if(Random.Range(0,10) >= 7)
+            if(!PlayerPrefs.HasKey(save.ad_strike))
             {
-                launchVideo();
+                PlayerPrefs.SetInt(save.ad_strike,0);
+            }
+
+            HideBanner();
+
+
+            if(PlayerPrefs.GetInt(save.ad_strike) < 3)
+            {
+                PlayerPrefs.SetInt(save.ad_strike, PlayerPrefs.GetInt(save.ad_strike) + 1);
+            }
+            else
+            {
+                if(PlayerPrefs.GetInt(save.currentLevel) >= 8)
+                {
+                    Debug.Log("Try ad");
+                    if(Random.Range(0,10) >= 6)
+                    {
+                        launchVideo();
+                        PlayerPrefs.SetInt(save.ad_strike, 0);
+                    }
+                }
             }
         }       
     }

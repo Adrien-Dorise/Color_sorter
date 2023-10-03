@@ -108,7 +108,7 @@ public class gameManager : MonoBehaviour
                 PlayerPrefs.SetString(save.robotColor, "0");
             }
         }
-
+        
     }
 
     // Start is called before the first frame update
