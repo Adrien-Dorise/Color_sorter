@@ -100,7 +100,7 @@ public class musicManager : MonoBehaviour
             speakers[0].clip = mainMenuMusic;
             resumeMusic(speakers[0], save.mainMenuMusicState);
         }
-        else if(currentScene == "Level")
+        else if(currentScene == "Level" || currentScene == "Level1")
         {
             speakers[0].clip = levelMusicParts[0];
             resumeMusic(speakers[0], save.levelMusicState);
