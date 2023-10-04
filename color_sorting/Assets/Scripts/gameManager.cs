@@ -59,7 +59,7 @@ public class gameManager : MonoBehaviour
         setupScript = GameObject.Find("Setup").GetComponent<setup>();
         musicManagerScript = GameObject.Find("Music Manager").GetComponent<musicManager>();
         robotCanvas = GameObject.Find("Robot Canvas");
-        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level") || SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level1") )
         {
             victorySprite = GameObject.Find("Victory Canvas").transform.GetChild(0).GetComponent<Image>();
             robotPowerScript = GameObject.Find("Power Manager").GetComponent<robotPower>();
@@ -121,7 +121,7 @@ public class gameManager : MonoBehaviour
         yOffset = 1250f;
 
         
-        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level"))
+        if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level") || SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Level1"))
         {
             powerCanvas.GetComponent<Canvas>().enabled = false;
             foreach(Button tokenButton in tokenCanvas.GetComponentsInChildren<Button>())

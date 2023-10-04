@@ -129,7 +129,14 @@ public class selection : MonoBehaviour
         PlayerPrefs.SetInt("Current Level", int.Parse(textLevel));
         musicManagerScript.setMusicState(save.mainMenuMusicState, false);
         musicManagerScript.setMusicState(save.levelMusicState, false);
-        SceneManager.LoadScene("Level");
+        if(int.Parse(textLevel) == 1)
+        {
+            SceneManager.LoadScene("Level1");
+        }
+        else
+        {
+            SceneManager.LoadScene("Level");
+        }
     }
 
 
@@ -141,7 +148,6 @@ public class selection : MonoBehaviour
         PlayerPrefs.DeleteAll();
         string str = "";
 
-        gameManager managerScript = GameObject.Find("Game Manager").GetComponent<gameManager>();
         PlayerPrefs.SetInt(save.availableLevels, save.resetLevel);
         for(int i = 0; i < save.resetLevel; i++)
         {
