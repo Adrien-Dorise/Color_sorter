@@ -70,7 +70,7 @@ public class ad_manager : MonoBehaviour
             }
         }
         
-        if(currentScene == "Level")
+        if(currentScene == "Level" || currentScene == "Level1")
         {
             if(!PlayerPrefs.HasKey(save.ad_strike))
             {
