@@ -1136,7 +1136,7 @@ public class levels
                 numberMaxLayers = 6;
                 tubeToWin = 7;
                 maxLevelColor = 7;
-                seed = 1230198419;
+                seed = 1395280665;
                 generatorVersion = 1;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
