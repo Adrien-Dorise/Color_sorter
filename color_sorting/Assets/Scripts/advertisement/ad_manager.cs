@@ -155,6 +155,10 @@ public class ad_manager : MonoBehaviour
             powerScript.updateOneToken(tokenID, 5);
             powerScript.setInteractablePowerButtons();
         }
+        else
+        {
+            Debug.Log("Warning in ad_manager: Ad not completed, no reward given.");
+        }
     }
 
 }

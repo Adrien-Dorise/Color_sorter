@@ -122,20 +122,18 @@ public class testTube : MonoBehaviour
     /// <param name="scaling up">: true to scale up, false to scale down </param>
     private IEnumerator tubeScalingRoutine(bool scalingUp)
     {
+        float margin = 0.05f;
         if (scalingUp)
         {
             if(!save.debugLevel)
             {
-                while (this.transform.localScale.x < endScale)
+                while (this.transform.localScale.x < endScale - margin)
                 {
                     this.transform.localScale = new Vector3(this.transform.localScale.x + (scalingSpeed * Time.deltaTime), this.transform.localScale.y + (scalingSpeed * Time.deltaTime), 1);
                     yield return null;
                 }
             }
-            else
-            {
-                this.transform.localScale = new Vector3(endScale, endScale, 1);
-            }
+            this.transform.localScale = new Vector3(endScale, endScale, 1);
 
         }
         else
@@ -143,16 +141,14 @@ public class testTube : MonoBehaviour
             if(!save.debugLevel)
             {
                 this.transform.localScale = new Vector3(endScale, endScale, 1);
-                while (this.transform.localScale.x > 1)
+                while (this.transform.localScale.x > 1 + margin)
                 {
                     this.transform.localScale = new Vector3(this.transform.localScale.x - (scalingSpeed * Time.deltaTime), this.transform.localScale.y - (scalingSpeed * Time.deltaTime), 1);
                     yield return null;
                 }
             }
-            else
-            {
-                this.transform.localScale = new Vector3(1, 1, 1);
-            }
+            this.transform.localScale = new Vector3(1, 1, 1);
+
         }
     }
 
