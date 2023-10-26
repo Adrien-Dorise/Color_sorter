@@ -848,12 +848,12 @@ public class levels
 
            case 46:
                 numberTube = 7;
-                numberEmptyTube = 1;
+                numberEmptyTube = 2;
                 numberInitLayers = 6;
                 numberMaxLayers = 6;
                 tubeToWin = 6;
                 maxLevelColor = 6;
-                seed = 1230198419;
+                seed = 0;
                 generatorVersion = 1;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);

@@ -524,7 +524,7 @@ public class gameManager : MonoBehaviour
                     startInactivity();
                     if(isNewTubeCompleted)
                     {
-                        completedTube++;
+                        updateCompletedTubes();
                         isNewTubeCompleted = false;
                         if(completedTube >= setupScript.completeTubeToWin) //Victory
                         {
