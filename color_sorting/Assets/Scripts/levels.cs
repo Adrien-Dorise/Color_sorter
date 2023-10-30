@@ -848,12 +848,12 @@ public class levels
 
            case 46:
                 numberTube = 7;
-                numberEmptyTube = 2;
+                numberEmptyTube = 1;
                 numberInitLayers = 6;
                 numberMaxLayers = 6;
                 tubeToWin = 6;
                 maxLevelColor = 6;
-                seed = 0;
+                seed = -929158042;
                 generatorVersion = 1;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
@@ -2557,7 +2557,7 @@ public class levels
                 tubeToWin = 6;
                 maxLevelColor = 6;
                 generatorVersion= 1;
-                seed = 0;
+                seed = 1102081932;
 
                 setupObject.initLevelParameters(numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin);
                 generatedLevel = levels.levelGenerator(seed,numberTube, numberEmptyTube, numberInitLayers, numberMaxLayers, tubeToWin, maxLevelColor, generatorVersion);

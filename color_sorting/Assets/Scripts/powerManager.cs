@@ -60,9 +60,9 @@ public class powerManager : MonoBehaviour
 
         powersNeededTokens = new List<int>{
             1, //rollBack
-            6, //nextMove
-            3, //isWind
-            10 //deleteColor
+            4, //nextMove
+            2, //isWind
+            7 //deleteColor
         };
         
         maxlevelTokenIdxPerPower = new List<int>();
